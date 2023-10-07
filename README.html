@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tethkir — README</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root { --bg: #1a0f0a; --card: #2d1810; --text: #f5e6d3; --muted: #c4a882; --accent: #d4a04a; --border: rgba(212,160,74,0.15); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.7; }
+.container { max-width: 800px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; }
+@media (max-width: 640px) { .container { padding: 20px 16px; } }
+h1 { color: var(--accent); font-size: 1.8em; margin-bottom: 8px; }
+h2 { color: var(--accent); font-size: 1.3em; margin-top: 28px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+h3 { color: var(--accent); font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }
+p { color: var(--muted); margin-bottom: 10px; }
+a { color: var(--accent); }
+ul, ol { color: var(--muted); margin: 8px 0 12px 24px; }
+li { margin-bottom: 4px; }
+strong { color: var(--text); }
+code { background: rgba(212,160,74,0.1); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+pre { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; margin: 10px 0; }
+pre code { background: none; padding: 0; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+th, td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; color: var(--muted); font-size: 0.9em; }
+th { background: rgba(212,160,74,0.08); color: var(--accent); }
+hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.top-link { display: inline-block; margin-bottom: 16px; color: var(--accent); text-decoration: none; font-weight: 500; }
+</style></head><body>
+<div class="container">
+<a class="top-link" href="index.html">← Open App</a>
+<h1>📝 Tethkir — تذكير</h1>
+<p><strong>Islamic Task Manager &amp; Secure Notes</strong></p>
+<p>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
+<p>A single-file web app for managing tasks and notes with Islamic themes, voice input, and optional cloud sync. Installable as a PWA on Android and iOS.</p>
+<hr />
+<h2>Install</h2>
+<p><strong>Android</strong> — Open in Chrome → tap ⋮ menu → "Add to Home Screen" or "Install App"</p>
+<p><strong>iOS</strong> — Open in Safari → tap Share → "Add to Home Screen"</p>
+<p>The app runs fullscreen without a browser bar and works offline.</p>
+<hr />
+<h2>Two Modes</h2>
+<p><strong>Simple Mode</strong> (default) — Open the app, type a task or note, done. Voice input with 🎤, read notes aloud with 🔊, copy with 📋. Nothing else in the way.</p>
+<p><strong>Advanced Mode</strong> — Toggle in ⚙️ Settings. Unlocks: multiple profiles, task priorities/dates/categories/tags, search &amp; filters, AES-256 encrypted notes, Arabic virtual keyboard, and the help system.</p>
+<hr />
+<h2>Features</h2>
+<p><strong>Tasks</strong> — Add, complete, delete, reorder. In Advanced mode: priority, due date, category, tags, search, filter, drag-and-drop.</p>
+<p><strong>Notes</strong> — Simple mode: plain text, just type and save. 📋 Copy, 🔊 Read aloud, 🗑️ Delete. Advanced mode: AES-256 encrypted with master passphrase.</p>
+<p><strong>Voice</strong> — 🎤 Speech-to-text on task/note inputs. 🔊 Text-to-speech on saved notes. Detects app language (EN/FR/AR).</p>
+<p><strong>6 Islamic Themes</strong> — Alhambra, Ottoman, Moroccan, Calligraphy, Ramadan, Desert.</p>
+<p><strong>3 Languages</strong> — English, French, Arabic with full RTL support.</p>
+<p><strong>Cloud Sync</strong> — Optional Firebase with Google Sign-In. ☁️ Sync Now button for manual sync.</p>
+<p><strong>Offline</strong> — Service worker caches the app. Works without internet.</p>
+<p><strong>Profiles</strong> — Multiple independent task lists (Advanced mode).</p>
+<p><strong>Security</strong> — PIN lock (SHA-256), encrypted notes (AES-256), change passphrase/PIN (Advanced mode).</p>
+<p><strong>Data</strong> — Export/Import JSON backups. 🗑️ Clear Cache. Works offline with localStorage.</p>
+<p><strong>Mobile-first</strong> — 16px inputs (no iOS zoom), 44px touch targets, responsive layout. PWA installable.</p>
+<hr />
+<h2>Deploy on GitHub Pages</h2>
+<ol>
+<li>Create a GitHub repository (e.g. <code>tethkir</code>)</li>
+<li>Upload: <code>index.html</code>, <code>manifest.json</code>, <code>sw.js</code>, <code>icon-192.png</code>, <code>icon-512.png</code>, <code>README.html</code>, <code>CHANGES.html</code>, <code>CHANGES.md</code>, <code>README.md</code></li>
+<li>Settings → Pages → Source: main branch → Save</li>
+<li>Live at <code>https://yourusername.github.io/tethkir/</code></li>
+</ol>
+<hr />
+<h2>Firebase Setup (Optional)</h2>
+<p>Open the app → ❓ Help → <strong>Firebase Cloud Sync Setup</strong> (in Advanced mode).</p>
+<p><strong>Quick steps:</strong>
+1. Create a Firebase project at <a href="https://console.firebase.google.com">console.firebase.google.com</a>
+2. Register a web app, copy the config JSON
+3. Enable Google sign-in in Authentication
+4. Create a Firestore database
+5. Add your GitHub Pages domain as authorized
+6. Paste config in ⚙️ Settings → Firebase Cloud Sync</p>
+<p><strong>Firestore Rules:</strong></p>
+<pre><code>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null &amp;&amp; request.auth.uid == userId;
+    }
+  }
+}
+</code></pre>
+<hr />
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Unauthorized domain"</td>
+<td>Add domain in Firebase → Authentication → Authorized domains</td>
+</tr>
+<tr>
+<td>Sign-in fails on iOS</td>
+<td>Uses redirect auth — wait for page to reload</td>
+</tr>
+<tr>
+<td>Popup blocked</td>
+<td>Allow popups for your site</td>
+</tr>
+<tr>
+<td>Notes won't decrypt</td>
+<td>Wrong passphrase — no recovery</td>
+</tr>
+<tr>
+<td>Old data showing</td>
+<td>⚙️ Settings → 🗑️ Clear Cache</td>
+</tr>
+<tr>
+<td>App not updating</td>
+<td>Clear browser cache or unregister service worker in DevTools</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Tech Stack</h2>
+<p>Single HTML file. No build tools. PWA installable.</p>
+<ul>
+<li><strong>CryptoJS</strong> — AES-256 encryption</li>
+<li><strong>Firebase 10.8</strong> — Auth + Firestore (loaded on demand)</li>
+<li><strong>Web Speech API</strong> — STT and TTS</li>
+<li><strong>Service Worker</strong> — Offline caching</li>
+<li><strong>localStorage</strong> — Data persistence</li>
+</ul>
+<hr />
+<p><em>v4.0 — Built with love and Tawakkul. بارك الله فيكم</em> 🌙✨</p>
+</div></body></html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tethkir — Changelog</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root { --bg: #1a0f0a; --card: #2d1810; --text: #f5e6d3; --muted: #c4a882; --accent: #d4a04a; --border: rgba(212,160,74,0.15); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.7; }
+.container { max-width: 800px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; }
+@media (max-width: 640px) { .container { padding: 20px 16px; } }
+h1 { color: var(--accent); font-size: 1.8em; margin-bottom: 8px; }
+h2 { color: var(--accent); font-size: 1.3em; margin-top: 28px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+h3 { color: var(--accent); font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }
+p { color: var(--muted); margin-bottom: 10px; }
+a { color: var(--accent); }
+ul, ol { color: var(--muted); margin: 8px 0 12px 24px; }
+li { margin-bottom: 4px; }
+strong { color: var(--text); }
+code { background: rgba(212,160,74,0.1); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+pre { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; margin: 10px 0; }
+pre code { background: none; padding: 0; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+th, td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; color: var(--muted); font-size: 0.9em; }
+th { background: rgba(212,160,74,0.08); color: var(--accent); }
+hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.top-link { display: inline-block; margin-bottom: 16px; color: var(--accent); text-decoration: none; font-weight: 500; }
+</style></head><body>
+<div class="container">
+<a class="top-link" href="index.html">← Open App</a>
+<h1>📝 Tethkir — Changelog</h1>
+<hr />
+<h2>v4.0 — 2026-02-27 — Multi-Pass Notes, Images &amp; Smart Views 🖼️</h2>
+<h3>✨ New Features</h3>
+<ul>
+<li><strong>Multi-Passphrase Notes</strong> — Any passphrase unlocks the notes section. Each note decrypts individually. Create new notes with a different passphrase without losing old ones.</li>
+<li><strong>Image Notes</strong> — 📷 Camera/Gallery button on both Simple and Encrypted notes. Images compressed (800px max, JPEG 70%). Tap to view fullscreen.</li>
+<li><strong>Notes Search</strong> — 🔍 Real-time search bar filters notes by title or content</li>
+<li><strong>View Selector</strong> — Toggle between 📄 List (collapsible cards) and 📐 Grid (2-column thumbnails). Preference saved.</li>
+<li><strong>Pagination</strong> — Notes load 10 at a time with "Load more" button</li>
+<li><strong>Collapsible Notes</strong> — List view shows title + date only. Tap to expand.</li>
+</ul>
+<h3>🔧 Fixes &amp; Improvements</h3>
+<ul>
+<li><strong>Mode Label Bug Fixed</strong> — Settings correctly shows "Simple Mode" or "Advanced Mode" in all 3 languages</li>
+<li><strong>Locked Notes with Dates</strong> — Notes with a different passphrase show their creation date/time</li>
+<li><strong>🔑 Recover Old Notes</strong> — "Unlock with another passphrase" re-encrypts locked notes with current passphrase</li>
+<li>Notes toolbar (search + view toggle) in both Simple and Advanced modes</li>
+</ul>
+<hr />
+<h2>v1.1 — 2026-02-22 — Android PWA &amp; Offline 📱</h2>
+<h3>✨ New Features</h3>
+<ul>
+<li><strong>Progressive Web App (PWA)</strong> — Install on Android/iOS home screen, runs fullscreen like a native app</li>
+<li><strong>Service Worker</strong> — Caches all assets for true offline use. App works without internet</li>
+<li><strong>App Icons</strong> — 192px and 512px icons for home screen and splash screen</li>
+<li><strong>Theme Color</strong> — Android status bar matches the Alhambra dark theme</li>
+</ul>
+<h3>🔧 Improvements</h3>
+<ul>
+<li><code>manifest.json</code> with app name, icons, standalone display mode</li>
+<li><code>sw.js</code> caches core assets on install, cache-first strategy, old cache cleanup</li>
+<li>Firebase/Google auth requests bypass the cache</li>
+<li>Offline navigation falls back to cached index.html</li>
+<li>Apple mobile web app meta tags for iOS home screen</li>
+</ul>
+<hr />
+<h2>v1.0 — 2026-02-22 — Initial Release 🚀</h2>
+<p>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
+<h3>✨ Core Features</h3>
+<ul>
+<li><strong>Simple Mode</strong> (default) — Clean, minimal interface: just tasks and plain notes with voice input</li>
+<li><strong>Advanced Mode</strong> — Toggle in Settings to unlock profiles, priorities, categories, tags, filters, encrypted notes, Arabic keyboard, and help system</li>
+<li><strong>Task Management</strong> — Add, complete, delete, drag-and-drop reorder. Advanced: priority, due date, category, tags, search, filter</li>
+<li><strong>Notes</strong> — Simple mode: plain text with 📋 copy, 🔊 read aloud, 🗑️ delete. Advanced mode: AES-256 encrypted with master passphrase</li>
+<li><strong>Firebase Cloud Sync</strong> — Google Sign-In, auto-sync, bidirectional sync, manual ☁️ Sync Now button</li>
+<li><strong>Multiple Profiles</strong> — Default + custom profiles with independent task lists (Advanced)</li>
+<li><strong>PIN Lock</strong> — 4-digit protection with SHA-256 hashing</li>
+</ul>
+<h3>🎤 Voice Features</h3>
+<ul>
+<li><strong>Speech-to-Text</strong> — 🎤 mic button on task title, note title, note content</li>
+<li><strong>Text-to-Speech</strong> — 🔊 button on each note reads it aloud</li>
+<li>Auto-detects app language (EN/FR/AR)</li>
+</ul>
+<h3>🎨 Design</h3>
+<ul>
+<li><strong>6 Islamic Themes</strong> — Alhambra, Ottoman, Moroccan, Calligraphy, Ramadan, Desert</li>
+<li><strong>3 Languages</strong> — English, French, Arabic with full RTL support and SVG flags</li>
+<li><strong>Settings Sidebar</strong> — Slides from right (left in RTL), collapsible accordion sections</li>
+<li><strong>Discrete Bismillah</strong> — بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ in the header bar</li>
+<li><strong>Status Indicator</strong> — 🟢 Synced / 🟠 Online / 🔴 Offline</li>
+<li><strong>Mobile-first</strong> — 16px inputs, 44px touch targets, responsive layout</li>
+</ul>
+<h3>⌨️ Arabic Virtual Keyboard (Advanced)</h3>
+<ul>
+<li>Full alphabet, harakat/diacritics, Arabic numerals</li>
+<li>Preview bar with copy/paste toolbar</li>
+<li>🤲 Islamic phrases drawer with 14 built-in + custom phrases</li>
+</ul>
+<h3>❓ Help System (Advanced)</h3>
+<ul>
+<li>Floating help panel with quick tips, feature guide, FAQ</li>
+<li>In-app Firebase setup guide</li>
+<li>Contextual ? tooltips</li>
+</ul>
+<h3>📦 Data Management</h3>
+<ul>
+<li>☁️ Sync Now — manual push/pull to Firebase</li>
+<li>📥 Export / 📤 Import JSON backups</li>
+<li>🗑️ Clear Cache — wipe local data (cloud data unaffected)</li>
+</ul>
+<h3>📱 iOS Support</h3>
+<ul>
+<li>Redirect-based Google Sign-In for iOS Safari</li>
+<li>No-zoom inputs (16px), large touch targets</li>
+</ul>
+<hr />
+<p><em>Built with love and Tawakkul. بارك الله فيكم</em> 🌙✨</p>
+</div></body></html>
