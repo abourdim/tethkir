@@ -1,0 +1,3923 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tadhkir — Task Memo v1.3.3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+<style>
+/* ===== CSS VARIABLES / THEME SYSTEM ===== */
+:root {
+  /* Default: Alhambra */
+  --bg-primary: #1a0f0a;
+  --bg-secondary: #2d1810;
+  --bg-card: #3a2218;
+  --bg-input: #4a3020;
+  --text-primary: #f5e6d3;
+  --text-secondary: #c4a882;
+  --accent: #d4a04a;
+  --accent-hover: #e8b85c;
+  --accent-glow: rgba(212,160,74,0.3);
+  --danger: #c0392b;
+  --success: #27ae60;
+  --warning: #f39c12;
+  --priority-high: #e74c3c;
+  --priority-med: #f39c12;
+  --priority-low: #27ae60;
+  --border: rgba(212,160,74,0.2);
+  --shadow: rgba(0,0,0,0.4);
+  --bismillah-color: #d4a04a;
+  --bismillah-glow: rgba(212,160,74,0.4);
+  --pattern-opacity: 0.06;
+  --font-body: 'Poppins', sans-serif;
+  --font-arabic: 'Amiri', 'Scheherazade New', serif;
+  --font-display: 'Playfair Display', serif;
+  --font-kids: 'Nunito', sans-serif;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== THEME: ALHAMBRA / ANDALUSIAN ===== */
+[data-theme="alhambra"] {
+  --bg-primary: #1a0f0a;
+  --bg-secondary: #2d1810;
+  --bg-card: #3a2218;
+  --bg-input: #4a3020;
+  --text-primary: #f5e6d3;
+  --text-secondary: #c4a882;
+  --accent: #d4a04a;
+  --accent-hover: #e8b85c;
+  --accent-glow: rgba(212,160,74,0.3);
+  --border: rgba(212,160,74,0.2);
+  --bismillah-color: #d4a04a;
+  --bismillah-glow: rgba(212,160,74,0.5);
+  --pattern-opacity: 0.06;
+}
+
+/* ===== THEME: OTTOMAN ===== */
+[data-theme="ottoman"] {
+  --bg-primary: #0a1628;
+  --bg-secondary: #122040;
+  --bg-card: #1a2d54;
+  --bg-input: #233a66;
+  --text-primary: #e8e4df;
+  --text-secondary: #8bacc4;
+  --accent: #c9a84c;
+  --accent-hover: #dbb960;
+  --accent-glow: rgba(201,168,76,0.3);
+  --border: rgba(201,168,76,0.2);
+  --bismillah-color: #c9a84c;
+  --bismillah-glow: rgba(201,168,76,0.5);
+  --pattern-opacity: 0.08;
+}
+
+/* ===== THEME: MOROCCAN ZELLIGE ===== */
+[data-theme="moroccan"] {
+  --bg-primary: #0a1a12;
+  --bg-secondary: #12291c;
+  --bg-card: #1a3828;
+  --bg-input: #224832;
+  --text-primary: #f0ece4;
+  --text-secondary: #8cc4a0;
+  --accent: #d4a04a;
+  --accent-hover: #e8b85c;
+  --accent-glow: rgba(212,160,74,0.3);
+  --border: rgba(140,196,160,0.2);
+  --bismillah-color: #d4a04a;
+  --bismillah-glow: rgba(212,160,74,0.5);
+  --pattern-opacity: 0.08;
+}
+
+/* ===== THEME: CALLIGRAPHY ===== */
+[data-theme="calligraphy"] {
+  --bg-primary: #f5f0e8;
+  --bg-secondary: #ebe4d6;
+  --bg-card: #fff9f0;
+  --bg-input: #f0e8d8;
+  --text-primary: #1a1408;
+  --text-secondary: #5a4e3a;
+  --accent: #8b6914;
+  --accent-hover: #a07c1c;
+  --accent-glow: rgba(139,105,20,0.2);
+  --border: rgba(139,105,20,0.2);
+  --bismillah-color: #2a1e0a;
+  --bismillah-glow: rgba(42,30,10,0.15);
+  --pattern-opacity: 0.04;
+}
+
+/* ===== THEME: RAMADAN NIGHT ===== */
+[data-theme="ramadan"] {
+  --bg-primary: #0a0a1e;
+  --bg-secondary: #12122e;
+  --bg-card: #1a1a3e;
+  --bg-input: #24244e;
+  --text-primary: #e8e4f0;
+  --text-secondary: #9a8ec4;
+  --accent: #d4a04a;
+  --accent-hover: #e8b85c;
+  --accent-glow: rgba(212,160,74,0.4);
+  --border: rgba(212,160,74,0.15);
+  --bismillah-color: #d4a04a;
+  --bismillah-glow: rgba(212,160,74,0.6);
+  --pattern-opacity: 0.05;
+}
+
+/* ===== THEME: DESERT OASIS ===== */
+[data-theme="desert"] {
+  --bg-primary: #f8f0e0;
+  --bg-secondary: #efe4cc;
+  --bg-card: #fff8ec;
+  --bg-input: #f0e4d0;
+  --text-primary: #2a2218;
+  --text-secondary: #6a5e4a;
+  --accent: #2e8b57;
+  --accent-hover: #3aa06a;
+  --accent-glow: rgba(46,139,87,0.2);
+  --border: rgba(46,139,87,0.2);
+  --bismillah-color: #8b6914;
+  --bismillah-glow: rgba(139,105,20,0.2);
+  --pattern-opacity: 0.04;
+}
+
+/* ===== THEME: KIDS ===== */
+[data-theme="kids"] {
+  --bg-primary: #fff5f5;
+  --bg-secondary: #ffeaa7;
+  --bg-card: #ffffff;
+  --bg-input: #fff3e0;
+  --text-primary: #2d1b69;
+  --text-secondary: #6c5ce7;
+  --accent: #e17055;
+  --accent-hover: #f0826f;
+  --accent-glow: rgba(225,112,85,0.3);
+  --border: rgba(108,92,231,0.2);
+  --bismillah-color: #6c5ce7;
+  --bismillah-glow: rgba(108,92,231,0.3);
+  --pattern-opacity: 0.06;
+  --radius: 20px;
+  --radius-lg: 28px;
+  --font-body: 'Nunito', sans-serif;
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background var(--transition), color var(--transition);
+  overflow-x: hidden;
+}
+
+/* ===== GEOMETRIC PATTERN OVERLAY ===== */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 40px, var(--accent) 40px, var(--accent) 41px),
+    repeating-linear-gradient(90deg, transparent, transparent 40px, var(--accent) 40px, var(--accent) 41px),
+    repeating-linear-gradient(45deg, transparent, transparent 28px, var(--accent) 28px, var(--accent) 29px),
+    repeating-linear-gradient(-45deg, transparent, transparent 28px, var(--accent) 28px, var(--accent) 29px);
+  opacity: var(--pattern-opacity);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== STARS for Ramadan theme ===== */
+[data-theme="ramadan"] body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    radial-gradient(1px 1px at 10% 15%, rgba(212,160,74,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 25% 35%, rgba(212,160,74,0.6), transparent),
+    radial-gradient(1px 1px at 40% 10%, rgba(212,160,74,0.7), transparent),
+    radial-gradient(2px 2px at 55% 45%, rgba(212,160,74,0.5), transparent),
+    radial-gradient(1px 1px at 70% 20%, rgba(212,160,74,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 85% 55%, rgba(212,160,74,0.6), transparent),
+    radial-gradient(1px 1px at 15% 65%, rgba(212,160,74,0.7), transparent),
+    radial-gradient(2px 2px at 90% 80%, rgba(212,160,74,0.5), transparent),
+    radial-gradient(1px 1px at 50% 75%, rgba(212,160,74,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 35% 90%, rgba(212,160,74,0.6), transparent);
+  pointer-events: none;
+  z-index: 0;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.4; }
+  100% { opacity: 0.8; }
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
+/* ===== APP CONTAINER ===== */
+.app-container {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* ===== BISMILLAH HEADER ===== */
+.bismillah-header {
+  text-align: center;
+  padding: 30px 20px 15px;
+  position: relative;
+}
+
+.bismillah-text {
+  font-family: 'Aref Ruqaa', 'Amiri', serif;
+  font-size: 2.4em;
+  font-weight: 700;
+  color: var(--bismillah-color);
+  text-shadow: 0 0 30px var(--bismillah-glow), 0 2px 4px rgba(0,0,0,0.2);
+  line-height: 1.6;
+  letter-spacing: 2px;
+  direction: rtl;
+}
+
+.bismillah-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+  color: var(--accent);
+  opacity: 0.6;
+}
+
+.bismillah-divider::before,
+.bismillah-divider::after {
+  content: '';
+  height: 1px;
+  width: 80px;
+  background: linear-gradient(to right, transparent, var(--accent), transparent);
+}
+
+.bismillah-divider span {
+  font-size: 1.2em;
+}
+
+/* ===== TOP BAR ===== */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+
+.top-bar-left, .top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.app-title {
+  font-family: var(--font-display);
+  font-size: 1.3em;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+[data-theme="kids"] .app-title { font-family: var(--font-kids); }
+
+/* ===== BUTTONS ===== */
+.btn {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85em;
+  transition: all var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.btn-accent {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.btn-accent:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.btn-danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.btn-danger:hover {
+  background: var(--danger);
+  color: white;
+  border-color: var(--danger);
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 0.8em;
+}
+
+.btn-icon {
+  padding: 6px 8px;
+  min-width: 34px;
+  justify-content: center;
+}
+
+[data-theme="kids"] .btn {
+  border-radius: 20px;
+  font-size: 0.95em;
+  font-weight: 700;
+  padding: 10px 18px;
+}
+
+/* ===== SELECT / INPUT ===== */
+select, input, textarea {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9em;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+
+select:focus, input:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+textarea { resize: vertical; min-height: 80px; }
+
+/* ===== TABS ===== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: all var(--transition);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.tab:hover { color: var(--text-primary); background: var(--bg-card); }
+.tab.active {
+  background: var(--accent);
+  color: var(--bg-primary);
+  font-weight: 600;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+[data-theme="kids"] .tab {
+  border-radius: 20px;
+  font-size: 1em;
+  font-weight: 700;
+  padding: 12px 20px;
+}
+
+/* ===== TASK FORM ===== */
+.task-form {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all var(--transition);
+}
+
+.task-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.task-form-grid .full-width { grid-column: 1 / -1; }
+
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group label {
+  font-size: 0.8em;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+
+/* ===== SEARCH & FILTER BAR ===== */
+.search-filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  padding-left: 36px;
+}
+
+.search-input-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 0.9em;
+}
+
+/* ===== TASK LIST ===== */
+.task-list { display: flex; flex-direction: column; gap: 8px; }
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all var(--transition);
+  animation: slideIn 0.3s ease-out;
+  cursor: grab;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task-item:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px var(--shadow);
+}
+
+.task-item.done { opacity: 0.6; }
+.task-item.done .task-title { text-decoration: line-through; }
+
+.task-item.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+}
+
+.task-priority-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+.task-priority-indicator.high { background: var(--priority-high); }
+.task-priority-indicator.medium { background: var(--priority-med); }
+.task-priority-indicator.low { background: var(--priority-low); }
+
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all var(--transition);
+  background: transparent;
+  color: transparent;
+  font-size: 14px;
+}
+
+.task-checkbox.checked {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+.task-checkbox:hover { box-shadow: 0 0 0 3px var(--accent-glow); }
+
+[data-theme="kids"] .task-checkbox {
+  width: 30px; height: 30px; border-radius: 50%; font-size: 18px;
+}
+
+.task-content { flex: 1; min-width: 0; }
+
+.task-title {
+  font-weight: 600;
+  font-size: 1em;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.task-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.78em;
+  color: var(--text-secondary);
+}
+
+.task-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: var(--bg-input);
+  border-radius: 20px;
+}
+
+.task-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-state .icon { font-size: 3em; margin-bottom: 15px; opacity: 0.5; }
+.empty-state h3 { margin-bottom: 8px; color: var(--text-primary); }
+
+/* ===== SECURE NOTES ===== */
+.secure-notes-section {
+  margin-top: 20px;
+}
+
+.note-item {
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  transition: all var(--transition);
+}
+
+.note-item:hover { border-color: var(--accent); }
+
+.note-locked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ===== PIN LOCK OVERLAY ===== */
+.pin-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg-primary);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.pin-overlay .bismillah-text { font-size: 2em; }
+
+.pin-input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.pin-digit {
+  width: 50px;
+  height: 60px;
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  transition: all var(--transition);
+}
+
+.pin-digit:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* ===== MODAL ===== */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: scaleIn 0.2s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal h2 { margin-bottom: 16px; font-family: var(--font-display); color: var(--accent); }
+.modal .form-group { margin-bottom: 12px; }
+
+/* ===== SETTINGS PANEL ===== */
+.settings-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.settings-section h3 {
+  color: var(--accent);
+  margin-bottom: 14px;
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+
+.setting-row:last-child { border-bottom: none; }
+
+.setting-label { font-size: 0.9em; color: var(--text-secondary); }
+
+/* Toggle Switch */
+.toggle {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  background: var(--bg-input);
+  border-radius: 13px;
+  cursor: pointer;
+  transition: background var(--transition);
+  border: 1px solid var(--border);
+}
+
+.toggle.active { background: var(--accent); border-color: var(--accent); }
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: var(--text-primary);
+  border-radius: 50%;
+  transition: transform var(--transition);
+}
+
+.toggle.active::after { transform: translateX(22px); background: var(--bg-primary); }
+
+/* Theme Grid */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.theme-card {
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.85em;
+  transition: all var(--transition);
+}
+
+.theme-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.theme-card.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+.theme-card .theme-icon { font-size: 1.8em; margin-bottom: 6px; }
+
+/* ===== PROFILES ===== */
+.profiles-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.profile-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.85em;
+  font-family: inherit;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-chip.active {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+}
+
+/* ===== KIDS MODE EXTRAS ===== */
+.stars-counter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.confetti-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  animation: confettiFall 2s ease-out forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ===== FIREBASE STATUS ===== */
+.sync-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8em;
+  color: var(--text-secondary);
+}
+
+.sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+}
+
+.sync-dot.online { background: var(--success); }
+.sync-dot.offline { background: var(--danger); }
+
+/* ===== RTL SUPPORT ===== */
+[dir="rtl"] .task-priority-indicator { left: auto; right: 0; }
+[dir="rtl"] .search-input-wrapper input { padding-left: 12px; padding-right: 36px; }
+[dir="rtl"] .search-input-wrapper .search-icon { left: auto; right: 12px; }
+[dir="rtl"] .task-item { padding-left: 16px; padding-right: 20px; }
+[dir="rtl"] .bismillah-text { direction: rtl; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .app-container { padding: 10px; }
+  .bismillah-text { font-size: 1.6em; }
+  .task-form-grid { grid-template-columns: 1fr; }
+  .top-bar { flex-direction: column; align-items: stretch; }
+  .top-bar-left, .top-bar-right { justify-content: center; }
+  .search-filter-bar { flex-direction: column; }
+  .theme-grid { grid-template-columns: repeat(3, 1fr); }
+  .tabs { flex-wrap: nowrap; overflow-x: auto; }
+  .tab { min-width: fit-content; flex: unset; padding: 10px 14px; }
+}
+
+/* ===== NOTIFICATION TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--accent);
+  color: var(--bg-primary);
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.9em;
+  z-index: 2000;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ===== ISLAMIC SHORTCUTS DRAWER ===== */
+.shortcuts-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 450;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.shortcuts-backdrop.open { display: block; }
+
+.shortcuts-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 300px;
+  max-width: 85vw;
+  height: 100vh;
+  background: var(--bg-secondary);
+  border-left: 2px solid var(--accent);
+  z-index: 451;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 30px rgba(0,0,0,0.4);
+}
+
+[dir="rtl"] .shortcuts-drawer {
+  right: auto;
+  left: 0;
+  border-left: none;
+  border-right: 2px solid var(--accent);
+  transform: translateX(-100%);
+  box-shadow: 8px 0 30px rgba(0,0,0,0.4);
+}
+
+.shortcuts-drawer.open { transform: translateX(0); }
+
+.shortcuts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.shortcuts-header h3 {
+  color: var(--accent);
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+}
+
+.shortcuts-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.3em;
+  cursor: pointer;
+  padding: 4px;
+  transition: color var(--transition);
+}
+
+.shortcuts-close:hover { color: var(--accent); }
+
+.shortcuts-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.shortcuts-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.shortcuts-add-btn:hover {
+  border-color: var(--accent);
+  background: rgba(212,160,74,0.05);
+}
+
+/* Custom shortcut form */
+.shortcuts-form {
+  display: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.shortcuts-form.open { display: block; animation: fadeIn 0.2s ease; }
+
+.shortcuts-form .form-group { margin-bottom: 8px; }
+.shortcuts-form .form-group label { font-size: 0.75em; }
+.shortcuts-form input { width: 100%; font-size: 0.85em; padding: 6px 10px; }
+.shortcuts-form .form-actions { margin-top: 8px; }
+
+/* Phrase card */
+.phrase-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.phrase-card:hover {
+  border-color: var(--accent);
+  transform: translateX(-3px);
+  box-shadow: 0 2px 12px var(--shadow);
+}
+
+[dir="rtl"] .phrase-card:hover { transform: translateX(3px); }
+
+.phrase-card:active {
+  background: rgba(212,160,74,0.08);
+}
+
+.phrase-arabic {
+  font-family: 'Amiri', 'Aref Ruqaa', serif;
+  font-size: 1.15em;
+  color: var(--text-primary);
+  direction: rtl;
+  text-align: right;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.phrase-translit {
+  font-size: 0.78em;
+  color: var(--accent);
+  font-style: italic;
+  margin-bottom: 2px;
+}
+
+.phrase-meaning {
+  font-size: 0.75em;
+  color: var(--text-secondary);
+}
+
+.phrase-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.phrase-insert-hint {
+  font-size: 0.7em;
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.phrase-delete-btn {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 0.85em;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.phrase-card:hover .phrase-delete-btn.visible { opacity: 1; }
+.phrase-delete-btn:hover { background: rgba(192,57,43,0.1); }
+
+/* Section divider in drawer */
+.shortcuts-divider {
+  font-size: 0.7em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 8px 4px 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+@media (max-width: 640px) {
+  .shortcuts-drawer { width: 260px; }
+  .phrase-arabic { font-size: 1em; }
+}
+
+/* ===== HELP WIDGET ===== */
+.help-toggle-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg-primary);
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  z-index: 400;
+  box-shadow: 0 4px 16px var(--accent-glow);
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.help-toggle-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px var(--accent-glow);
+}
+
+.help-toggle-btn.active {
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 2px solid var(--border);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.help-toggle-btn.active:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+[dir="rtl"] .help-toggle-btn { left: auto; right: 20px; }
+[dir="rtl"] .kb-toggle-btn { right: auto; left: 20px; }
+
+body.help-open .help-toggle-btn { bottom: calc(65vh + 10px); }
+
+.help-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65vh;
+  background: var(--bg-secondary);
+  border-top: 2px solid var(--accent);
+  z-index: 398;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
+}
+
+.help-panel.open { transform: translateY(0); }
+
+.help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.help-header h3 {
+  color: var(--accent);
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.help-search {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85em;
+  outline: none;
+  width: 180px;
+  transition: border-color var(--transition);
+}
+
+.help-search:focus { border-color: var(--accent); }
+
+.help-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* Quick Tips Cards */
+.help-quick-tips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.help-tip-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  transition: all var(--transition);
+}
+
+.help-tip-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.help-tip-icon {
+  font-size: 1.8em;
+  margin-bottom: 6px;
+}
+
+.help-tip-title {
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 0.95em;
+  margin-bottom: 4px;
+}
+
+.help-tip-desc {
+  font-size: 0.82em;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Section Label */
+.help-section-label {
+  font-size: 0.8em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 16px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Accordion */
+.help-accordion { margin-bottom: 8px; }
+
+.help-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: inherit;
+  font-size: 0.9em;
+  color: var(--text-primary);
+  width: 100%;
+  text-align: left;
+}
+
+[dir="rtl"] .help-accordion-header { text-align: right; }
+
+.help-accordion-header:hover {
+  border-color: var(--accent);
+  background: rgba(212,160,74,0.05);
+}
+
+.help-accordion-header.active {
+  border-color: var(--accent);
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: rgba(212,160,74,0.08);
+}
+
+.help-accordion-icon {
+  font-size: 0.8em;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.help-accordion-arrow {
+  transition: transform 0.2s ease;
+  font-size: 0.9em;
+}
+
+.help-accordion-header.active .help-accordion-arrow {
+  transform: rotate(180deg);
+}
+
+.help-accordion-body {
+  display: none;
+  padding: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.help-accordion-body.open { display: block; animation: fadeIn 0.2s ease; }
+
+.help-accordion-body ul {
+  padding-left: 18px;
+  margin: 6px 0;
+}
+
+.help-accordion-body li { margin: 4px 0; }
+.help-accordion-body li::marker { color: var(--accent); }
+.help-accordion-body strong { color: var(--text-primary); }
+
+/* Contextual Tooltips */
+.tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--text-secondary);
+  color: var(--text-secondary);
+  font-size: 0.65em;
+  font-weight: 700;
+  cursor: help;
+  position: relative;
+  vertical-align: middle;
+  margin-left: 4px;
+  transition: all var(--transition);
+  font-family: inherit;
+  padding: 0;
+  line-height: 1;
+}
+
+[dir="rtl"] .tooltip-trigger { margin-left: 0; margin-right: 4px; }
+
+.tooltip-trigger:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+}
+
+.tooltip-bubble {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  white-space: normal;
+  width: 220px;
+  z-index: 600;
+  box-shadow: 0 4px 16px var(--shadow);
+  line-height: 1.5;
+  text-align: left;
+}
+
+[dir="rtl"] .tooltip-bubble { text-align: right; }
+
+.tooltip-bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--accent);
+}
+
+.tooltip-trigger:hover .tooltip-bubble,
+.tooltip-trigger:focus .tooltip-bubble { display: block; }
+
+/* Help panel responsive */
+@media (max-width: 640px) {
+  .help-panel { height: 75vh; }
+  .help-quick-tips { grid-template-columns: 1fr; }
+  .help-search { width: 120px; }
+  body.help-open .help-toggle-btn { bottom: calc(75vh + 10px); }
+  .tooltip-bubble { width: 180px; left: auto; right: -10px; transform: none; }
+  .tooltip-bubble::after { left: auto; right: 14px; transform: none; }
+}
+
+/* ===== ARABIC VIRTUAL KEYBOARD ===== */
+.kb-toggle-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg-primary);
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  z-index: 400;
+  box-shadow: 0 4px 16px var(--accent-glow);
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kb-toggle-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px var(--accent-glow);
+}
+
+.kb-toggle-btn.active {
+  right: auto;
+  left: 20px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 2px solid var(--border);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.kb-toggle-btn.active:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+[dir="rtl"] .kb-toggle-btn { right: auto; left: 20px; }
+[dir="rtl"] .kb-toggle-btn.active { left: auto; right: 20px; }
+
+.arabic-keyboard {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border-top: 2px solid var(--accent);
+  z-index: 399;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  box-shadow: 0 -8px 30px rgba(0,0,0,0.4);
+}
+
+.arabic-keyboard.open {
+  transform: translateY(0);
+}
+
+.kb-toolbar {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 8px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  gap: 4px;
+}
+
+.kb-toolbar-row1 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.kb-toolbar-row2 {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.kb-preview {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: 'Amiri', serif;
+  font-size: 1.1em;
+  direction: rtl;
+  text-align: right;
+  min-height: 36px;
+  line-height: 24px;
+  outline: none;
+}
+
+.kb-preview:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.kb-toolbar-btns {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.kb-tool-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.8em;
+  font-family: inherit;
+  transition: all var(--transition);
+  white-space: nowrap;
+  min-height: 32px;
+}
+
+.kb-tool-btn:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+}
+
+.kb-rows {
+  padding: 6px 4px 10px;
+}
+
+.kb-row {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  margin-bottom: 3px;
+}
+
+.kb-key {
+  min-width: 32px;
+  height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: 'Amiri', serif;
+  font-size: 1.15em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+}
+
+.kb-key:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px var(--accent-glow);
+}
+
+.kb-key:active {
+  transform: translateY(0);
+  background: var(--accent-hover);
+}
+
+.kb-key.pressed {
+  background: var(--accent);
+  color: var(--bg-primary);
+  transform: scale(1.15);
+}
+
+.kb-key-wide {
+  min-width: 52px;
+  font-size: 0.85em;
+  font-family: var(--font-body);
+}
+
+.kb-key-space {
+  flex: 1;
+  max-width: 220px;
+  font-size: 0.8em;
+  font-family: var(--font-body);
+}
+
+.kb-key-haraka {
+  min-width: 34px;
+  height: 38px;
+  font-size: 1.3em;
+  color: var(--accent);
+  background: transparent;
+  border-color: rgba(212,160,74,0.15);
+}
+
+.kb-key-haraka:hover {
+  color: var(--bg-primary);
+}
+
+.kb-section-label {
+  font-size: 0.7em;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 4px 0 2px;
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Responsive keyboard */
+@media (max-width: 640px) {
+  .kb-key { min-width: 26px; height: 38px; font-size: 1em; }
+  .kb-key-wide { min-width: 40px; }
+  .kb-key-haraka { min-width: 28px; height: 34px; }
+  .kb-tool-btn { padding: 4px 8px; font-size: 0.75em; }
+}
+
+/* When keyboard is open, add padding to body */
+body.kb-open {
+  padding-bottom: 300px;
+}
+
+body.kb-open .kb-toggle-btn {
+  bottom: 310px;
+}
+
+/* ===== PASSWORD WRAPPER ===== */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.password-wrapper input {
+  flex: 1;
+  padding-right: 44px;
+}
+
+.password-wrapper .toggle-pass {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-size: 1.1em;
+  font-family: 'Amiri', serif;
+  cursor: pointer;
+  opacity: 0.7;
+  min-width: auto;
+}
+
+.password-wrapper .toggle-pass:hover {
+  opacity: 1;
+  background: transparent;
+  color: var(--text-primary);
+  transform: translateY(-50%);
+  box-shadow: none;
+}
+
+/* ===== PAGE SECTIONS ===== */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.3s ease; }
+</style>
+</head>
+<body data-theme="alhambra">
+
+<!-- PIN LOCK OVERLAY -->
+<div class="pin-overlay" id="pinOverlay" style="display:none;">
+  <div class="bismillah-text">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+  <h2 id="pinTitle" style="color:var(--accent)">Enter PIN</h2>
+  <div class="pin-input-group" id="pinInputGroup">
+    <input class="pin-digit" type="password" maxlength="1" data-index="0" inputmode="numeric">
+    <input class="pin-digit" type="password" maxlength="1" data-index="1" inputmode="numeric">
+    <input class="pin-digit" type="password" maxlength="1" data-index="2" inputmode="numeric">
+    <input class="pin-digit" type="password" maxlength="1" data-index="3" inputmode="numeric">
+  </div>
+  <p id="pinError" style="color:var(--danger);display:none;font-size:0.9em;"></p>
+</div>
+
+<!-- CONFETTI CONTAINER -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HELP WIDGET TOGGLE -->
+<button class="help-toggle-btn" id="helpToggleBtn" onclick="toggleHelp()" title="Help">❓</button>
+
+<!-- HELP PANEL -->
+<div class="help-panel" id="helpPanel">
+  <div class="help-header">
+    <h3>❓ <span data-i18n="helpTitle">Help & Guide</span></h3>
+    <input type="text" class="help-search" id="helpSearch" data-i18n-placeholder="helpSearchPlaceholder" placeholder="Search help..." oninput="filterHelp()">
+  </div>
+  <div class="help-body" id="helpBody">
+    <!-- Quick Tips -->
+    <div class="help-section-label" data-i18n="helpQuickStart">🚀 QUICK START</div>
+    <div class="help-quick-tips" id="helpQuickTips">
+      <div class="help-tip-card" data-help-keywords="add task create new">
+        <div class="help-tip-icon">📝</div>
+        <div class="help-tip-title" data-i18n="helpTip1Title">Add a Task</div>
+        <div class="help-tip-desc" data-i18n="helpTip1Desc">Type a title in the Tasks tab and click "+ Add Task". Set priority, due date, and category.</div>
+      </div>
+      <div class="help-tip-card" data-help-keywords="done complete check finish">
+        <div class="help-tip-icon">✅</div>
+        <div class="help-tip-title" data-i18n="helpTip2Title">Complete a Task</div>
+        <div class="help-tip-desc" data-i18n="helpTip2Desc">Click the checkbox on any task to mark it done. In Kids Mode, you'll earn a star! ⭐</div>
+      </div>
+      <div class="help-tip-card" data-help-keywords="theme style design color">
+        <div class="help-tip-icon">🕌</div>
+        <div class="help-tip-title" data-i18n="helpTip3Title">Change Theme</div>
+        <div class="help-tip-desc" data-i18n="helpTip3Desc">Go to Settings → Themes and pick from 7 beautiful Islamic-inspired designs.</div>
+      </div>
+      <div class="help-tip-card" data-help-keywords="language arabic french english rtl">
+        <div class="help-tip-icon">🌍</div>
+        <div class="help-tip-title" data-i18n="helpTip4Title">Switch Language</div>
+        <div class="help-tip-desc" data-i18n="helpTip4Desc">Use the language dropdown (🇬🇧/🇫🇷/🇸🇦) in the top bar. Arabic automatically enables RTL layout.</div>
+      </div>
+    </div>
+
+    <!-- Feature Guide -->
+    <div class="help-section-label" data-i18n="helpFeatures">📚 FEATURE GUIDE</div>
+
+    <div class="help-accordion" data-help-keywords="task add edit delete priority date category tag search filter reorder drag">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon">📝 <span data-i18n="helpFeatTasks">Tasks</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body">
+        <ul>
+          <li><strong data-i18n="helpFeatTasksAdd">Add tasks</strong> — <span data-i18n="helpFeatTasksAddDesc">Type a title, set priority/date/category/tags, click "+ Add Task"</span></li>
+          <li><strong data-i18n="helpFeatTasksEdit">Edit</strong> — <span data-i18n="helpFeatTasksEditDesc">Click ✏️ on any task to edit it</span></li>
+          <li><strong data-i18n="helpFeatTasksDel">Delete</strong> — <span data-i18n="helpFeatTasksDelDesc">Click 🗑️ to remove a task</span></li>
+          <li><strong data-i18n="helpFeatTasksPriority">Priority</strong> — <span data-i18n="helpFeatTasksPriorityDesc">High (red), Medium (yellow), Low (green) — shown as a colored bar on the left</span></li>
+          <li><strong data-i18n="helpFeatTasksSearch">Search & Filter</strong> — <span data-i18n="helpFeatTasksSearchDesc">Use the search bar and dropdowns to find tasks by text, priority, category, or status</span></li>
+          <li><strong data-i18n="helpFeatTasksDrag">Reorder</strong> — <span data-i18n="helpFeatTasksDragDesc">Drag and drop tasks to change their order</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="secure notes encrypt password passphrase aes lock">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon">🔒 <span data-i18n="helpFeatNotes">Secure Notes</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body">
+        <ul>
+          <li><strong data-i18n="helpFeatNotesHow">How it works</strong> — <span data-i18n="helpFeatNotesHowDesc">Notes are encrypted with AES-256 using your passphrase before saving. Nobody can read them without the passphrase.</span></li>
+          <li><strong data-i18n="helpFeatNotesFirst">First time</strong> — <span data-i18n="helpFeatNotesFirstDesc">Set a passphrase and confirm it. Remember it — there's no recovery!</span></li>
+          <li><strong data-i18n="helpFeatNotesReturn">Returning</strong> — <span data-i18n="helpFeatNotesReturnDesc">Enter your passphrase to unlock. If wrong, you'll see an error message.</span></li>
+          <li><strong data-i18n="helpFeatNotesChange">Change passphrase</strong> — <span data-i18n="helpFeatNotesChangeDesc">Click 🔑 Change Passphrase (when unlocked). All notes are re-encrypted with the new one.</span></li>
+          <li>⚠️ <strong data-i18n="helpFeatNotesWarn">Warning</strong> — <span data-i18n="helpFeatNotesWarnDesc">Don't store critical passwords here. Use Bitwarden (free) for that.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="arabic keyboard type harakat diacritics virtual">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon">⌨️ <span data-i18n="helpFeatKeyboard">Arabic Keyboard</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body">
+        <ul>
+          <li><strong data-i18n="helpFeatKbOpen">Open/Close</strong> — <span data-i18n="helpFeatKbOpenDesc">Tap the ⌨️ button (bottom-right corner)</span></li>
+          <li><strong data-i18n="helpFeatKbPreview">How to use</strong> — <span data-i18n="helpFeatKbPreviewDesc">Type in the preview bar, then ➜ Insert to send text into the last clicked field. Or 📋 Copy then Ctrl+V.</span></li>
+          <li><strong data-i18n="helpFeatKbHarakat">Harakat</strong> — <span data-i18n="helpFeatKbHarakatDesc">Top row has diacritics: فتحة، ضمة، كسرة، تنوين، شدّة، سكون</span></li>
+          <li><strong data-i18n="helpFeatKbNumbers">Numbers</strong> — <span data-i18n="helpFeatKbNumbersDesc">Arabic numerals: ٠١٢٣٤٥٦٧٨٩</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="theme alhambra ottoman moroccan calligraphy ramadan desert kids style">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon">🕌 <span data-i18n="helpFeatThemes">Themes</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body">
+        <ul>
+          <li>🏰 <strong>Alhambra</strong> — <span data-i18n="helpThemeAlhambra">Warm gold & terracotta, inspired by Granada's Alhambra</span></li>
+          <li>🔵 <strong>Ottoman</strong> — <span data-i18n="helpThemeOttoman">Turquoise, cobalt blue & gold, Iznik tile inspired</span></li>
+          <li>💎 <strong>Moroccan</strong> — <span data-i18n="helpThemeMoroccan">Emerald, saffron & royal blue, zellige mosaic style</span></li>
+          <li>✒️ <strong>Calligraphy</strong> — <span data-i18n="helpThemeCalligraphy">Cream & black ink, manuscript aesthetic</span></li>
+          <li>🌙 <strong>Ramadan</strong> — <span data-i18n="helpThemeRamadan">Deep navy with twinkling gold stars</span></li>
+          <li>🏜️ <strong>Desert</strong> — <span data-i18n="helpThemeDesert">Sandy beige & palm green, calm oasis feel</span></li>
+          <li>⭐ <strong>Kids</strong> — <span data-i18n="helpThemeKids">Bright, colorful, rounded — fun for children</span></li>
+        </ul>
+        <p data-i18n="helpThemeHow">Go to Settings → Themes to switch. Your choice is saved automatically.</p>
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="kids children stars confetti profile parent">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon">⭐ <span data-i18n="helpFeatKids">Kids Mode</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body">
+        <ul>
+          <li><strong data-i18n="helpFeatKidsToggle">Enable</strong> — <span data-i18n="helpFeatKidsToggleDesc">Click ⭐ in top bar or toggle in Settings</span></li>
+          <li><strong data-i18n="helpFeatKidsStars">Stars</strong> — <span data-i18n="helpFeatKidsStarsDesc">Completing tasks earns ⭐ stars with confetti 🎉</span></li>
+          <li><strong data-i18n="helpFeatKidsProfiles">Profiles</strong> — <span data-i18n="helpFeatKidsProfilesDesc">Create separate profiles for each child</span></li>
+          <li><strong data-i18n="helpFeatKidsCats">Categories</strong> — <span data-i18n="helpFeatKidsCatsDesc">Kid-friendly: Homework, Chores, Dua/Quran, Activities, Fun</span></li>
+          <li><strong data-i18n="helpFeatKidsMsg">Messages</strong> — <span data-i18n="helpFeatKidsMsgDesc">Encouraging Islamic messages: "Ma Shaa Allah! Great job!"</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="profile create switch family member">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon">👤 <span data-i18n="helpFeatProfiles">Profiles</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body">
+        <ul>
+          <li><strong data-i18n="helpFeatProfilesDefault">Default profiles</strong> — <span data-i18n="helpFeatProfilesDefaultDesc">Default and Kids profiles are included</span></li>
+          <li><strong data-i18n="helpFeatProfilesCreate">Create</strong> — <span data-i18n="helpFeatProfilesCreateDesc">Click "+ Profile" to add a custom profile (e.g., for each family member)</span></li>
+          <li><strong data-i18n="helpFeatProfilesSwitch">Switch</strong> — <span data-i18n="helpFeatProfilesSwitchDesc">Click on any profile chip in the bar to switch. Each has its own task list.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="import export backup json data transfer">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon">📦 <span data-i18n="helpFeatData">Import & Export</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body">
+        <ul>
+          <li><strong data-i18n="helpFeatDataExport">Export</strong> — <span data-i18n="helpFeatDataExportDesc">Settings → Export → Downloads a .json file with all your tasks, notes, and settings</span></li>
+          <li><strong data-i18n="helpFeatDataImport">Import</strong> — <span data-i18n="helpFeatDataImportDesc">Settings → Import → Upload a .json backup file to restore everything</span></li>
+          <li><strong data-i18n="helpFeatDataUse">Use cases</strong> — <span data-i18n="helpFeatDataUseDesc">Regular backups, transfer between devices, share task templates</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="firebase cloud sync google sign login">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon">☁️ <span data-i18n="helpFeatFirebase">Cloud Sync (Firebase)</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body">
+        <ul>
+          <li><strong data-i18n="helpFeatFirebaseWhat">What</strong> — <span data-i18n="helpFeatFirebaseWhatDesc">Sync your tasks across all devices using Google Firebase (free)</span></li>
+          <li><strong data-i18n="helpFeatFirebaseHow">How</strong> — <span data-i18n="helpFeatFirebaseHowDesc">Create a Firebase project → paste config in Settings → Sign in with Google</span></li>
+          <li><strong data-i18n="helpFeatFirebaseGuide">Full guide</strong> — <span data-i18n="helpFeatFirebaseGuideDesc">See README.html for step-by-step setup with screenshots</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="pin lock security password">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon">🔢 <span data-i18n="helpFeatPin">PIN Lock</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body">
+        <ul>
+          <li><strong data-i18n="helpFeatPinEnable">Enable</strong> — <span data-i18n="helpFeatPinEnableDesc">Settings → PIN Lock → Toggle on → Set a 4-digit PIN</span></li>
+          <li><strong data-i18n="helpFeatPinUse">How it works</strong> — <span data-i18n="helpFeatPinUseDesc">On app load, you'll need to enter the PIN before accessing your data</span></li>
+          <li><strong data-i18n="helpFeatPinChange">Change PIN</strong> — <span data-i18n="helpFeatPinChangeDesc">Settings → Click 🔑 Change PIN → Enter old and new PIN</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="help-section-label" data-i18n="helpFAQ">❓ FREQUENTLY ASKED QUESTIONS</div>
+
+    <div class="help-accordion" data-help-keywords="password store safe bitwarden">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon"><span data-i18n="helpFaq1Q">Can I store my passwords here?</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body" data-i18n="helpFaq1A">
+        <strong>Not recommended.</strong> This app is for tasks and light memos. For passwords, use a proper password manager like <strong>Bitwarden</strong> (free) or <strong>KeePass</strong>. Secure Notes are encrypted but not designed for critical credentials.
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="forget passphrase recovery lost">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon"><span data-i18n="helpFaq2Q">What if I forget my passphrase?</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body" data-i18n="helpFaq2A">
+        <strong>Your notes cannot be recovered.</strong> AES encryption means without the passphrase, the data is unreadable. Always remember your passphrase or write it down in a safe place.
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="offline internet connection work">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon"><span data-i18n="helpFaq3Q">Does it work offline?</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body" data-i18n="helpFaq3A">
+        <strong>Yes!</strong> In local mode, everything works without internet. Tasks are saved in your browser's localStorage. Cloud sync (Firebase) requires internet only when syncing.
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="sync device phone laptop computer access everywhere">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon"><span data-i18n="helpFaq4Q">How do I sync across devices?</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body" data-i18n="helpFaq4A">
+        Set up Firebase Cloud Sync: Create a free Firebase project → paste config in Settings → Sign in with Google. See the full guide in README.html. Alternatively, use Export/Import to manually transfer data via JSON files.
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="data secure safe privacy">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon"><span data-i18n="helpFaq5Q">Is my data secure?</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body" data-i18n="helpFaq5A">
+        <strong>Local mode:</strong> Data is in your browser's localStorage — private but not encrypted (except Secure Notes). <strong>Secure Notes:</strong> AES-256 encrypted, safe with a strong passphrase. <strong>Firebase:</strong> Protected by Google authentication, only you can access your data.
+      </div>
+    </div>
+
+    <div class="help-accordion" data-help-keywords="github pages deploy host website publish">
+      <button class="help-accordion-header" onclick="toggleAccordion(this)">
+        <span class="help-accordion-icon"><span data-i18n="helpFaq6Q">How do I deploy on GitHub Pages?</span></span>
+        <span class="help-accordion-arrow">▼</span>
+      </button>
+      <div class="help-accordion-body" data-i18n="helpFaq6A">
+        Create a GitHub repo → Upload files → Settings → Pages → Select main branch → Your app is live at https://username.github.io/repo-name/. Full guide in README.html.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ISLAMIC SHORTCUTS DRAWER -->
+<div class="shortcuts-backdrop" id="shortcutsBackdrop" onclick="toggleShortcutsDrawer()"></div>
+<div class="shortcuts-drawer" id="shortcutsDrawer">
+  <div class="shortcuts-header">
+    <h3>🤲 <span data-i18n="shortcutsTitle">Islamic Phrases</span></h3>
+    <button class="shortcuts-close" onclick="toggleShortcutsDrawer()">✕</button>
+  </div>
+  <div class="shortcuts-body">
+    <!-- Add Custom Button -->
+    <button class="shortcuts-add-btn" onclick="toggleCustomForm()" data-i18n="addCustomShortcut">+ Add Custom Phrase</button>
+
+    <!-- Custom Form (hidden) -->
+    <div class="shortcuts-form" id="customShortcutForm">
+      <div class="form-group">
+        <label data-i18n="scArabic">Arabic Text *</label>
+        <input type="text" id="scArabicInput" dir="rtl" placeholder="بِسْمِ ٱللَّهِ">
+      </div>
+      <div class="form-group">
+        <label data-i18n="scTranslit">Transliteration</label>
+        <input type="text" id="scTranslitInput" placeholder="Bismillah">
+      </div>
+      <div class="form-group">
+        <label data-i18n="scMeaning">Meaning</label>
+        <input type="text" id="scMeaningInput" placeholder="In the name of Allah">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-sm" onclick="toggleCustomForm()" data-i18n="cancel">Cancel</button>
+        <button class="btn btn-sm btn-accent" onclick="saveCustomShortcut()" data-i18n="scSave">Save</button>
+      </div>
+    </div>
+
+    <!-- Phrase list rendered by JS -->
+    <div id="shortcutsList"></div>
+  </div>
+</div>
+
+<!-- ARABIC KEYBOARD TOGGLE -->
+<button class="kb-toggle-btn" id="kbToggleBtn" onclick="toggleKeyboard()" title="Arabic Keyboard">⌨️</button>
+
+<!-- ARABIC VIRTUAL KEYBOARD -->
+<div class="arabic-keyboard" id="arabicKeyboard">
+  <!-- Toolbar with preview, copy, paste, clear -->
+  <div class="kb-toolbar">
+    <div class="kb-toolbar-row1">
+      <input type="text" class="kb-preview" id="kbPreview" dir="rtl" placeholder="Type here..." oninput="kbPreviewText = this.value">
+      <button class="kb-tool-btn" onclick="toggleShortcutsDrawer()" title="Islamic Phrases">🤲</button>
+    </div>
+    <div class="kb-toolbar-row2">
+      <button class="kb-tool-btn" onclick="kbCopyPreview()">📋 Copy</button>
+      <button class="kb-tool-btn" onclick="kbPasteToField()">➜ Insert</button>
+      <button class="kb-tool-btn" onclick="kbClearPreview()">✖ Clear</button>
+    </div>
+  </div>
+
+  <div class="kb-rows">
+    <!-- Harakat / Diacritics -->
+    <div class="kb-section-label">Harakat</div>
+    <div class="kb-row" id="kbHarakatRow">
+      <div class="kb-key kb-key-haraka" data-char="َ" title="Fatha">َ</div>
+      <div class="kb-key kb-key-haraka" data-char="ُ" title="Damma">ُ</div>
+      <div class="kb-key kb-key-haraka" data-char="ِ" title="Kasra">ِ</div>
+      <div class="kb-key kb-key-haraka" data-char="ً" title="Tanween Fatha">ً</div>
+      <div class="kb-key kb-key-haraka" data-char="ٌ" title="Tanween Damma">ٌ</div>
+      <div class="kb-key kb-key-haraka" data-char="ٍ" title="Tanween Kasra">ٍ</div>
+      <div class="kb-key kb-key-haraka" data-char="ّ" title="Shadda">ّ</div>
+      <div class="kb-key kb-key-haraka" data-char="ْ" title="Sukun">ْ</div>
+    </div>
+
+    <!-- Row 1: Arabic numbers -->
+    <div class="kb-section-label">Numbers</div>
+    <div class="kb-row" id="kbNumbersRow">
+      <div class="kb-key" data-char="١">١</div>
+      <div class="kb-key" data-char="٢">٢</div>
+      <div class="kb-key" data-char="٣">٣</div>
+      <div class="kb-key" data-char="٤">٤</div>
+      <div class="kb-key" data-char="٥">٥</div>
+      <div class="kb-key" data-char="٦">٦</div>
+      <div class="kb-key" data-char="٧">٧</div>
+      <div class="kb-key" data-char="٨">٨</div>
+      <div class="kb-key" data-char="٩">٩</div>
+      <div class="kb-key" data-char="٠">٠</div>
+    </div>
+
+    <!-- Row 2: Letters row 1 -->
+    <div class="kb-row">
+      <div class="kb-key" data-char="ض">ض</div>
+      <div class="kb-key" data-char="ص">ص</div>
+      <div class="kb-key" data-char="ث">ث</div>
+      <div class="kb-key" data-char="ق">ق</div>
+      <div class="kb-key" data-char="ف">ف</div>
+      <div class="kb-key" data-char="غ">غ</div>
+      <div class="kb-key" data-char="ع">ع</div>
+      <div class="kb-key" data-char="ه">ه</div>
+      <div class="kb-key" data-char="خ">خ</div>
+      <div class="kb-key" data-char="ح">ح</div>
+      <div class="kb-key" data-char="ج">ج</div>
+    </div>
+
+    <!-- Row 3: Letters row 2 -->
+    <div class="kb-row">
+      <div class="kb-key" data-char="ش">ش</div>
+      <div class="kb-key" data-char="س">س</div>
+      <div class="kb-key" data-char="ي">ي</div>
+      <div class="kb-key" data-char="ب">ب</div>
+      <div class="kb-key" data-char="ل">ل</div>
+      <div class="kb-key" data-char="ا">ا</div>
+      <div class="kb-key" data-char="ت">ت</div>
+      <div class="kb-key" data-char="ن">ن</div>
+      <div class="kb-key" data-char="م">م</div>
+      <div class="kb-key" data-char="ك">ك</div>
+      <div class="kb-key" data-char="ة">ة</div>
+    </div>
+
+    <!-- Row 4: Letters row 3 -->
+    <div class="kb-row">
+      <div class="kb-key" data-char="ئ">ئ</div>
+      <div class="kb-key" data-char="ء">ء</div>
+      <div class="kb-key" data-char="ؤ">ؤ</div>
+      <div class="kb-key" data-char="ر">ر</div>
+      <div class="kb-key" data-char="لا">لا</div>
+      <div class="kb-key" data-char="ى">ى</div>
+      <div class="kb-key" data-char="و">و</div>
+      <div class="kb-key" data-char="ز">ز</div>
+      <div class="kb-key" data-char="ظ">ظ</div>
+      <div class="kb-key" data-char="ط">ط</div>
+      <div class="kb-key" data-char="ذ">ذ</div>
+      <div class="kb-key" data-char="د">د</div>
+    </div>
+
+    <!-- Row 5: Space, backspace, symbols -->
+    <div class="kb-row">
+      <div class="kb-key kb-key-wide" data-action="backspace">⌫</div>
+      <div class="kb-key" data-char="،">،</div>
+      <div class="kb-key" data-char="؛">؛</div>
+      <div class="kb-key kb-key-space" data-char=" ">مسافة</div>
+      <div class="kb-key" data-char="؟">؟</div>
+      <div class="kb-key" data-char=".">.</div>
+      <div class="kb-key kb-key-wide" data-action="enter">↵</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app-container" id="appContainer">
+
+  <!-- BISMILLAH HEADER -->
+  <div class="bismillah-header">
+    <div class="bismillah-text">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+    <div class="bismillah-divider"><span>✦</span></div>
+  </div>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span class="app-title" data-i18n="appTitle">📝 Tadhkir</span>
+      <div class="sync-status" id="syncStatus">
+        <span class="sync-dot offline" id="syncDot"></span>
+        <span id="syncLabel" data-i18n="offline">Offline</span>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <div class="stars-counter" id="starsCounter" style="display:none;">⭐ <span id="starsCount">0</span></div>
+      <select id="langSelect" class="btn" style="padding:6px 10px;">
+        <option value="en">🇬🇧 EN</option>
+        <option value="fr">🇫🇷 FR</option>
+        <option value="ar">🇸🇦 AR</option>
+      </select>
+      <button class="btn btn-icon" onclick="toggleKidsMode()" title="Kids Mode" id="kidsModeBtn">⭐</button>
+      <button class="btn" id="authBtn" onclick="toggleAuth()" data-i18n="signIn">☁️ Sign In</button>
+    </div>
+  </div>
+
+  <!-- PROFILES BAR -->
+  <div class="profiles-bar" id="profilesBar">
+    <button class="profile-chip active" data-profile="default" onclick="switchProfile('default')">👤 <span data-i18n="defaultProfile">Default</span></button>
+    <button class="profile-chip" data-profile="kids" onclick="switchProfile('kids')">🧒 <span data-i18n="kidsProfile">Kids</span></button>
+    <button class="btn btn-sm" onclick="showAddProfileModal()">+ <span data-i18n="addProfile">Profile</span></button>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" data-tab="tasks" onclick="switchTab('tasks')">📝 <span data-i18n="tabTasks">Tasks</span></button>
+    <button class="tab" data-tab="notes" onclick="switchTab('notes')">🔒 <span data-i18n="tabNotes">Secure Notes</span></button>
+    <button class="tab" data-tab="settings" onclick="switchTab('settings')">⚙️ <span data-i18n="tabSettings">Settings</span></button>
+  </div>
+
+  <!-- ===== TASKS PAGE ===== -->
+  <div class="page active" id="page-tasks">
+    <!-- Add Task Form -->
+    <div class="task-form" id="taskForm">
+      <div class="task-form-grid">
+        <div class="form-group full-width">
+          <label data-i18n="taskTitle">Task Title</label>
+          <input type="text" id="taskTitleInput" data-i18n-placeholder="taskTitlePlaceholder" placeholder="What do you need to do?">
+        </div>
+        <div class="form-group">
+          <label data-i18n="priority">Priority</label><button class="tooltip-trigger" tabindex="0">?<span class="tooltip-bubble" data-i18n="tooltipPriority">High = urgent (red), Medium = normal (yellow), Low = can wait (green). Color bar shows on each task.</span></button>
+          <select id="taskPriority">
+            <option value="low" data-i18n="low">Low</option>
+            <option value="medium" data-i18n="medium">Medium</option>
+            <option value="high" data-i18n="high">High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="dueDate">Due Date</label>
+          <input type="date" id="taskDueDate">
+        </div>
+        <div class="form-group">
+          <label data-i18n="category">Category</label>
+          <select id="taskCategory">
+            <option value="general" data-i18n="catGeneral">General</option>
+            <option value="work" data-i18n="catWork">Work</option>
+            <option value="personal" data-i18n="catPersonal">Personal</option>
+            <option value="homework" data-i18n="catHomework">📚 Homework</option>
+            <option value="chores" data-i18n="catChores">🧹 Chores</option>
+            <option value="dua" data-i18n="catDua">🤲 Dua / Quran</option>
+            <option value="activities" data-i18n="catActivities">🏃 Activities</option>
+            <option value="fun" data-i18n="catFun">🎨 Fun</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="tags">Tags</label><button class="tooltip-trigger" tabindex="0">?<span class="tooltip-bubble" data-i18n="tooltipTags">Add labels separated by commas (e.g. "urgent, school, home"). Use search to find tasks by tag.</span></button>
+          <input type="text" id="taskTags" data-i18n-placeholder="tagsPlaceholder" placeholder="comma separated">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn" onclick="clearForm()" data-i18n="clear">Clear</button>
+        <button class="btn btn-accent" onclick="addTask()" id="addTaskBtn" data-i18n="addTask">+ Add Task</button>
+      </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="search-filter-bar">
+      <div class="search-input-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search tasks..." oninput="renderTasks()">
+      </div>
+      <select id="filterPriority" onchange="renderTasks()">
+        <option value="all" data-i18n="allPriorities">All Priorities</option>
+        <option value="high" data-i18n="high">High</option>
+        <option value="medium" data-i18n="medium">Medium</option>
+        <option value="low" data-i18n="low">Low</option>
+      </select>
+      <select id="filterCategory" onchange="renderTasks()">
+        <option value="all" data-i18n="allCategories">All Categories</option>
+        <option value="general" data-i18n="catGeneral">General</option>
+        <option value="work" data-i18n="catWork">Work</option>
+        <option value="personal" data-i18n="catPersonal">Personal</option>
+        <option value="homework" data-i18n="catHomework">Homework</option>
+        <option value="chores" data-i18n="catChores">Chores</option>
+        <option value="dua" data-i18n="catDua">Dua / Quran</option>
+        <option value="activities" data-i18n="catActivities">Activities</option>
+        <option value="fun" data-i18n="catFun">Fun</option>
+      </select>
+      <select id="filterStatus" onchange="renderTasks()">
+        <option value="all" data-i18n="allStatus">All</option>
+        <option value="active" data-i18n="active">Active</option>
+        <option value="done" data-i18n="done">Done</option>
+      </select>
+    </div>
+
+    <!-- Task List -->
+    <div class="task-list" id="taskList"></div>
+  </div>
+
+  <!-- ===== SECURE NOTES PAGE ===== -->
+  <div class="page" id="page-notes">
+    <div class="secure-notes-section">
+      <div id="notePasswordSection">
+        <div class="task-form">
+          <h3 style="color:var(--accent);margin-bottom:12px;" data-i18n="secureNotesTitle">🔐 Secure Notes (AES Encrypted)</h3>
+          <p style="color:var(--text-secondary);font-size:0.85em;margin-bottom:14px;" data-i18n="secureNotesDesc">Notes are encrypted with your passphrase. Without it, nobody can read them.</p>
+          <p id="noteCountHint" style="color:var(--accent);font-size:0.9em;margin-bottom:14px;display:none;"></p>
+          <div class="form-group">
+            <label data-i18n="passphrase">Master Passphrase</label>
+            <div class="password-wrapper">
+              <input type="password" id="notePassphrase" data-i18n-placeholder="passphrasePlaceholder" placeholder="Enter your secret passphrase">
+              <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('notePassphrase', this)" title="Show/Hide">عـ</button>
+            </div>
+          </div>
+          <!-- Confirm passphrase (only shown if no notes exist yet) -->
+          <div class="form-group" id="confirmPassGroup" style="display:none;">
+            <label data-i18n="confirmPassphrase">Confirm Passphrase</label>
+            <div class="password-wrapper">
+              <input type="password" id="notePassphraseConfirm" data-i18n-placeholder="confirmPassphrasePlaceholder" placeholder="Re-enter your passphrase">
+              <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('notePassphraseConfirm', this)" title="Show/Hide">عـ</button>
+            </div>
+            <small id="passMismatch" style="color:var(--danger);display:none;" data-i18n="passMismatch">Passphrases don't match</small>
+          </div>
+          <div class="form-actions" style="margin-top:10px;">
+            <button class="btn btn-accent" onclick="unlockNotes()" id="unlockBtn" data-i18n="unlock">🔓 Unlock</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="noteEditorSection" style="display:none;">
+        <!-- Saved Notes List (shown first) -->
+        <div id="notesList" style="margin-bottom:16px;"></div>
+
+        <!-- New Note Form (collapsible) -->
+        <div id="newNoteFormWrapper">
+          <button class="btn btn-accent" id="showNewNoteBtn" onclick="showNewNoteForm()" style="width:100%;padding:12px;margin-bottom:12px;">
+            ✏️ <span data-i18n="writeNewNote">Write New Note</span>
+          </button>
+          <div class="task-form" id="newNoteForm" style="display:none;">
+            <h3 style="color:var(--accent);margin-bottom:12px;">✏️ <span data-i18n="newNoteTitle">New Note</span></h3>
+            <div class="form-group">
+              <label data-i18n="noteTitle">Note Title</label>
+              <input type="text" id="noteTitleInput" data-i18n-placeholder="noteTitlePlaceholder" placeholder="Note title...">
+            </div>
+            <div class="form-group">
+              <label data-i18n="noteContent">Content</label>
+              <textarea id="noteContentInput" rows="4" data-i18n-placeholder="noteContentPlaceholder" placeholder="Your secret note..."></textarea>
+            </div>
+            <div class="form-actions">
+              <button class="btn" onclick="cancelNewNote()" data-i18n="cancel">Cancel</button>
+              <button class="btn btn-accent" onclick="addNote()" data-i18n="saveNote">🔐 Encrypt & Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lock & Change Passphrase buttons -->
+        <div style="display:flex;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap;">
+          <button class="btn" onclick="lockNotes()" data-i18n="lock">🔒 Lock</button>
+          <button class="btn" onclick="showChangePassphraseModal()" data-i18n="changePassphrase">🔑 Change Passphrase</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SETTINGS PAGE ===== -->
+  <div class="page" id="page-settings">
+    <!-- Themes -->
+    <div class="settings-section">
+      <h3>🕌 <span data-i18n="themesTitle">Themes</span></h3>
+      <div class="theme-grid" id="themeGrid">
+        <div class="theme-card active" data-themeid="alhambra" onclick="setTheme('alhambra')">
+          <div class="theme-icon">🏰</div>
+          <div>Alhambra</div>
+        </div>
+        <div class="theme-card" data-themeid="ottoman" onclick="setTheme('ottoman')">
+          <div class="theme-icon">🔵</div>
+          <div>Ottoman</div>
+        </div>
+        <div class="theme-card" data-themeid="moroccan" onclick="setTheme('moroccan')">
+          <div class="theme-icon">💎</div>
+          <div>Moroccan</div>
+        </div>
+        <div class="theme-card" data-themeid="calligraphy" onclick="setTheme('calligraphy')">
+          <div class="theme-icon">✒️</div>
+          <div>Calligraphy</div>
+        </div>
+        <div class="theme-card" data-themeid="ramadan" onclick="setTheme('ramadan')">
+          <div class="theme-icon">🌙</div>
+          <div>Ramadan</div>
+        </div>
+        <div class="theme-card" data-themeid="desert" onclick="setTheme('desert')">
+          <div class="theme-icon">🏜️</div>
+          <div>Desert</div>
+        </div>
+        <div class="theme-card" data-themeid="kids" onclick="setTheme('kids')">
+          <div class="theme-icon">⭐</div>
+          <div>Kids</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIN Lock -->
+    <div class="settings-section">
+      <h3>🔒 <span data-i18n="pinLockTitle">PIN Lock</span></h3>
+      <div class="setting-row">
+        <span class="setting-label" data-i18n="enablePin">Enable PIN Lock</span><button class="tooltip-trigger" tabindex="0">?<span class="tooltip-bubble" data-i18n="tooltipPin">Locks the app with a 4-digit code on startup. Prevents casual access but not bulletproof security.</span></button>
+        <div class="toggle" id="pinToggle" onclick="togglePinSetting()"></div>
+      </div>
+      <div id="pinSetupArea" style="display:none;margin-top:12px;">
+        <div class="form-group">
+          <label data-i18n="setPin">Set 4-digit PIN</label>
+          <div class="password-wrapper" style="max-width:160px;">
+            <input type="password" id="pinSetInput" maxlength="4" inputmode="numeric" placeholder="0000">
+            <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('pinSetInput', this)" title="Show/Hide">عـ</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn btn-accent btn-sm" onclick="savePin()" data-i18n="savePin">Save PIN</button>
+          <button class="btn btn-sm" id="changePinBtn" onclick="showChangePinModal()" style="display:none;" data-i18n="changePin">🔑 Change PIN</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kids Mode -->
+    <div class="settings-section">
+      <h3>⭐ <span data-i18n="kidsModeTitle">Kids Mode</span></h3>
+      <div class="setting-row">
+        <span class="setting-label" data-i18n="enableKids">Enable Kids Mode</span><button class="tooltip-trigger" tabindex="0">?<span class="tooltip-bubble" data-i18n="tooltipKids">Fun mode for children! Earn stars for completing tasks, with confetti animations and encouraging messages.</span></button>
+        <div class="toggle" id="kidsToggle" onclick="toggleKidsMode()"></div>
+      </div>
+    </div>
+
+    <!-- Import / Export -->
+    <div class="settings-section">
+      <h3>📦 <span data-i18n="dataTitle">Data Management</span></h3>
+      <div class="setting-row">
+        <span class="setting-label" data-i18n="exportDesc">Export all data as JSON</span>
+        <button class="btn btn-sm" onclick="exportData()" data-i18n="export">📥 Export</button>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label" data-i18n="importDesc">Import data from JSON</span>
+        <button class="btn btn-sm" onclick="document.getElementById('importFile').click()" data-i18n="import">📤 Import</button>
+        <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+      </div>
+    </div>
+
+    <!-- Firebase Config (for advanced users) -->
+    <div class="settings-section">
+      <h3>☁️ <span data-i18n="firebaseTitle">Firebase Cloud Sync</span></h3>
+      <p style="color:var(--text-secondary);font-size:0.85em;margin-bottom:12px;" data-i18n="firebaseDesc">
+        To enable cloud sync, create a Firebase project and paste your config below.
+      </p>
+      <div class="form-group">
+        <label>Firebase Config (JSON)</label>
+        <textarea id="firebaseConfigInput" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'></textarea>
+      </div>
+      <div class="form-actions" style="margin-top:8px;">
+        <button class="btn btn-accent btn-sm" onclick="saveFirebaseConfig()" data-i18n="saveConfig">Save Config</button>
+        <button class="btn btn-sm btn-danger" onclick="clearFirebaseConfig()" data-i18n="clearConfig">Clear Config</button>
+      </div>
+    </div>
+
+    <!-- About / Version -->
+    <div class="settings-section" style="text-align:center;">
+      <p style="font-family:var(--font-arabic);font-size:1.3em;color:var(--bismillah-color);margin-bottom:8px;">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
+      <p style="color:var(--accent);font-weight:600;font-size:1.1em;">📝 Tadhkir — تذكير</p>
+      <p id="appVersion" style="color:var(--text-secondary);font-size:0.85em;margin-top:4px;"></p>
+      <a href="CHANGES.html" target="_blank" style="color:var(--accent);font-size:0.8em;text-decoration:underline;cursor:pointer;" data-i18n="viewChangelog">View Changelog</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL CONTAINER ===== -->
+<div class="modal-backdrop" id="modalBackdrop" style="display:none;" onclick="closeModal(event)">
+  <div class="modal" id="modalContent" onclick="event.stopPropagation()"></div>
+</div>
+
+<script>
+// ===== VERSION =====
+const APP_VERSION = 'v1.3.3';
+
+// ===== TRANSLATIONS =====
+const i18n = {
+  en: {
+    appTitle: '📝 Tadhkir',
+    offline: 'Offline', online: 'Synced', syncing: 'Syncing...',
+    signIn: '☁️ Sign In', signOut: '☁️ Sign Out',
+    tabTasks: 'Tasks', tabNotes: 'Secure Notes', tabSettings: 'Settings',
+    taskTitle: 'Task Title', taskTitlePlaceholder: 'What do you need to do?',
+    priority: 'Priority', dueDate: 'Due Date', category: 'Category', tags: 'Tags',
+    tagsPlaceholder: 'comma separated',
+    low: 'Low', medium: 'Medium', high: 'High',
+    catGeneral: 'General', catWork: 'Work', catPersonal: 'Personal',
+    catHomework: '📚 Homework', catChores: '🧹 Chores', catDua: '🤲 Dua / Quran',
+    catActivities: '🏃 Activities', catFun: '🎨 Fun',
+    clear: 'Clear', addTask: '+ Add Task', editTask: 'Save Edit',
+    searchPlaceholder: 'Search tasks...',
+    allPriorities: 'All Priorities', allCategories: 'All Categories',
+    allStatus: 'All', active: 'Active', done: 'Done',
+    emptyTitle: 'No tasks yet!', emptyDesc: 'Add your first task above',
+    emptyKidsTitle: 'No tasks yet! 🎉', emptyKidsDesc: 'Let\'s add something fun!',
+    secureNotesTitle: '🔐 Secure Notes (AES Encrypted)',
+    secureNotesDesc: 'Notes are encrypted with your passphrase. Without it, nobody can read them.',
+    passphrase: 'Master Passphrase', passphrasePlaceholder: 'Enter your secret passphrase',
+    confirmPassphrase: 'Confirm Passphrase', confirmPassphrasePlaceholder: 'Re-enter your passphrase',
+    passMismatch: "Passphrases don't match", enterConfirm: 'Please confirm your passphrase',
+    wrongPassphrase: '❌ Wrong passphrase. Cannot decrypt notes.',
+    unlock: '🔓 Unlock', lock: '🔒 Lock',
+    noteTitle: 'Note Title', noteTitlePlaceholder: 'Note title...',
+    noteContent: 'Content', noteContentPlaceholder: 'Your secret note...',
+    addNote: '+ Add Note',
+    saveNote: '🔐 Encrypt & Save',
+    writeNewNote: '✏️ Write New Note',
+    newNoteTitle: 'New Note',
+    cancel: 'Cancel',
+    themesTitle: 'Themes', pinLockTitle: 'PIN Lock',
+    enablePin: 'Enable PIN Lock', setPin: 'Set 4-digit PIN', savePin: 'Save PIN',
+    kidsModeTitle: 'Kids Mode', enableKids: 'Enable Kids Mode',
+    dataTitle: 'Data Management',
+    exportDesc: 'Export all data as JSON', export: '📥 Export',
+    importDesc: 'Import data from JSON', import: '📤 Import',
+    firebaseTitle: 'Firebase Cloud Sync',
+    firebaseDesc: 'To enable cloud sync, create a Firebase project and paste your config below.',
+    saveConfig: 'Save Config', clearConfig: 'Clear Config',
+    defaultProfile: 'Default', kidsProfile: 'Kids', addProfile: 'Profile',
+    enterPin: 'Enter PIN', wrongPin: 'Wrong PIN, try again',
+    taskAdded: 'Task added! ✨', taskDone: 'Ma Shaa Allah! ✅',
+    taskDoneKids: 'Ma Shaa Allah! Great job! ⭐🎉',
+    taskDeleted: 'Task deleted', noteAdded: 'Note encrypted & saved 🔐',
+    dataExported: 'Data exported! 📦', dataImported: 'Data imported! ✅',
+    confirmDelete: 'Delete this?',
+    kbCopied: 'Copied to clipboard! 📋',
+    kbPasted: 'Inserted into field',
+    kbNoField: 'Click on an input field first',
+    kbNothingToPaste: 'Nothing to insert — type something first',
+    kbDirectOn: 'Direct mode: typing into focused field',
+    kbPreviewOn: 'Preview mode: type in keyboard preview',
+    kbPhrases: 'Phrases', kbCopy: 'Copy', kbPaste: 'Paste to field', kbClear: 'Clear',
+    kbDirect: 'Direct mode', kbSwitchPreview: 'Preview mode', kbSwitchDirect: 'Direct mode',
+    changePassphrase: '🔑 Change Passphrase',
+    changePassDesc: 'All notes will be re-encrypted with the new passphrase.',
+    currentPassphrase: 'Current Passphrase',
+    newPassphrase: 'New Passphrase', newPassPlaceholder: 'Enter new passphrase',
+    confirmNewPassphrase: 'Confirm New Passphrase',
+    enterCurrent: 'Enter your current passphrase',
+    enterNew: 'Enter a new passphrase',
+    passTooShort: 'Passphrase must be at least 3 characters',
+    passSameAsOld: 'New passphrase must be different from current',
+    confirmChange: 'Change & Re-encrypt',
+    passChanged: 'Passphrase changed! All notes re-encrypted 🔐',
+    reEncryptError: '❌ Error re-encrypting. Some notes may use a different passphrase.',
+    changePin: '🔑 Change PIN',
+    currentPin: 'Current PIN', newPin: 'New PIN', confirmNewPin: 'Confirm New PIN',
+    enterValidPin: 'Enter your current 4-digit PIN',
+    enterNewPin: 'Enter a new 4-digit PIN',
+    pinMismatch: "PINs don't match",
+    pinSameAsOld: 'New PIN must be different from current',
+    confirmPinChange: 'Change PIN',
+    pinChanged: 'PIN changed! 🔒',
+    viewChangelog: 'View Changelog',
+    helpTitle: 'Help & Guide', helpSearchPlaceholder: 'Search help...',
+    helpQuickStart: '🚀 QUICK START', helpFeatures: '📚 FEATURE GUIDE', helpFAQ: '❓ FREQUENTLY ASKED QUESTIONS',
+    helpTip1Title: 'Add a Task', helpTip1Desc: 'Type a title in the Tasks tab and click "+ Add Task". Set priority, due date, and category.',
+    helpTip2Title: 'Complete a Task', helpTip2Desc: 'Click the checkbox on any task to mark it done. In Kids Mode, you\'ll earn a star! ⭐',
+    helpTip3Title: 'Change Theme', helpTip3Desc: 'Go to Settings → Themes and pick from 7 beautiful Islamic-inspired designs.',
+    helpTip4Title: 'Switch Language', helpTip4Desc: 'Use the language dropdown (🇬🇧/🇫🇷/🇸🇦) in the top bar. Arabic enables RTL layout.',
+    tooltipPriority: 'High = urgent (red), Medium = normal (yellow), Low = can wait (green).',
+    tooltipTags: 'Add labels separated by commas. Use search to find tasks by tag.',
+    tooltipPin: 'Locks the app with a 4-digit code on startup.',
+    tooltipKids: 'Fun mode for children! Stars, confetti, and encouraging messages.',
+    shortcutsTitle: 'Islamic Phrases', addCustomShortcut: '+ Add Custom Phrase',
+    scArabic: 'Arabic Text *', scTranslit: 'Transliteration', scMeaning: 'Meaning', scSave: 'Save',
+    scCustomLabel: '✏️ YOUR CUSTOM PHRASES', scBuiltinLabel: '🤲 ISLAMIC PHRASES',
+    scSaved: 'Custom phrase saved! 🤲', scDeleted: 'Phrase deleted',
+    scInserted: 'Phrase added to preview ✅', scTapToInsert: 'Tap to add to preview',
+    profileName: 'Profile Name', profileNamePlaceholder: 'Enter name...',
+    createProfile: 'Create',
+  },
+  fr: {
+    appTitle: '📝 Tadhkir',
+    offline: 'Hors ligne', online: 'Synchronisé', syncing: 'Synchronisation...',
+    signIn: '☁️ Connexion', signOut: '☁️ Déconnexion',
+    tabTasks: 'Tâches', tabNotes: 'Notes Sécurisées', tabSettings: 'Paramètres',
+    taskTitle: 'Titre de la tâche', taskTitlePlaceholder: 'Que devez-vous faire?',
+    priority: 'Priorité', dueDate: 'Date limite', category: 'Catégorie', tags: 'Étiquettes',
+    tagsPlaceholder: 'séparées par des virgules',
+    low: 'Basse', medium: 'Moyenne', high: 'Haute',
+    catGeneral: 'Général', catWork: 'Travail', catPersonal: 'Personnel',
+    catHomework: '📚 Devoirs', catChores: '🧹 Corvées', catDua: '🤲 Dua / Coran',
+    catActivities: '🏃 Activités', catFun: '🎨 Amusement',
+    clear: 'Effacer', addTask: '+ Ajouter', editTask: 'Sauvegarder',
+    searchPlaceholder: 'Rechercher...',
+    allPriorities: 'Toutes priorités', allCategories: 'Toutes catégories',
+    allStatus: 'Tout', active: 'Actif', done: 'Fait',
+    emptyTitle: 'Aucune tâche!', emptyDesc: 'Ajoutez votre première tâche',
+    emptyKidsTitle: 'Aucune tâche! 🎉', emptyKidsDesc: 'Ajoutons quelque chose!',
+    secureNotesTitle: '🔐 Notes Sécurisées (Chiffrement AES)',
+    secureNotesDesc: 'Les notes sont chiffrées avec votre mot de passe.',
+    passphrase: 'Mot de passe maître', passphrasePlaceholder: 'Entrez votre mot de passe secret',
+    confirmPassphrase: 'Confirmer le mot de passe', confirmPassphrasePlaceholder: 'Ré-entrez votre mot de passe',
+    passMismatch: 'Les mots de passe ne correspondent pas', enterConfirm: 'Veuillez confirmer votre mot de passe',
+    wrongPassphrase: '❌ Mot de passe incorrect. Impossible de déchiffrer.',
+    unlock: '🔓 Déverrouiller', lock: '🔒 Verrouiller',
+    noteTitle: 'Titre', noteTitlePlaceholder: 'Titre de la note...',
+    noteContent: 'Contenu', noteContentPlaceholder: 'Votre note secrète...',
+    addNote: '+ Ajouter',
+    saveNote: '🔐 Chiffrer & Sauver',
+    writeNewNote: '✏️ Écrire une note',
+    newNoteTitle: 'Nouvelle note',
+    cancel: 'Annuler',
+    themesTitle: 'Thèmes', pinLockTitle: 'Verrouillage PIN',
+    enablePin: 'Activer le PIN', setPin: 'PIN à 4 chiffres', savePin: 'Sauvegarder',
+    kidsModeTitle: 'Mode Enfants', enableKids: 'Activer le mode enfants',
+    dataTitle: 'Gestion des données',
+    exportDesc: 'Exporter en JSON', export: '📥 Exporter',
+    importDesc: 'Importer depuis JSON', import: '📤 Importer',
+    firebaseTitle: 'Firebase Synchronisation',
+    firebaseDesc: 'Créez un projet Firebase et collez la configuration.',
+    saveConfig: 'Sauvegarder', clearConfig: 'Effacer',
+    defaultProfile: 'Par défaut', kidsProfile: 'Enfants', addProfile: 'Profil',
+    enterPin: 'Entrez le PIN', wrongPin: 'PIN incorrect, réessayez',
+    taskAdded: 'Tâche ajoutée! ✨', taskDone: 'Ma Shaa Allah! ✅',
+    taskDoneKids: 'Ma Shaa Allah! Bravo! ⭐🎉',
+    taskDeleted: 'Tâche supprimée', noteAdded: 'Note chiffrée et sauvée 🔐',
+    dataExported: 'Données exportées! 📦', dataImported: 'Données importées! ✅',
+    confirmDelete: 'Supprimer?',
+    kbCopied: 'Copié! 📋',
+    kbPasted: 'Inséré dans le champ',
+    kbNoField: 'Cliquez sur un champ de saisie d\'abord',
+    kbNothingToPaste: 'Rien à insérer — tapez quelque chose d\'abord',
+    kbDirectOn: 'Mode direct: saisie dans le champ actif',
+    kbPreviewOn: 'Mode aperçu: saisie dans l\'aperçu clavier',
+    kbPhrases: 'Phrases', kbCopy: 'Copier', kbPaste: 'Coller dans le champ', kbClear: 'Effacer',
+    kbDirect: 'Mode direct', kbSwitchPreview: 'Mode aperçu', kbSwitchDirect: 'Mode direct',
+    changePassphrase: '🔑 Changer le mot de passe',
+    changePassDesc: 'Toutes les notes seront re-chiffrées avec le nouveau mot de passe.',
+    currentPassphrase: 'Mot de passe actuel',
+    newPassphrase: 'Nouveau mot de passe', newPassPlaceholder: 'Entrez le nouveau mot de passe',
+    confirmNewPassphrase: 'Confirmer le nouveau mot de passe',
+    enterCurrent: 'Entrez votre mot de passe actuel',
+    enterNew: 'Entrez un nouveau mot de passe',
+    passTooShort: 'Le mot de passe doit avoir au moins 3 caractères',
+    passSameAsOld: 'Le nouveau mot de passe doit être différent',
+    confirmChange: 'Changer & Re-chiffrer',
+    passChanged: 'Mot de passe changé! Notes re-chiffrées 🔐',
+    reEncryptError: '❌ Erreur de re-chiffrement.',
+    changePin: '🔑 Changer le PIN',
+    currentPin: 'PIN actuel', newPin: 'Nouveau PIN', confirmNewPin: 'Confirmer le nouveau PIN',
+    enterValidPin: 'Entrez votre PIN actuel à 4 chiffres',
+    enterNewPin: 'Entrez un nouveau PIN à 4 chiffres',
+    pinMismatch: 'Les PINs ne correspondent pas',
+    pinSameAsOld: 'Le nouveau PIN doit être différent',
+    confirmPinChange: 'Changer le PIN',
+    pinChanged: 'PIN changé! 🔒',
+    viewChangelog: 'Voir les changements',
+    helpTitle: 'Aide & Guide', helpSearchPlaceholder: 'Rechercher...',
+    helpQuickStart: '🚀 DÉMARRAGE RAPIDE', helpFeatures: '📚 GUIDE DES FONCTIONNALITÉS', helpFAQ: '❓ QUESTIONS FRÉQUENTES',
+    helpTip1Title: 'Ajouter une tâche', helpTip1Desc: 'Tapez un titre dans l\'onglet Tâches et cliquez "+ Ajouter". Définissez priorité, date et catégorie.',
+    helpTip2Title: 'Terminer une tâche', helpTip2Desc: 'Cliquez la case à cocher pour marquer une tâche comme terminée. En mode enfants, gagnez une étoile! ⭐',
+    helpTip3Title: 'Changer le thème', helpTip3Desc: 'Allez dans Paramètres → Thèmes et choisissez parmi 7 designs islamiques.',
+    helpTip4Title: 'Changer la langue', helpTip4Desc: 'Utilisez le menu déroulant (🇬🇧/🇫🇷/🇸🇦) dans la barre supérieure. L\'arabe active le mode RTL.',
+    tooltipPriority: 'Haute = urgent (rouge), Moyenne = normal (jaune), Basse = peut attendre (vert).',
+    tooltipTags: 'Ajoutez des étiquettes séparées par des virgules.',
+    tooltipPin: 'Verrouille l\'appli avec un code à 4 chiffres au démarrage.',
+    tooltipKids: 'Mode amusant pour les enfants! Étoiles, confettis et messages encourageants.',
+    shortcutsTitle: 'Phrases Islamiques', addCustomShortcut: '+ Ajouter une phrase',
+    scArabic: 'Texte arabe *', scTranslit: 'Translittération', scMeaning: 'Signification', scSave: 'Sauver',
+    scCustomLabel: '✏️ VOS PHRASES PERSONNALISÉES', scBuiltinLabel: '🤲 PHRASES ISLAMIQUES',
+    scSaved: 'Phrase sauvegardée! 🤲', scDeleted: 'Phrase supprimée',
+    scInserted: 'Phrase ajoutée à l\'aperçu ✅', scTapToInsert: 'Appuyez pour ajouter',
+    profileName: 'Nom du profil', profileNamePlaceholder: 'Entrez le nom...',
+    createProfile: 'Créer',
+  },
+  ar: {
+    appTitle: '📝 تذكير',
+    offline: 'غير متصل', online: 'متصل', syncing: 'جاري المزامنة...',
+    signIn: '☁️ تسجيل الدخول', signOut: '☁️ تسجيل الخروج',
+    tabTasks: 'المهام', tabNotes: 'ملاحظات آمنة', tabSettings: 'الإعدادات',
+    taskTitle: 'عنوان المهمة', taskTitlePlaceholder: 'ماذا تريد أن تفعل؟',
+    priority: 'الأولوية', dueDate: 'تاريخ الاستحقاق', category: 'الفئة', tags: 'العلامات',
+    tagsPlaceholder: 'مفصولة بفواصل',
+    low: 'منخفضة', medium: 'متوسطة', high: 'عالية',
+    catGeneral: 'عام', catWork: 'عمل', catPersonal: 'شخصي',
+    catHomework: '📚 واجبات', catChores: '🧹 أعمال منزلية', catDua: '🤲 دعاء / قرآن',
+    catActivities: '🏃 أنشطة', catFun: '🎨 ترفيه',
+    clear: 'مسح', addTask: '+ إضافة مهمة', editTask: 'حفظ التعديل',
+    searchPlaceholder: 'بحث في المهام...',
+    allPriorities: 'كل الأولويات', allCategories: 'كل الفئات',
+    allStatus: 'الكل', active: 'نشط', done: 'مكتمل',
+    emptyTitle: 'لا توجد مهام!', emptyDesc: 'أضف مهمتك الأولى',
+    emptyKidsTitle: '!لا توجد مهام 🎉', emptyKidsDesc: '!هيا نضيف شيئاً ممتعاً',
+    secureNotesTitle: '🔐 ملاحظات آمنة (تشفير AES)',
+    secureNotesDesc: 'الملاحظات مشفرة بكلمة المرور الخاصة بك.',
+    passphrase: 'كلمة المرور الرئيسية', passphrasePlaceholder: 'أدخل كلمة المرور السرية',
+    confirmPassphrase: 'تأكيد كلمة المرور', confirmPassphrasePlaceholder: 'أعد إدخال كلمة المرور',
+    passMismatch: 'كلمتا المرور غير متطابقتين', enterConfirm: 'يرجى تأكيد كلمة المرور',
+    wrongPassphrase: '❌ كلمة المرور خاطئة. لا يمكن فك التشفير.',
+    unlock: '🔓 فتح', lock: '🔒 قفل',
+    noteTitle: 'العنوان', noteTitlePlaceholder: 'عنوان الملاحظة...',
+    noteContent: 'المحتوى', noteContentPlaceholder: 'ملاحظتك السرية...',
+    addNote: '+ إضافة',
+    saveNote: '🔐 تشفير وحفظ',
+    writeNewNote: '✏️ كتابة ملاحظة جديدة',
+    newNoteTitle: 'ملاحظة جديدة',
+    cancel: 'إلغاء',
+    themesTitle: 'السمات', pinLockTitle: 'قفل PIN',
+    enablePin: 'تفعيل قفل PIN', setPin: 'PIN من 4 أرقام', savePin: 'حفظ',
+    kidsModeTitle: 'وضع الأطفال', enableKids: 'تفعيل وضع الأطفال',
+    dataTitle: 'إدارة البيانات',
+    exportDesc: 'تصدير كملف JSON', export: '📥 تصدير',
+    importDesc: 'استيراد من JSON', import: '📤 استيراد',
+    firebaseTitle: 'مزامنة Firebase السحابية',
+    firebaseDesc: 'أنشئ مشروع Firebase والصق الإعدادات.',
+    saveConfig: 'حفظ', clearConfig: 'مسح',
+    defaultProfile: 'الرئيسي', kidsProfile: 'أطفال', addProfile: 'ملف شخصي',
+    enterPin: 'أدخل PIN', wrongPin: 'PIN خاطئ، حاول مرة أخرى',
+    taskAdded: 'تمت إضافة المهمة! ✨', taskDone: 'ما شاء الله! ✅',
+    taskDoneKids: 'ما شاء الله! أحسنت! ⭐🎉',
+    taskDeleted: 'تم حذف المهمة', noteAdded: 'تم تشفير وحفظ الملاحظة 🔐',
+    dataExported: 'تم التصدير! 📦', dataImported: 'تم الاستيراد! ✅',
+    confirmDelete: 'حذف هذا؟',
+    kbCopied: 'تم النسخ! 📋',
+    kbPasted: 'تم الإدراج في الحقل',
+    kbNoField: 'انقر على حقل إدخال أولاً',
+    kbNothingToPaste: 'لا شيء للإدراج — اكتب شيئاً أولاً',
+    kbDirectOn: 'الوضع المباشر: الكتابة في الحقل المحدد',
+    kbPreviewOn: 'وضع المعاينة: الكتابة في معاينة لوحة المفاتيح',
+    kbPhrases: 'عبارات', kbCopy: 'نسخ', kbPaste: 'لصق في الحقل', kbClear: 'مسح',
+    kbDirect: 'الوضع المباشر', kbSwitchPreview: 'وضع المعاينة', kbSwitchDirect: 'الوضع المباشر',
+    changePassphrase: '🔑 تغيير كلمة المرور',
+    changePassDesc: 'سيتم إعادة تشفير جميع الملاحظات بكلمة المرور الجديدة.',
+    currentPassphrase: 'كلمة المرور الحالية',
+    newPassphrase: 'كلمة المرور الجديدة', newPassPlaceholder: 'أدخل كلمة المرور الجديدة',
+    confirmNewPassphrase: 'تأكيد كلمة المرور الجديدة',
+    enterCurrent: 'أدخل كلمة المرور الحالية',
+    enterNew: 'أدخل كلمة مرور جديدة',
+    passTooShort: 'كلمة المرور يجب أن تكون 3 أحرف على الأقل',
+    passSameAsOld: 'كلمة المرور الجديدة يجب أن تكون مختلفة',
+    confirmChange: 'تغيير وإعادة التشفير',
+    passChanged: 'تم تغيير كلمة المرور! تم إعادة تشفير الملاحظات 🔐',
+    reEncryptError: '❌ خطأ في إعادة التشفير.',
+    changePin: '🔑 تغيير PIN',
+    currentPin: 'PIN الحالي', newPin: 'PIN الجديد', confirmNewPin: 'تأكيد PIN الجديد',
+    enterValidPin: 'أدخل PIN الحالي المكون من 4 أرقام',
+    enterNewPin: 'أدخل PIN جديد مكون من 4 أرقام',
+    pinMismatch: 'أرقام PIN غير متطابقة',
+    pinSameAsOld: 'PIN الجديد يجب أن يكون مختلفاً',
+    confirmPinChange: 'تغيير PIN',
+    pinChanged: 'تم تغيير PIN! 🔒',
+    viewChangelog: 'عرض سجل التغييرات',
+    helpTitle: 'المساعدة والدليل', helpSearchPlaceholder: 'بحث في المساعدة...',
+    helpQuickStart: '🚀 البداية السريعة', helpFeatures: '📚 دليل الميزات', helpFAQ: '❓ الأسئلة الشائعة',
+    helpTip1Title: 'إضافة مهمة', helpTip1Desc: 'اكتب عنواناً في تبويب المهام وانقر "+ إضافة مهمة". حدد الأولوية والتاريخ والفئة.',
+    helpTip2Title: 'إكمال مهمة', helpTip2Desc: 'انقر على مربع الاختيار لتحديد المهمة كمكتملة. في وضع الأطفال، ستحصل على نجمة! ⭐',
+    helpTip3Title: 'تغيير السمة', helpTip3Desc: 'اذهب إلى الإعدادات → السمات واختر من 7 تصاميم إسلامية جميلة.',
+    helpTip4Title: 'تبديل اللغة', helpTip4Desc: 'استخدم قائمة اللغات (🇬🇧/🇫🇷/🇸🇦) في الشريط العلوي. العربية تفعّل التخطيط من اليمين لليسار.',
+    tooltipPriority: 'عالية = عاجل (أحمر)، متوسطة = عادي (أصفر)، منخفضة = يمكن الانتظار (أخضر).',
+    tooltipTags: 'أضف علامات مفصولة بفواصل. استخدم البحث للعثور على المهام.',
+    tooltipPin: 'يقفل التطبيق برمز من 4 أرقام عند البدء.',
+    tooltipKids: 'وضع ممتع للأطفال! نجوم وقصاصات ورسائل تشجيعية.',
+    shortcutsTitle: 'عبارات إسلامية', addCustomShortcut: '+ إضافة عبارة مخصصة',
+    scArabic: 'النص العربي *', scTranslit: 'النقل الحرفي', scMeaning: 'المعنى', scSave: 'حفظ',
+    scCustomLabel: '✏️ عباراتك المخصصة', scBuiltinLabel: '🤲 عبارات إسلامية',
+    scSaved: 'تم حفظ العبارة! 🤲', scDeleted: 'تم حذف العبارة',
+    scInserted: 'تمت إضافة العبارة للمعاينة ✅', scTapToInsert: 'انقر للإضافة إلى المعاينة',
+    profileName: 'اسم الملف الشخصي', profileNamePlaceholder: 'أدخل الاسم...',
+    createProfile: 'إنشاء',
+  }
+};
+
+// ===== STATE =====
+let state = {
+  lang: 'en',
+  theme: 'alhambra',
+  kidsMode: false,
+  pinEnabled: false,
+  pin: '',
+  currentProfile: 'default',
+  profiles: ['default', 'kids'],
+  tasks: {},        // { profileId: [ task, ... ] }
+  notes: [],        // encrypted notes
+  stars: 0,
+  firebaseConfig: null,
+  notePassphrase: null,
+  editingTaskId: null,
+};
+
+// ===== INIT =====
+function init() {
+  loadState();
+  applyLang(state.lang);
+  setTheme(state.theme);
+  if (state.kidsMode) enableKidsUI();
+  if (state.pinEnabled && state.pin) showPinLock();
+  renderProfiles();
+  renderTasks();
+  updateStars();
+  // Load firebase config
+  const fc = localStorage.getItem('tadhkir_firebase');
+  if (fc) {
+    state.firebaseConfig = JSON.parse(fc);
+    document.getElementById('firebaseConfigInput').value = fc;
+  }
+  if (state.pinEnabled) {
+    document.getElementById('pinToggle').classList.add('active');
+  }
+  if (state.kidsMode) {
+    document.getElementById('kidsToggle').classList.add('active');
+  }
+  updateChangePinBtn();
+  document.getElementById('appVersion').textContent = APP_VERSION;
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('tadhkir_state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state = { ...state, ...parsed };
+    }
+    if (!state.tasks[state.currentProfile]) state.tasks[state.currentProfile] = [];
+  } catch(e) { console.error('Load error', e); }
+}
+
+function saveState() {
+  try {
+    // Exclude notePassphrase from storage for security
+    const toSave = { ...state, notePassphrase: null };
+    localStorage.setItem('tadhkir_state', JSON.stringify(toSave));
+  } catch(e) { console.error('Save error', e); }
+}
+
+// ===== LANGUAGE =====
+function applyLang(lang) {
+  state.lang = lang;
+  document.getElementById('langSelect').value = lang;
+  const dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', dir);
+
+  // Apply translations
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[lang] && i18n[lang][key]) {
+      el.textContent = i18n[lang][key];
+    }
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (i18n[lang] && i18n[lang][key]) {
+      el.setAttribute('placeholder', i18n[lang][key]);
+    }
+  });
+  saveState();
+}
+
+document.getElementById('langSelect').addEventListener('change', (e) => {
+  applyLang(e.target.value);
+  renderTasks();
+});
+
+// ===== THEMES =====
+function setTheme(themeId) {
+  state.theme = themeId;
+  document.body.setAttribute('data-theme', themeId);
+  document.querySelectorAll('.theme-card').forEach(c => {
+    c.classList.toggle('active', c.dataset.themeid === themeId);
+  });
+  saveState();
+}
+
+// ===== TABS =====
+function switchTab(tabName) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === `page-${tabName}`));
+}
+
+// ===== PROFILES =====
+function switchProfile(profileId) {
+  state.currentProfile = profileId;
+  if (!state.tasks[profileId]) state.tasks[profileId] = [];
+  renderProfiles();
+  renderTasks();
+  updateStars();
+  saveState();
+}
+
+function renderProfiles() {
+  const bar = document.getElementById('profilesBar');
+  let html = '';
+  state.profiles.forEach(p => {
+    const icon = p === 'kids' ? '🧒' : (p === 'default' ? '👤' : '👤');
+    const active = p === state.currentProfile ? 'active' : '';
+    const label = p === 'default' ? (i18n[state.lang]?.defaultProfile || 'Default') :
+                  p === 'kids' ? (i18n[state.lang]?.kidsProfile || 'Kids') : p;
+    html += `<button class="profile-chip ${active}" onclick="switchProfile('${p}')">${icon} ${label}</button>`;
+  });
+  html += `<button class="btn btn-sm" onclick="showAddProfileModal()">+ ${i18n[state.lang]?.addProfile || 'Profile'}</button>`;
+  bar.innerHTML = html;
+}
+
+function showAddProfileModal() {
+  const lang = state.lang;
+  const t = i18n[lang];
+  document.getElementById('modalContent').innerHTML = `
+    <h2>${t.addProfile}</h2>
+    <div class="form-group">
+      <label>${t.profileName}</label>
+      <input type="text" id="newProfileName" placeholder="${t.profileNamePlaceholder}">
+    </div>
+    <div class="form-actions" style="margin-top:12px;">
+      <button class="btn" onclick="closeModal()">${t.clear}</button>
+      <button class="btn btn-accent" onclick="createProfile()">${t.createProfile}</button>
+    </div>
+  `;
+  document.getElementById('modalBackdrop').style.display = 'flex';
+}
+
+function createProfile() {
+  const name = document.getElementById('newProfileName').value.trim();
+  if (!name || state.profiles.includes(name)) return;
+  state.profiles.push(name);
+  state.tasks[name] = [];
+  switchProfile(name);
+  closeModal();
+  saveState();
+}
+
+function closeModal(e) {
+  if (e && e.target && e.target !== document.getElementById('modalBackdrop')) return;
+  document.getElementById('modalBackdrop').style.display = 'none';
+}
+
+// ===== TASKS =====
+function getTasks() {
+  return state.tasks[state.currentProfile] || [];
+}
+
+function addTask() {
+  const title = document.getElementById('taskTitleInput').value.trim();
+  if (!title) return;
+
+  const task = {
+    id: state.editingTaskId || Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    title,
+    priority: document.getElementById('taskPriority').value,
+    dueDate: document.getElementById('taskDueDate').value,
+    category: document.getElementById('taskCategory').value,
+    tags: document.getElementById('taskTags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    done: false,
+    createdAt: new Date().toISOString(),
+  };
+
+  if (state.editingTaskId) {
+    const idx = getTasks().findIndex(t => t.id === state.editingTaskId);
+    if (idx >= 0) {
+      task.done = getTasks()[idx].done;
+      task.createdAt = getTasks()[idx].createdAt;
+      state.tasks[state.currentProfile][idx] = task;
+    }
+    state.editingTaskId = null;
+    document.getElementById('addTaskBtn').textContent = i18n[state.lang]?.addTask || '+ Add Task';
+  } else {
+    if (!state.tasks[state.currentProfile]) state.tasks[state.currentProfile] = [];
+    state.tasks[state.currentProfile].unshift(task);
+  }
+
+  clearForm();
+  saveState();
+  renderTasks();
+  showToast(i18n[state.lang]?.taskAdded || 'Task added! ✨');
+}
+
+function toggleTaskDone(id) {
+  const tasks = getTasks();
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  task.done = !task.done;
+  saveState();
+  renderTasks();
+
+  if (task.done) {
+    if (state.kidsMode || state.currentProfile === 'kids') {
+      state.stars++;
+      updateStars();
+      saveState();
+      showConfetti();
+      showToast(i18n[state.lang]?.taskDoneKids || 'Ma Shaa Allah! Great job! ⭐🎉');
+    } else {
+      showToast(i18n[state.lang]?.taskDone || 'Ma Shaa Allah! ✅');
+    }
+  }
+}
+
+function editTask(id) {
+  const task = getTasks().find(t => t.id === id);
+  if (!task) return;
+  state.editingTaskId = id;
+  document.getElementById('taskTitleInput').value = task.title;
+  document.getElementById('taskPriority').value = task.priority;
+  document.getElementById('taskDueDate').value = task.dueDate || '';
+  document.getElementById('taskCategory').value = task.category;
+  document.getElementById('taskTags').value = (task.tags||[]).join(', ');
+  document.getElementById('addTaskBtn').textContent = i18n[state.lang]?.editTask || 'Save Edit';
+  document.getElementById('taskTitleInput').focus();
+  switchTab('tasks');
+}
+
+function deleteTask(id) {
+  state.tasks[state.currentProfile] = getTasks().filter(t => t.id !== id);
+  saveState();
+  renderTasks();
+  showToast(i18n[state.lang]?.taskDeleted || 'Task deleted');
+}
+
+function clearForm() {
+  document.getElementById('taskTitleInput').value = '';
+  document.getElementById('taskPriority').value = 'low';
+  document.getElementById('taskDueDate').value = '';
+  document.getElementById('taskCategory').value = 'general';
+  document.getElementById('taskTags').value = '';
+  state.editingTaskId = null;
+  document.getElementById('addTaskBtn').textContent = i18n[state.lang]?.addTask || '+ Add Task';
+}
+
+function renderTasks() {
+  const container = document.getElementById('taskList');
+  let tasks = [...getTasks()];
+  const lang = state.lang;
+  const t = i18n[lang];
+
+  // Filter
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const fPriority = document.getElementById('filterPriority').value;
+  const fCategory = document.getElementById('filterCategory').value;
+  const fStatus = document.getElementById('filterStatus').value;
+
+  if (search) tasks = tasks.filter(t => t.title.toLowerCase().includes(search) || (t.tags||[]).some(tag=>tag.toLowerCase().includes(search)));
+  if (fPriority !== 'all') tasks = tasks.filter(t => t.priority === fPriority);
+  if (fCategory !== 'all') tasks = tasks.filter(t => t.category === fCategory);
+  if (fStatus === 'active') tasks = tasks.filter(t => !t.done);
+  if (fStatus === 'done') tasks = tasks.filter(t => t.done);
+
+  if (tasks.length === 0) {
+    const isKids = state.kidsMode || state.currentProfile === 'kids';
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">${isKids ? '🌟' : '📝'}</div>
+        <h3>${isKids ? (t.emptyKidsTitle) : (t.emptyTitle)}</h3>
+        <p>${isKids ? (t.emptyKidsDesc) : (t.emptyDesc)}</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = tasks.map(task => {
+    const priorityLabel = t[task.priority] || task.priority;
+    const catLabel = t['cat' + task.category.charAt(0).toUpperCase() + task.category.slice(1)] || task.category;
+    const dueStr = task.dueDate ? `📅 ${task.dueDate}` : '';
+    const tagsStr = (task.tags||[]).map(tg => `<span class="task-meta-item">🏷️ ${tg}</span>`).join('');
+
+    return `
+      <div class="task-item ${task.done?'done':''}" draggable="true" data-id="${task.id}"
+        ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)">
+        <div class="task-priority-indicator ${task.priority}"></div>
+        <div class="task-checkbox ${task.done?'checked':''}" onclick="toggleTaskDone('${task.id}')">
+          ${task.done ? '✓' : ''}
+        </div>
+        <div class="task-content">
+          <div class="task-title">${escapeHtml(task.title)}</div>
+          <div class="task-meta">
+            <span class="task-meta-item">${priorityLabel}</span>
+            <span class="task-meta-item">${catLabel}</span>
+            ${dueStr ? `<span class="task-meta-item">${dueStr}</span>` : ''}
+            ${tagsStr}
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="btn btn-sm btn-icon" onclick="editTask('${task.id}')" title="Edit">✏️</button>
+          <button class="btn btn-sm btn-icon btn-danger" onclick="deleteTask('${task.id}')" title="Delete">🗑️</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ===== DRAG & DROP =====
+let dragId = null;
+function onDragStart(e) {
+  dragId = e.currentTarget.dataset.id;
+  e.currentTarget.classList.add('dragging');
+}
+function onDragOver(e) { e.preventDefault(); }
+function onDrop(e) {
+  e.preventDefault();
+  const targetId = e.currentTarget.dataset.id;
+  if (!dragId || dragId === targetId) return;
+  const tasks = getTasks();
+  const fromIdx = tasks.findIndex(t => t.id === dragId);
+  const toIdx = tasks.findIndex(t => t.id === targetId);
+  if (fromIdx < 0 || toIdx < 0) return;
+  const [moved] = tasks.splice(fromIdx, 1);
+  tasks.splice(toIdx, 0, moved);
+  state.tasks[state.currentProfile] = tasks;
+  saveState();
+  renderTasks();
+  document.querySelectorAll('.task-item').forEach(el => el.classList.remove('dragging'));
+  dragId = null;
+}
+
+// ===== SECURE NOTES (AES) =====
+function unlockNotes() {
+  const pass = document.getElementById('notePassphrase').value;
+  if (!pass) return;
+
+  const hasNotes = state.notes && state.notes.length > 0;
+
+  // If first time (no notes), require confirmation
+  if (!hasNotes) {
+    const confirm = document.getElementById('notePassphraseConfirm').value;
+    if (!confirm) {
+      document.getElementById('passMismatch').textContent = i18n[state.lang]?.enterConfirm || 'Please confirm your passphrase';
+      document.getElementById('passMismatch').style.display = 'block';
+      return;
+    }
+    if (pass !== confirm) {
+      document.getElementById('passMismatch').textContent = i18n[state.lang]?.passMismatch || "Passphrases don't match";
+      document.getElementById('passMismatch').style.display = 'block';
+      return;
+    }
+  }
+
+  // If has notes, verify passphrase can decrypt at least one
+  if (hasNotes) {
+    try {
+      const test = CryptoJS.AES.decrypt(state.notes[0].encrypted, pass);
+      const result = test.toString(CryptoJS.enc.Utf8);
+      if (!result) throw new Error('Bad passphrase');
+      JSON.parse(result); // must be valid JSON
+    } catch(e) {
+      document.getElementById('passMismatch').style.display = 'block';
+      document.getElementById('passMismatch').textContent = i18n[state.lang]?.wrongPassphrase || '❌ Wrong passphrase. Cannot decrypt notes.';
+      // Show the mismatch element in the unlock section
+      if (!document.getElementById('passErrorHint')) {
+        const err = document.createElement('small');
+        err.id = 'passErrorHint';
+        err.style.cssText = 'color:var(--danger);display:block;margin-top:6px;';
+        err.textContent = i18n[state.lang]?.wrongPassphrase || '❌ Wrong passphrase. Cannot decrypt notes.';
+        document.getElementById('notePassphrase').parentElement.after(err);
+      }
+      return;
+    }
+  }
+
+  state.notePassphrase = pass;
+  document.getElementById('notePasswordSection').style.display = 'none';
+  document.getElementById('noteEditorSection').style.display = 'block';
+  document.getElementById('passMismatch').style.display = 'none';
+  // Clean up error hints
+  const errHint = document.getElementById('passErrorHint');
+  if (errHint) errHint.remove();
+  renderNotes();
+}
+
+function togglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = 'غـ';
+  } else {
+    input.type = 'password';
+    btn.textContent = 'عـ';
+  }
+}
+
+function lockNotes() {
+  state.notePassphrase = null;
+  document.getElementById('notePasswordSection').style.display = 'block';
+  document.getElementById('noteEditorSection').style.display = 'none';
+  document.getElementById('notePassphrase').value = '';
+  document.getElementById('notePassphraseConfirm').value = '';
+  document.getElementById('notePassphrase').type = 'password';
+  document.getElementById('notePassphraseConfirm').type = 'password';
+  document.getElementById('passMismatch').style.display = 'none';
+  updateNoteCountHint();
+}
+
+function addNote() {
+  const title = document.getElementById('noteTitleInput').value.trim();
+  const content = document.getElementById('noteContentInput').value.trim();
+  if (!title || !content || !state.notePassphrase) return;
+
+  const encrypted = CryptoJS.AES.encrypt(JSON.stringify({ title, content }), state.notePassphrase).toString();
+  state.notes.push({ id: Date.now().toString(36), encrypted, createdAt: new Date().toISOString() });
+  document.getElementById('noteTitleInput').value = '';
+  document.getElementById('noteContentInput').value = '';
+  saveState();
+  renderNotes();
+  cancelNewNote();
+  showToast(i18n[state.lang]?.noteAdded || 'Note encrypted & saved 🔐');
+}
+
+function showNewNoteForm() {
+  document.getElementById('newNoteForm').style.display = 'block';
+  document.getElementById('showNewNoteBtn').style.display = 'none';
+  document.getElementById('noteTitleInput').focus();
+}
+
+function cancelNewNote() {
+  document.getElementById('newNoteForm').style.display = 'none';
+  document.getElementById('showNewNoteBtn').style.display = 'block';
+  document.getElementById('noteTitleInput').value = '';
+  document.getElementById('noteContentInput').value = '';
+}
+
+function deleteNote(id) {
+  state.notes = state.notes.filter(n => n.id !== id);
+  saveState();
+  renderNotes();
+}
+
+function renderNotes() {
+  const container = document.getElementById('notesList');
+  if (!state.notePassphrase || !state.notes.length) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">🔐</div><p>No notes yet</p></div>';
+    return;
+  }
+
+  container.innerHTML = state.notes.map(note => {
+    try {
+      const decrypted = CryptoJS.AES.decrypt(note.encrypted, state.notePassphrase);
+      const data = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+      return `
+        <div class="note-item">
+          <div style="display:flex;justify-content:space-between;align-items:start;">
+            <div>
+              <strong>${escapeHtml(data.title)}</strong>
+              <p style="color:var(--text-secondary);font-size:0.9em;margin-top:6px;white-space:pre-wrap;">${escapeHtml(data.content)}</p>
+              <small style="color:var(--text-secondary);opacity:0.6;">${new Date(note.createdAt).toLocaleDateString()}</small>
+            </div>
+            <button class="btn btn-sm btn-icon btn-danger" onclick="deleteNote('${note.id}')">🗑️</button>
+          </div>
+        </div>`;
+    } catch(e) {
+      return `<div class="note-item"><div class="note-locked">🔒 Cannot decrypt (wrong passphrase?)</div></div>`;
+    }
+  }).join('');
+}
+
+// ===== PIN LOCK =====
+function togglePinSetting() {
+  const toggle = document.getElementById('pinToggle');
+  const area = document.getElementById('pinSetupArea');
+  state.pinEnabled = !state.pinEnabled;
+  toggle.classList.toggle('active', state.pinEnabled);
+  area.style.display = state.pinEnabled ? 'block' : 'none';
+  if (!state.pinEnabled) { state.pin = ''; }
+  saveState();
+  updateChangePinBtn();
+}
+
+function savePin() {
+  const pin = document.getElementById('pinSetInput').value;
+  if (pin.length !== 4 || !/^\d{4}$/.test(pin)) return;
+  state.pin = CryptoJS.SHA256(pin).toString();
+  document.getElementById('pinSetInput').value = '';
+  saveState();
+  updateChangePinBtn();
+  showToast('PIN saved! 🔒');
+}
+
+function updateChangePinBtn() {
+  const btn = document.getElementById('changePinBtn');
+  if (state.pin && state.pinEnabled) {
+    btn.style.display = 'inline-flex';
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+function showPinLock() {
+  document.getElementById('pinOverlay').style.display = 'flex';
+  document.getElementById('appContainer').style.display = 'none';
+  const digits = document.querySelectorAll('.pin-digit');
+  digits.forEach((d, i) => {
+    d.value = '';
+    d.addEventListener('input', (e) => {
+      if (e.target.value && i < 3) digits[i+1].focus();
+      if (i === 3 && e.target.value) checkPin();
+    });
+    d.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !d.value && i > 0) digits[i-1].focus();
+    });
+  });
+  setTimeout(() => digits[0].focus(), 100);
+}
+
+function checkPin() {
+  const digits = document.querySelectorAll('.pin-digit');
+  const entered = [...digits].map(d => d.value).join('');
+  if (entered.length !== 4) return;
+  const hash = CryptoJS.SHA256(entered).toString();
+  if (hash === state.pin) {
+    document.getElementById('pinOverlay').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'block';
+  } else {
+    document.getElementById('pinError').textContent = i18n[state.lang]?.wrongPin || 'Wrong PIN';
+    document.getElementById('pinError').style.display = 'block';
+    digits.forEach(d => d.value = '');
+    digits[0].focus();
+  }
+}
+
+// ===== KIDS MODE =====
+function toggleKidsMode() {
+  state.kidsMode = !state.kidsMode;
+  document.getElementById('kidsToggle').classList.toggle('active', state.kidsMode);
+  if (state.kidsMode) {
+    enableKidsUI();
+  } else {
+    disableKidsUI();
+  }
+  saveState();
+  renderTasks();
+}
+
+function enableKidsUI() {
+  document.getElementById('starsCounter').style.display = 'flex';
+  document.getElementById('kidsModeBtn').style.background = 'var(--accent)';
+  document.getElementById('kidsModeBtn').style.color = 'var(--bg-primary)';
+  updateStars();
+}
+
+function disableKidsUI() {
+  document.getElementById('starsCounter').style.display = 'none';
+  document.getElementById('kidsModeBtn').style.background = '';
+  document.getElementById('kidsModeBtn').style.color = '';
+}
+
+function updateStars() {
+  document.getElementById('starsCount').textContent = state.stars;
+}
+
+function showConfetti() {
+  const container = document.getElementById('confettiContainer');
+  const colors = ['#e74c3c', '#f39c12', '#27ae60', '#3498db', '#9b59b6', '#e91e63', '#00bcd4'];
+  for (let i = 0; i < 40; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * 100 + '%';
+    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+    confetti.style.animationDuration = (1.5 + Math.random()) + 's';
+    confetti.style.width = (6 + Math.random() * 8) + 'px';
+    confetti.style.height = (6 + Math.random() * 8) + 'px';
+    container.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 2500);
+  }
+}
+
+// ===== IMPORT / EXPORT =====
+function exportData() {
+  const data = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    state: { ...state, notePassphrase: null }
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `tadhkir-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(i18n[state.lang]?.dataExported || 'Data exported! 📦');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.state) {
+        state = { ...state, ...data.state, notePassphrase: null };
+        saveState();
+        applyLang(state.lang);
+        setTheme(state.theme);
+        renderProfiles();
+        renderTasks();
+        updateStars();
+        showToast(i18n[state.lang]?.dataImported || 'Data imported! ✅');
+      }
+    } catch(err) { showToast('Invalid file ❌'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ===== FIREBASE (Placeholder) =====
+function saveFirebaseConfig() {
+  const val = document.getElementById('firebaseConfigInput').value.trim();
+  try {
+    const config = JSON.parse(val);
+    state.firebaseConfig = config;
+    localStorage.setItem('tadhkir_firebase', val);
+    saveState();
+    showToast('Firebase config saved! ☁️');
+    // In production, you'd init Firebase here
+  } catch(e) { showToast('Invalid JSON ❌'); }
+}
+
+function clearFirebaseConfig() {
+  state.firebaseConfig = null;
+  localStorage.removeItem('tadhkir_firebase');
+  document.getElementById('firebaseConfigInput').value = '';
+  saveState();
+  showToast('Firebase config cleared');
+}
+
+function toggleAuth() {
+  if (!state.firebaseConfig) {
+    showToast('Set Firebase config in Settings first ☁️');
+    switchTab('settings');
+    return;
+  }
+  // Placeholder: In production, use Firebase Auth
+  showToast('Firebase Auth: Configure your project to enable sign-in');
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ===== KEYBOARD SHORTCUT =====
+document.getElementById('taskTitleInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') addTask();
+});
+
+document.getElementById('notePassphrase').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const hasNotes = state.notes && state.notes.length > 0;
+    if (hasNotes) unlockNotes();
+    else document.getElementById('notePassphraseConfirm').focus();
+  }
+});
+
+document.getElementById('notePassphraseConfirm').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') unlockNotes();
+});
+
+// ===== HELP WIDGET =====
+let helpOpen = false;
+
+function toggleHelp() {
+  helpOpen = !helpOpen;
+  document.getElementById('helpPanel').classList.toggle('open', helpOpen);
+  document.getElementById('helpToggleBtn').classList.toggle('active', helpOpen);
+  document.body.classList.toggle('help-open', helpOpen);
+  document.getElementById('helpToggleBtn').textContent = helpOpen ? '❓ ▾' : '❓';
+}
+
+function toggleAccordion(header) {
+  const body = header.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+
+  // Close all other accordions (optional — remove for multi-open)
+  // document.querySelectorAll('.help-accordion-body.open').forEach(b => b.classList.remove('open'));
+  // document.querySelectorAll('.help-accordion-header.active').forEach(h => h.classList.remove('active'));
+
+  header.classList.toggle('active', !isOpen);
+  body.classList.toggle('open', !isOpen);
+}
+
+function filterHelp() {
+  const query = document.getElementById('helpSearch').value.toLowerCase().trim();
+  const items = document.querySelectorAll('.help-accordion, .help-tip-card');
+
+  items.forEach(item => {
+    if (!query) {
+      item.style.display = '';
+      return;
+    }
+    const keywords = (item.dataset.helpKeywords || '').toLowerCase();
+    const text = item.textContent.toLowerCase();
+    const match = keywords.includes(query) || text.includes(query);
+    item.style.display = match ? '' : 'none';
+  });
+
+  // Show/hide section labels based on visible children
+  document.querySelectorAll('.help-section-label').forEach(label => {
+    if (!query) { label.style.display = ''; return; }
+    let next = label.nextElementSibling;
+    let hasVisible = false;
+    while (next && !next.classList.contains('help-section-label')) {
+      if (next.style.display !== 'none') hasVisible = true;
+      next = next.nextElementSibling;
+    }
+    label.style.display = hasVisible ? '' : 'none';
+  });
+}
+
+// ===== CHANGE PASSPHRASE =====
+function showChangePassphraseModal() {
+  const t = i18n[state.lang];
+  document.getElementById('modalContent').innerHTML = `
+    <h2>🔑 ${t.changePassphrase || 'Change Passphrase'}</h2>
+    <p style="color:var(--text-secondary);font-size:0.85em;margin-bottom:16px;">${t.changePassDesc || 'All notes will be re-encrypted with the new passphrase.'}</p>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>${t.currentPassphrase || 'Current Passphrase'}</label>
+      <div class="password-wrapper">
+        <input type="password" id="cpOldPass" placeholder="${t.passphrasePlaceholder || 'Enter current passphrase'}">
+        <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('cpOldPass', this)">عـ</button>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>${t.newPassphrase || 'New Passphrase'}</label>
+      <div class="password-wrapper">
+        <input type="password" id="cpNewPass" placeholder="${t.newPassPlaceholder || 'Enter new passphrase'}">
+        <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('cpNewPass', this)">عـ</button>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>${t.confirmNewPassphrase || 'Confirm New Passphrase'}</label>
+      <div class="password-wrapper">
+        <input type="password" id="cpConfirmPass" placeholder="${t.confirmPassphrasePlaceholder || 'Re-enter new passphrase'}">
+        <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('cpConfirmPass', this)">عـ</button>
+      </div>
+    </div>
+    <p id="cpError" style="color:var(--danger);font-size:0.85em;display:none;margin-bottom:10px;"></p>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal()">${t.cancel || 'Cancel'}</button>
+      <button class="btn btn-accent" onclick="changePassphrase()">🔐 ${t.confirmChange || 'Change & Re-encrypt'}</button>
+    </div>
+  `;
+  document.getElementById('modalBackdrop').style.display = 'flex';
+}
+
+function changePassphrase() {
+  const t = i18n[state.lang];
+  const oldPass = document.getElementById('cpOldPass').value;
+  const newPass = document.getElementById('cpNewPass').value;
+  const confirmPass = document.getElementById('cpConfirmPass').value;
+  const errEl = document.getElementById('cpError');
+
+  // Validate current passphrase
+  if (!oldPass) {
+    errEl.textContent = t.enterCurrent || 'Enter your current passphrase';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // Verify old passphrase can decrypt
+  if (state.notes.length > 0) {
+    try {
+      const test = CryptoJS.AES.decrypt(state.notes[0].encrypted, oldPass);
+      const result = test.toString(CryptoJS.enc.Utf8);
+      if (!result) throw new Error();
+      JSON.parse(result);
+    } catch(e) {
+      errEl.textContent = t.wrongPassphrase || '❌ Current passphrase is wrong';
+      errEl.style.display = 'block';
+      return;
+    }
+  }
+
+  // Validate new passphrase
+  if (!newPass) {
+    errEl.textContent = t.enterNew || 'Enter a new passphrase';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (newPass.length < 3) {
+    errEl.textContent = t.passTooShort || 'Passphrase must be at least 3 characters';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (newPass !== confirmPass) {
+    errEl.textContent = t.passMismatch || "Passphrases don't match";
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (oldPass === newPass) {
+    errEl.textContent = t.passSameAsOld || 'New passphrase must be different from current';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // Re-encrypt all notes
+  try {
+    const reEncrypted = state.notes.map(note => {
+      const decrypted = CryptoJS.AES.decrypt(note.encrypted, oldPass);
+      const data = decrypted.toString(CryptoJS.enc.Utf8);
+      JSON.parse(data); // validate
+      const newEncrypted = CryptoJS.AES.encrypt(data, newPass).toString();
+      return { ...note, encrypted: newEncrypted };
+    });
+
+    state.notes = reEncrypted;
+    state.notePassphrase = newPass;
+    saveState();
+    renderNotes();
+    closeModal();
+    showToast(t.passChanged || 'Passphrase changed! All notes re-encrypted 🔐');
+  } catch(e) {
+    errEl.textContent = t.reEncryptError || '❌ Error re-encrypting. Some notes may use a different passphrase.';
+    errEl.style.display = 'block';
+  }
+}
+
+// ===== CHANGE PIN =====
+function showChangePinModal() {
+  const t = i18n[state.lang];
+  document.getElementById('modalContent').innerHTML = `
+    <h2>🔑 ${t.changePin || 'Change PIN'}</h2>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>${t.currentPin || 'Current PIN'}</label>
+      <div class="password-wrapper" style="max-width:160px;">
+        <input type="password" id="cpOldPin" maxlength="4" inputmode="numeric" placeholder="0000">
+        <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('cpOldPin', this)">عـ</button>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>${t.newPin || 'New PIN'}</label>
+      <div class="password-wrapper" style="max-width:160px;">
+        <input type="password" id="cpNewPin" maxlength="4" inputmode="numeric" placeholder="0000">
+        <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('cpNewPin', this)">عـ</button>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>${t.confirmNewPin || 'Confirm New PIN'}</label>
+      <div class="password-wrapper" style="max-width:160px;">
+        <input type="password" id="cpConfirmPin" maxlength="4" inputmode="numeric" placeholder="0000">
+        <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('cpConfirmPin', this)">عـ</button>
+      </div>
+    </div>
+    <p id="cpPinError" style="color:var(--danger);font-size:0.85em;display:none;margin-bottom:10px;"></p>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal()">${t.cancel || 'Cancel'}</button>
+      <button class="btn btn-accent" onclick="changePin()">🔒 ${t.confirmPinChange || 'Change PIN'}</button>
+    </div>
+  `;
+  document.getElementById('modalBackdrop').style.display = 'flex';
+}
+
+function changePin() {
+  const t = i18n[state.lang];
+  const oldPin = document.getElementById('cpOldPin').value;
+  const newPin = document.getElementById('cpNewPin').value;
+  const confirmPin = document.getElementById('cpConfirmPin').value;
+  const errEl = document.getElementById('cpPinError');
+
+  if (!oldPin || oldPin.length !== 4 || !/^\d{4}$/.test(oldPin)) {
+    errEl.textContent = t.enterValidPin || 'Enter your current 4-digit PIN';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // Verify old PIN
+  if (CryptoJS.SHA256(oldPin).toString() !== state.pin) {
+    errEl.textContent = t.wrongPin || 'Current PIN is wrong';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (!newPin || newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
+    errEl.textContent = t.enterNewPin || 'Enter a new 4-digit PIN';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (newPin !== confirmPin) {
+    errEl.textContent = t.pinMismatch || "PINs don't match";
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (oldPin === newPin) {
+    errEl.textContent = t.pinSameAsOld || 'New PIN must be different from current';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  state.pin = CryptoJS.SHA256(newPin).toString();
+  saveState();
+  closeModal();
+  showToast(t.pinChanged || 'PIN changed! 🔒');
+}
+
+// ===== ISLAMIC SHORTCUTS DRAWER =====
+const builtInPhrases = [
+  { arabic: 'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ', translit: 'Bismillah ir-Rahman ir-Raheem', meaning: { en: 'In the name of Allah, the Most Gracious, the Most Merciful', fr: 'Au nom d\'Allah, le Tout Miséricordieux, le Très Miséricordieux', ar: 'باسم الله الرحمن الرحيم' }, builtin: true },
+  { arabic: 'الحمد لله', translit: 'Alhamdulillah', meaning: { en: 'Praise be to Allah', fr: 'Louange à Allah', ar: 'الثناء لله' }, builtin: true },
+  { arabic: 'سبحان الله', translit: 'SubhanAllah', meaning: { en: 'Glory to Allah', fr: 'Gloire à Allah', ar: 'تنزيه الله' }, builtin: true },
+  { arabic: 'الله أكبر', translit: 'Allahu Akbar', meaning: { en: 'Allah is the Greatest', fr: 'Allah est le Plus Grand', ar: 'الله هو الأكبر' }, builtin: true },
+  { arabic: 'إن شاء الله', translit: 'In Shaa Allah', meaning: { en: 'If Allah wills', fr: 'Si Allah le veut', ar: 'بمشيئة الله' }, builtin: true },
+  { arabic: 'ما شاء الله', translit: 'Ma Shaa Allah', meaning: { en: 'What Allah has willed', fr: 'Ce qu\'Allah a voulu', ar: 'ما أراده الله' }, builtin: true },
+  { arabic: 'جزاك الله خيراً', translit: 'JazakAllahu Khairan', meaning: { en: 'May Allah reward you with good', fr: 'Qu\'Allah vous récompense', ar: 'جزاك الله أفضل الجزاء' }, builtin: true },
+  { arabic: 'السلام عليكم', translit: 'Assalamu Alaikum', meaning: { en: 'Peace be upon you', fr: 'La paix soit sur vous', ar: 'تحية السلام' }, builtin: true },
+  { arabic: 'وعليكم السلام', translit: 'Wa Alaikum Assalam', meaning: { en: 'And upon you peace', fr: 'Et sur vous la paix', ar: 'رد تحية السلام' }, builtin: true },
+  { arabic: 'صلى الله عليه وسلم', translit: 'Sallallahu Alaihi Wasallam', meaning: { en: 'Peace and blessings be upon him', fr: 'Paix et bénédictions sur lui', ar: 'الصلاة والسلام على النبي' }, builtin: true },
+  { arabic: 'أستغفر الله', translit: 'Astaghfirullah', meaning: { en: 'I seek Allah\'s forgiveness', fr: 'Je demande pardon à Allah', ar: 'طلب المغفرة من الله' }, builtin: true },
+  { arabic: 'لا إله إلا الله', translit: 'La ilaha illAllah', meaning: { en: 'There is no god but Allah', fr: 'Il n\'y a de dieu qu\'Allah', ar: 'شهادة التوحيد' }, builtin: true },
+  { arabic: 'بارك الله فيك', translit: 'Barakallahu Fik', meaning: { en: 'May Allah bless you', fr: 'Qu\'Allah vous bénisse', ar: 'دعاء بالبركة' }, builtin: true },
+  { arabic: 'حسبنا الله ونعم الوكيل', translit: 'Hasbunallahu wa ni\'mal Wakeel', meaning: { en: 'Allah is sufficient for us and the best Disposer of affairs', fr: 'Allah nous suffit, Il est le meilleur Garant', ar: 'التوكل على الله' }, builtin: true },
+];
+
+let shortcutsDrawerOpen = false;
+let customFormOpen = false;
+
+function getCustomShortcuts() {
+  try {
+    return JSON.parse(localStorage.getItem('tadhkir_custom_shortcuts') || '[]');
+  } catch(e) { return []; }
+}
+
+function saveCustomShortcuts(list) {
+  localStorage.setItem('tadhkir_custom_shortcuts', JSON.stringify(list));
+}
+
+function toggleShortcutsDrawer() {
+  shortcutsDrawerOpen = !shortcutsDrawerOpen;
+  document.getElementById('shortcutsDrawer').classList.toggle('open', shortcutsDrawerOpen);
+  document.getElementById('shortcutsBackdrop').classList.toggle('open', shortcutsDrawerOpen);
+  if (shortcutsDrawerOpen) renderShortcuts();
+}
+
+function toggleCustomForm() {
+  customFormOpen = !customFormOpen;
+  document.getElementById('customShortcutForm').classList.toggle('open', customFormOpen);
+  if (customFormOpen) document.getElementById('scArabicInput').focus();
+}
+
+function saveCustomShortcut() {
+  const arabic = document.getElementById('scArabicInput').value.trim();
+  const translit = document.getElementById('scTranslitInput').value.trim();
+  const meaning = document.getElementById('scMeaningInput').value.trim();
+  if (!arabic) return;
+
+  const customs = getCustomShortcuts();
+  customs.push({
+    id: Date.now().toString(36),
+    arabic,
+    translit: translit || '',
+    meaning: { en: meaning || '', fr: meaning || '', ar: meaning || '' },
+    builtin: false
+  });
+  saveCustomShortcuts(customs);
+
+  // Clear form
+  document.getElementById('scArabicInput').value = '';
+  document.getElementById('scTranslitInput').value = '';
+  document.getElementById('scMeaningInput').value = '';
+  toggleCustomForm();
+  renderShortcuts();
+  showToast(i18n[state.lang]?.scSaved || 'Custom phrase saved! 🤲');
+}
+
+function deleteCustomShortcut(id) {
+  const customs = getCustomShortcuts().filter(c => c.id !== id);
+  saveCustomShortcuts(customs);
+  renderShortcuts();
+  showToast(i18n[state.lang]?.scDeleted || 'Phrase deleted');
+}
+
+function insertPhrase(arabic) {
+  // Add space separator if preview already has text
+  if (kbPreviewText.length > 0 && !kbPreviewText.endsWith(' ')) {
+    kbPreviewText += ' ';
+  }
+  kbPreviewText += arabic;
+  updateKbPreview();
+  showToast(i18n[state.lang]?.scInserted || 'Phrase added to preview ✅');
+}
+
+function renderShortcuts() {
+  const container = document.getElementById('shortcutsList');
+  const lang = state.lang;
+  const customs = getCustomShortcuts();
+
+  let html = '';
+
+  // Custom phrases first
+  if (customs.length > 0) {
+    html += `<div class="shortcuts-divider" data-i18n="scCustomLabel">${i18n[lang]?.scCustomLabel || '✏️ YOUR CUSTOM PHRASES'}</div>`;
+    customs.forEach(p => {
+      const meaningText = typeof p.meaning === 'object' ? (p.meaning[lang] || p.meaning.en || '') : (p.meaning || '');
+      html += buildPhraseCard(p.arabic, p.translit, meaningText, p.id, false);
+    });
+  }
+
+  // Built-in phrases
+  html += `<div class="shortcuts-divider" data-i18n="scBuiltinLabel">${i18n[lang]?.scBuiltinLabel || '🤲 ISLAMIC PHRASES'}</div>`;
+  builtInPhrases.forEach(p => {
+    const meaningText = p.meaning[lang] || p.meaning.en;
+    html += buildPhraseCard(p.arabic, p.translit, meaningText, null, true);
+  });
+
+  container.innerHTML = html;
+}
+
+function buildPhraseCard(arabic, translit, meaning, id, isBuiltin) {
+  const lang = state.lang;
+  const deleteBtn = !isBuiltin ? `<button class="phrase-delete-btn visible" onclick="event.stopPropagation();deleteCustomShortcut('${id}')" title="Delete">🗑️</button>` : '';
+  const insertHint = i18n[lang]?.scTapToInsert || 'Tap to add to preview';
+
+  return `
+    <div class="phrase-card" onclick="insertPhrase('${arabic.replace(/'/g, "\\'")}')">
+      <div class="phrase-arabic">${arabic}</div>
+      ${translit ? `<div class="phrase-translit">${translit}</div>` : ''}
+      ${meaning ? `<div class="phrase-meaning">${meaning}</div>` : ''}
+      <div class="phrase-card-footer">
+        <span class="phrase-insert-hint">➜ ${insertHint}</span>
+        ${deleteBtn}
+      </div>
+    </div>`;
+}
+
+// ===== ARABIC VIRTUAL KEYBOARD =====
+let kbOpen = false;
+let kbPreviewText = '';
+let lastFocusedInput = null;
+
+// Track last focused input field (but not the keyboard preview)
+document.addEventListener('focusin', (e) => {
+  if (e.target.matches('input[type="text"], input[type="password"], textarea') && e.target.id !== 'kbPreview') {
+    lastFocusedInput = e.target;
+  }
+});
+
+function toggleKeyboard() {
+  kbOpen = !kbOpen;
+  document.getElementById('arabicKeyboard').classList.toggle('open', kbOpen);
+  document.getElementById('kbToggleBtn').classList.toggle('active', kbOpen);
+  document.body.classList.toggle('kb-open', kbOpen);
+  document.getElementById('kbToggleBtn').textContent = kbOpen ? '⌨️ ▾' : '⌨️';
+}
+
+function kbTypeChar(char) {
+  const preview = document.getElementById('kbPreview');
+  const start = preview.selectionStart || kbPreviewText.length;
+  const end = preview.selectionEnd || kbPreviewText.length;
+  kbPreviewText = kbPreviewText.slice(0, start) + char + kbPreviewText.slice(end);
+  preview.value = kbPreviewText;
+  preview.selectionStart = preview.selectionEnd = start + char.length;
+}
+
+function kbBackspace() {
+  const preview = document.getElementById('kbPreview');
+  const start = preview.selectionStart || kbPreviewText.length;
+  const end = preview.selectionEnd || kbPreviewText.length;
+  if (start === end && start > 0) {
+    kbPreviewText = kbPreviewText.slice(0, start - 1) + kbPreviewText.slice(end);
+    preview.value = kbPreviewText;
+    preview.selectionStart = preview.selectionEnd = start - 1;
+  } else if (start !== end) {
+    kbPreviewText = kbPreviewText.slice(0, start) + kbPreviewText.slice(end);
+    preview.value = kbPreviewText;
+    preview.selectionStart = preview.selectionEnd = start;
+  }
+}
+
+function kbEnter() {
+  kbPasteToField();
+}
+
+function updateKbPreview() {
+  document.getElementById('kbPreview').value = kbPreviewText || '';
+}
+
+function kbCopyPreview() {
+  kbPreviewText = document.getElementById('kbPreview').value;
+  if (!kbPreviewText) {
+    showToast(i18n[state.lang]?.kbNothingToCopy || 'Nothing to copy');
+    return;
+  }
+  // Select the text in preview for visual feedback
+  const preview = document.getElementById('kbPreview');
+  preview.select();
+  // Try modern clipboard API, then fallback
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(kbPreviewText).then(() => {
+      showToast(i18n[state.lang]?.kbCopied || 'Copied to clipboard!');
+    }).catch(() => { kbCopyFallback(); });
+  } else {
+    kbCopyFallback();
+  }
+}
+
+function kbCopyFallback() {
+  try {
+    document.execCommand('copy');
+    showToast(i18n[state.lang]?.kbCopied || 'Copied to clipboard!');
+  } catch(e) {
+    showToast(i18n[state.lang]?.kbCopyFail || 'Select text in preview and use Ctrl+C');
+  }
+}
+
+function kbPasteToField() {
+  kbPreviewText = document.getElementById('kbPreview').value;
+  if (!kbPreviewText) {
+    showToast(i18n[state.lang]?.kbNothingToPaste || 'Nothing to paste — type something first');
+    return;
+  }
+  if (!lastFocusedInput) {
+    showToast(i18n[state.lang]?.kbNoField || 'Click on an input field first');
+    return;
+  }
+  const input = lastFocusedInput;
+  const start = input.selectionStart || input.value.length;
+  const end = input.selectionEnd || input.value.length;
+  const val = input.value;
+  input.value = val.slice(0, start) + kbPreviewText + val.slice(end);
+  input.selectionStart = input.selectionEnd = start + kbPreviewText.length;
+  input.focus();
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  kbPreviewText = '';
+  document.getElementById('kbPreview').value = '';
+  showToast(i18n[state.lang]?.kbPasted || 'Inserted into field');
+}
+
+function kbClearPreview() {
+  kbPreviewText = '';
+  document.getElementById('kbPreview').value = '';
+}
+
+// Attach keyboard key events
+document.getElementById('arabicKeyboard').addEventListener('click', (e) => {
+  const key = e.target.closest('.kb-key');
+  if (!key) return;
+
+  // Visual feedback
+  key.classList.add('pressed');
+  setTimeout(() => key.classList.remove('pressed'), 150);
+
+  const action = key.dataset.action;
+  const char = key.dataset.char;
+
+  if (action === 'backspace') {
+    kbBackspace();
+  } else if (action === 'enter') {
+    kbEnter();
+  } else if (char) {
+    kbTypeChar(char);
+  }
+});
+
+// Prevent keyboard clicks from stealing focus from inputs (but allow preview input)
+document.getElementById('arabicKeyboard').addEventListener('mousedown', (e) => {
+  if (e.target.closest('.kb-key') || e.target.closest('.kb-tool-btn')) {
+    e.preventDefault();
+  }
+});
+
+// ===== UPDATE NOTE COUNT HINT ON LOAD =====
+function updateNoteCountHint() {
+  const hint = document.getElementById('noteCountHint');
+  const confirmGroup = document.getElementById('confirmPassGroup');
+  const unlockBtn = document.getElementById('unlockBtn');
+  const hasNotes = state.notes && state.notes.length > 0;
+
+  if (hasNotes) {
+    const count = state.notes.length;
+    const msgs = {
+      en: `🔒 You have ${count} encrypted note${count > 1 ? 's' : ''} saved. Enter your passphrase to view.`,
+      fr: `🔒 Vous avez ${count} note${count > 1 ? 's' : ''} chiffrée${count > 1 ? 's' : ''} sauvegardée${count > 1 ? 's' : ''}. Entrez votre mot de passe.`,
+      ar: `🔒 لديك ${count} ملاحظة مشفرة محفوظة. أدخل كلمة المرور لعرضها.`
+    };
+    hint.textContent = msgs[state.lang] || msgs.en;
+    hint.style.display = 'block';
+    confirmGroup.style.display = 'none';
+    unlockBtn.textContent = i18n[state.lang]?.unlock || '🔓 Unlock';
+  } else {
+    hint.style.display = 'none';
+    confirmGroup.style.display = 'block';
+    const setLabels = { en: '🔐 Set Passphrase & Start', fr: '🔐 Définir & Commencer', ar: '🔐 تعيين كلمة المرور' };
+    unlockBtn.textContent = setLabels[state.lang] || setLabels.en;
+  }
+}
+
+// ===== START =====
+init();
+updateNoteCountHint();
+</script>
+</body>
+</html>

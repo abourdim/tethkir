@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tadhkir — Changelog</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #1a0f0a;
+  color: #f5e6d3;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 40px, #d4a04a 40px, #d4a04a 41px),
+    repeating-linear-gradient(90deg, transparent, transparent 40px, #d4a04a 40px, #d4a04a 41px),
+    repeating-linear-gradient(45deg, transparent, transparent 28px, #d4a04a 28px, #d4a04a 29px),
+    repeating-linear-gradient(-45deg, transparent, transparent 28px, #d4a04a 28px, #d4a04a 29px);
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.header-banner {
+  text-align: center;
+  padding: 50px 20px 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.bismillah {
+  font-family: 'Aref Ruqaa', 'Amiri', serif;
+  font-size: 2.2em;
+  font-weight: 700;
+  color: #d4a04a;
+  text-shadow: 0 0 30px rgba(212,160,74,0.5), 0 2px 4px rgba(0,0,0,0.3);
+  direction: rtl;
+  margin-bottom: 10px;
+}
+
+.header-banner h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2em;
+  color: #d4a04a;
+  margin: 10px 0 5px;
+}
+
+.header-banner .subtitle {
+  color: #c4a882;
+  font-size: 1.05em;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  color: #d4a04a;
+  opacity: 0.5;
+  margin: 10px 0;
+}
+
+.divider::before, .divider::after {
+  content: '';
+  height: 1px;
+  width: 100px;
+  background: linear-gradient(to right, transparent, #d4a04a, transparent);
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+
+.content {
+  background: #2d1810;
+  border: 1px solid rgba(212,160,74,0.15);
+  border-radius: 16px;
+  padding: 36px 40px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+}
+
+h1 { display: none; }
+
+h2 {
+  font-size: 1.5em;
+  color: #d4a04a;
+  margin: 36px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(212,160,74,0.2);
+}
+
+h2:first-child { margin-top: 0; }
+
+h3 {
+  font-size: 1.15em;
+  color: #e8b85c;
+  margin: 24px 0 10px;
+}
+
+p { margin: 10px 0; color: #ddd0c0; }
+
+a {
+  color: #d4a04a;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(212,160,74,0.3);
+  transition: all 0.3s ease;
+}
+
+a:hover { color: #e8b85c; border-bottom-color: #e8b85c; }
+
+strong { color: #f5e6d3; }
+
+ul, ol {
+  margin: 10px 0;
+  padding-left: 24px;
+}
+
+li {
+  margin: 6px 0;
+  color: #ddd0c0;
+}
+
+li::marker { color: #d4a04a; }
+
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(212,160,74,0.3), transparent);
+  margin: 30px 0;
+}
+
+em { color: #c4a882; }
+
+code {
+  background: rgba(212,160,74,0.1);
+  color: #e8b85c;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 0.88em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.back-to-app {
+  display: inline-block;
+  padding: 10px 24px;
+  background: #d4a04a;
+  color: #1a0f0a;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.back-to-app:hover {
+  background: #e8b85c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(212,160,74,0.4);
+  border: none;
+}
+
+.footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: #c4a882;
+  font-size: 0.9em;
+  position: relative;
+  z-index: 1;
+}
+
+.footer .bismillah-sm {
+  font-family: 'Aref Ruqaa', serif;
+  color: #d4a04a;
+  font-size: 1.3em;
+  margin-bottom: 8px;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #1a0f0a; }
+::-webkit-scrollbar-thumb { background: #d4a04a; border-radius: 4px; }
+
+@media (max-width: 640px) {
+  .content { padding: 24px 20px; }
+  .bismillah { font-size: 1.6em; }
+  .header-banner h1 { font-size: 1.5em; }
+}
+</style>
+</head>
+<body>
+
+<div class="header-banner">
+  <div class="bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+  <div class="divider"><span>✦</span></div>
+  <h1>📝 Tadhkir — Changelog</h1>
+  <p class="subtitle">Version History & Release Notes</p>
+  <div class="nav-links">
+    <a href="index.html" class="back-to-app">🚀 Open App</a>
+    <a href="README.html" class="back-to-app" style="background:transparent;border:2px solid #d4a04a;color:#d4a04a;">📖 Docs</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content">
+    <h1 id="tadhkir-changelog">📝 Tadhkir — Changelog</h1>
+<p>All notable changes to this project will be documented in this
+file.</p>
+<hr />
+<h2 id="v1.3.2-2026-02-19-standard-copypaste">v1.3.2 — 2026-02-19 —
+Standard Copy/Paste 📋📌</h2>
+<h3 id="improvements">🔧 Improvements</h3>
+<ul>
+<li><strong>📌 Paste now works normally</strong> — Pastes FROM clipboard
+INTO preview bar (standard behavior)</li>
+<li><strong>📋 Copy</strong> — Copies preview text TO clipboard
+(unchanged)</li>
+<li><strong>Standard workflow</strong> — Type/compose in preview → 📋
+Copy → click your field → Ctrl+V</li>
+<li><strong>No more “send to field” magic</strong> — Removed confusing
+behavior, everything works as expected</li>
+<li><strong>Enter key</strong> — No longer triggers any action (was
+confusing)</li>
+<li><strong>Clipboard fallback</strong> — Shows “Use Ctrl+V” if browser
+blocks clipboard access</li>
+</ul>
+<hr />
+<h2 id="v1.3.1-2026-02-19-simplify-keyboard">v1.3.1 — 2026-02-19 —
+Simplify Keyboard 🧹</h2>
+<h3 id="improvements-1">🔧 Improvements</h3>
+<ul>
+<li><strong>Removed Direct mode entirely</strong> — Simpler UX: always
+type in preview bar, then Copy or Paste</li>
+<li><strong>Only 3 action buttons</strong> — 📋 Copy, 📌 Paste, ✖ Clear
+(+ 🤲 Phrases next to input)</li>
+<li><strong>↵ Enter key = Paste</strong> — Quick shortcut to paste
+preview text into last focused field</li>
+<li><strong>Removed ~50 lines of dead code</strong> — No more kbIsDirect
+variable, toggle function, or dual-path logic</li>
+<li><strong>Updated help section</strong> — Removed Direct mode
+documentation</li>
+</ul>
+<hr />
+<h2 id="v1.3-2026-02-19-bug-fixes-islamic-emoji-redesign">v1.3 —
+2026-02-19 — Bug Fixes &amp; Islamic Emoji Redesign 🌙</h2>
+<h3 id="bug-fixes">🐛 Bug Fixes</h3>
+<ul>
+<li><strong>Copy button now works</strong> — Fixed clipboard API with
+proper fallback for local files, visual feedback (selects text)</li>
+<li><strong>Paste button now works</strong> — Removed duplicate code
+block causing early return; clear error messages for empty preview or no
+focused field</li>
+<li><strong>Direct mode now works</strong> — Fixed critical naming
+conflict (<code>kbDirectMode</code> was both variable and function
+name); renamed variable to <code>kbIsDirect</code></li>
+<li><strong>Preview bar is editable</strong> — Click to type directly,
+cursor-aware insert from virtual keys</li>
+</ul>
+<h3 id="islamic-emoji-redesign">🎨 Islamic Emoji Redesign</h3>
+<p>Removed all animal and human emojis, replaced with Islamic-themed
+alternatives: - <strong>عـ / غـ for Show/Hide password</strong> — عين
+(Ain) = “eye” in Arabic; غين (Ghain) = Ain with dot = “veiled eye”.
+Deeply meaningful, elegant, and unique - <strong>⭐ replaces 🧸 for Kids
+Mode</strong> — Stars are already the reward system, consistent and
+joyful - <strong>Toggle buttons styled</strong> in Amiri font with
+accent color</p>
+<h3 id="improvements-2">🔧 Improvements</h3>
+<ul>
+<li><strong>Better error toasts</strong> — “Nothing to copy”, “Nothing
+to paste”, “Click a field first”</li>
+<li><strong>Flat toolbar layout</strong> — Row 1: [editable input] +
+[🤲], Row 2: [📋 Copy] [📌 Paste] [✖ Clear] [🎯 Direct]</li>
+<li><strong>Gentle close button</strong> — Moved to left, subtle card
+style (no red)</li>
+</ul>
+<hr />
+<h2 id="v1.2.5-2026-02-19-editable-preview-flat-buttons">v1.2.5 —
+2026-02-19 — Editable Preview &amp; Flat Buttons ⌨️</h2>
+<h3 id="improvements-3">🔧 Improvements</h3>
+<ul>
+<li><strong>Preview bar is now an editable input</strong> — Click it,
+type, select, edit, cursor position works</li>
+<li><strong>Flat buttons restored</strong> — 🤲 Phrases next to preview,
+Copy/Paste/Clear/Direct in a centered row below</li>
+<li><strong>Layout</strong>: Row 1 = [editable input] + [🤲], Row 2 =
+[📋 Copy] [📌 Paste] [✖ Clear] [🎯 Direct]</li>
+<li><strong>Cursor-aware typing</strong> — Virtual keyboard inserts at
+cursor position in the preview</li>
+<li><strong>Cursor-aware backspace</strong> — Deletes at cursor
+position, not just end</li>
+<li><strong>Preview excluded from “last focused”</strong> — Paste sends
+to your real input field, not back to preview</li>
+<li>Removed hidden popup menu — everything visible and flat</li>
+</ul>
+<hr />
+<h2 id="v1.2.4-2026-02-19-ui-polish">v1.2.4 — 2026-02-19 — UI Polish
+🎨</h2>
+<h3 id="improvements-4">🔧 Improvements</h3>
+<ul>
+<li><strong>Close button moved to left</strong> — ⌨️ opens on the right,
+closes on the left (less confusing)</li>
+<li><strong>No more red X</strong> — Close buttons now use subtle
+card-style (border + muted color), highlights on hover</li>
+<li><strong>Help button too</strong> — Same gentle style when active, no
+more red</li>
+<li><strong>Gentler close labels</strong> — Shows <code>⌨️ ▾</code> and
+<code>❓ ▾</code> instead of aggressive <code>✕</code></li>
+<li><strong>RTL aware</strong> — Positions flip correctly for Arabic
+layout</li>
+</ul>
+<hr />
+<h2 id="v1.2.3-2026-02-19-toolbar-popup-menu">v1.2.3 — 2026-02-19 —
+Toolbar Popup Menu ⚡</h2>
+<h3 id="improvements-5">🔧 Improvements</h3>
+<ul>
+<li><strong>Single ⚡ menu button</strong> replaces the row of buttons —
+cleaner, no overlap</li>
+<li><strong>Popup menu</strong> appears above the button with all
+actions: 🤲 Phrases, 📋 Copy, 📌 Paste, ✖ Clear, 🎯 Direct mode</li>
+<li><strong>Preview bar gets maximum width</strong> — no more cramped
+layout</li>
+<li><strong>Auto-closes</strong> when clicking outside or after an
+action</li>
+<li><strong>Smart arrow</strong> pointing to the button for clarity</li>
+<li><strong>RTL aware</strong> — popup and arrow flip for Arabic
+layout</li>
+</ul>
+<hr />
+<h2 id="v1.2.2-2026-02-19-keyboard-toolbar-redesign">v1.2.2 — 2026-02-19
+— Keyboard Toolbar Redesign 🔧</h2>
+<h3 id="bug-fixes-1">🐛 Bug Fixes</h3>
+<ul>
+<li><strong>Two-row toolbar layout</strong> — Preview bar on top,
+buttons centered below (no more overlap)</li>
+<li><strong>Labels restored</strong> — Buttons show emoji + short text
+(🤲 Phrases, 📋 Copy, 📌 Paste, ✖ Clear, 🎯 Direct)</li>
+<li><strong>Bigger touch targets</strong> — Buttons are wider and easier
+to tap on mobile</li>
+<li><strong>Mobile adaptive</strong> — Buttons shrink gracefully on
+small screens</li>
+</ul>
+<hr />
+<h2 id="v1.2.1-2026-02-19-keyboard-toolbar-fix">v1.2.1 — 2026-02-19 —
+Keyboard Toolbar Fix 🔧</h2>
+<h3 id="bug-fixes-2">🐛 Bug Fixes</h3>
+<ul>
+<li><strong>Toolbar overflow fixed</strong> — Buttons are now icon-only
+(🤲📋📌✖🎯) to prevent overlapping with the preview bar</li>
+<li><strong>Space between phrases</strong> — Inserting multiple Islamic
+phrases now automatically adds a space separator</li>
+<li><strong>Preview bar scrollable</strong> — Long text in keyboard
+preview now scrolls horizontally instead of being cut off</li>
+<li><strong>Responsive toolbar</strong> — Buttons shrink properly on
+mobile screens</li>
+</ul>
+<hr />
+<h2 id="v1.2-2026-02-19-islamic-shortcuts-drawer">v1.2 — 2026-02-19 —
+Islamic Shortcuts Drawer 🤲⌨️</h2>
+<h3 id="new-features">✨ New Features</h3>
+<h4 id="islamic-phrases-shortcuts">🤲 Islamic Phrases Shortcuts</h4>
+<ul>
+<li><strong>Side drawer</strong> slides from the right edge (left in
+RTL) via 🤲 button on keyboard toolbar</li>
+<li><strong>14 built-in phrases</strong> with full harakat:
+<ul>
+<li>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ (Bismillah)</li>
+<li>الحمد لله (Alhamdulillah)</li>
+<li>سبحان الله (SubhanAllah)</li>
+<li>الله أكبر (Allahu Akbar)</li>
+<li>إن شاء الله (In Shaa Allah)</li>
+<li>ما شاء الله (Ma Shaa Allah)</li>
+<li>جزاك الله خيراً (JazakAllahu Khairan)</li>
+<li>السلام عليكم (Assalamu Alaikum)</li>
+<li>وعليكم السلام (Wa Alaikum Assalam)</li>
+<li>صلى الله عليه وسلم (Sallallahu Alaihi Wasallam)</li>
+<li>أستغفر الله (Astaghfirullah)</li>
+<li>لا إله إلا الله (La ilaha illAllah)</li>
+<li>بارك الله فيك (Barakallahu Fik)</li>
+<li>حسبنا الله ونعم الوكيل (Hasbunallah)</li>
+</ul></li>
+<li><strong>Each card shows all three</strong>: Arabic (large
+calligraphic), transliteration (italic), meaning (in current
+language)</li>
+<li><strong>Tap to preview</strong> — phrase goes to keyboard preview
+bar, then Copy or Paste to any field</li>
+<li><strong>Custom phrases</strong> — “+” button opens form to add your
+own (Arabic + transliteration + meaning)</li>
+<li><strong>Delete custom</strong> — 🗑️ button on hover for custom
+phrases</li>
+<li><strong>Custom phrases saved</strong> in localStorage, persist
+across sessions</li>
+<li><strong>Meanings translated</strong> per phrase in EN/FR/AR</li>
+<li><strong>All UI translated</strong> in EN 🇬🇧 / FR 🇫🇷 / AR 🇸🇦</li>
+</ul>
+<hr />
+<h2 id="v1.1-2026-02-19-help-system-password-management">v1.1 —
+2026-02-19 — Help System &amp; Password Management 🆘🔑</h2>
+<h3 id="new-features-1">✨ New Features</h3>
+<h4 id="floating-help-widget">❓ Floating Help Widget</h4>
+<ul>
+<li><strong>Floating ❓ button</strong> (bottom-left) opens a sliding
+help panel</li>
+<li><strong>Quick Start cards</strong> — 4 visual tips: Add Task,
+Complete Task, Change Theme, Switch Language</li>
+<li><strong>Feature Guide</strong> — 9 accordion sections covering all
+features in detail:
+<ul>
+<li>Tasks, Secure Notes, Arabic Keyboard, Themes, Kids Mode, Profiles,
+Import/Export, Firebase, PIN Lock</li>
+</ul></li>
+<li><strong>FAQ section</strong> — 6 common questions with detailed
+answers</li>
+<li><strong>Search filter</strong> — Search help content by keyword in
+real-time</li>
+<li><strong>Fully translated</strong> in EN 🇬🇧 / FR 🇫🇷 / AR 🇸🇦</li>
+</ul>
+<h4 id="contextual-tooltips">🏷️ Contextual Tooltips</h4>
+<ul>
+<li><strong>?</strong> icons next to key UI elements (Priority, Tags,
+PIN Lock, Kids Mode)</li>
+<li>Hover or tap to see a helpful tooltip bubble</li>
+<li>Positioned smartly, responsive on mobile</li>
+</ul>
+<h4 id="change-passphrase">🔑 Change Passphrase</h4>
+<ul>
+<li><strong>Button</strong> appears next to 🔒 Lock when notes are
+unlocked</li>
+<li><strong>Modal</strong> with current/new/confirm passphrase fields
+(all with 👁️ show/hide)</li>
+<li><strong>Validates</strong>: wrong current passphrase, mismatch, too
+short, same as old</li>
+<li><strong>Re-encrypts all notes</strong> with the new passphrase</li>
+</ul>
+<h4 id="change-pin">🔑 Change PIN</h4>
+<ul>
+<li><strong>Button</strong> appears in Settings when PIN is set</li>
+<li><strong>Modal</strong> with current/new/confirm PIN fields (all with
+👁️ show/hide)</li>
+<li><strong>Validates</strong>: wrong current PIN, mismatch, same as
+old</li>
+</ul>
+<h3 id="improvements-6">🔧 Improvements</h3>
+<ul>
+<li>Version bumped to v1.1</li>
+<li>Version display in Settings page</li>
+<li>Changelog link in Settings page</li>
+</ul>
+<hr />
+<h2 id="v1.0-2026-02-19-initial-release">v1.0 — 2026-02-19 — Initial
+Release 🚀</h2>
+<p>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
+<h3 id="features">✨ Features</h3>
+<ul>
+<li><strong>Task Management</strong> — Add, edit, delete, mark as done
+with priority levels (High/Medium/Low), due dates, categories, tags,
+search, filter, and drag-and-drop reorder</li>
+<li><strong>7 Islamic Themes</strong> — Alhambra/Andalusian,
+Ottoman/Turkish, Moroccan Zellige, Calligraphy/Minimal, Ramadan Night,
+Desert Oasis, Kids/Playground</li>
+<li><strong>3 Languages</strong> — English 🇬🇧, French 🇫🇷, Arabic 🇸🇦 with
+full RTL layout support</li>
+<li><strong>Dual Storage</strong> — Local (localStorage) for offline use
++ Firebase-ready cloud sync with Google Sign-In</li>
+<li><strong>Import/Export</strong> — Download/upload all data as JSON
+backup file</li>
+<li><strong>PIN Lock</strong> — 4-digit PIN protection with SHA-256
+hashing</li>
+<li><strong>Encrypted Secure Notes</strong> — AES-256 client-side
+encryption via CryptoJS</li>
+<li><strong>Kids Mode</strong> — Toggle switch, separate profiles, star
+rewards ⭐, confetti celebrations 🎉, encouraging Islamic messages</li>
+<li><strong>Multiple Profiles</strong> — Default, Kids, and custom
+profiles with independent task lists</li>
+<li><strong>Beautiful Bismillah Header</strong> — بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ
+ٱلرَّحِيمِ in calligraphic Arabic font, adapts to each theme</li>
+<li><strong>Responsive Design</strong> — Works on mobile and
+desktop</li>
+</ul>
+<h3 id="security">🔐 Security</h3>
+<ul>
+<li><strong>Show/Hide password toggle</strong> (👁️/🙈) on all password
+fields</li>
+<li><strong>Passphrase confirmation</strong> — Required when creating
+first secure note</li>
+<li><strong>Passphrase verification</strong> — Validates against
+existing notes on unlock, shows error if wrong</li>
+<li><strong>Change Passphrase</strong> — Modal with current/new/confirm
+fields, re-encrypts all notes</li>
+<li><strong>Change PIN</strong> — Modal with current/new/confirm fields,
+validates old PIN</li>
+</ul>
+<h3 id="arabic-virtual-keyboard">⌨️ Arabic Virtual Keyboard</h3>
+<ul>
+<li><strong>Floating bottom panel</strong> — Toggle with ⌨️ button
+(bottom-right corner)</li>
+<li><strong>Full Arabic alphabet</strong> — Standard layout with all
+letters</li>
+<li><strong>Harakat / Diacritics</strong> — فتحة، ضمة، كسرة، تنوين، شدّة،
+سكون</li>
+<li><strong>Arabic numbers</strong> — ٠١٢٣٤٥٦٧٨٩</li>
+<li><strong>Two modes</strong> — Preview mode (type then paste) and
+Direct mode (type into focused field)</li>
+<li><strong>Toolbar</strong> — Copy 📋, Paste 📌, Clear ✖ buttons</li>
+<li><strong>Responsive</strong> — Adapts to mobile screens</li>
+</ul>
+<h3 id="ux-improvements">🔧 UX Improvements</h3>
+<ul>
+<li><strong>Secure Notes UX</strong> — Notes list shown first after
+unlock, collapsible “Write New Note” form, clear “🔐 Encrypt &amp; Save”
+button</li>
+<li><strong>Note count hint</strong> — Shows “🔒 You have X encrypted
+notes saved” on reload</li>
+<li><strong>Enter key support</strong> — Press Enter to submit in task
+form, passphrase field, and confirm field</li>
+<li><strong>Version display</strong> — Version shown in Settings page
+with link to changelog</li>
+</ul>
+<h3 id="documentation">📄 Documentation</h3>
+<ul>
+<li><strong>README.md</strong> — Full feature overview, GitHub Pages
+deployment guide, 8-step Firebase setup tutorial</li>
+<li><strong>README.html</strong> — Styled documentation page with
+Alhambra theme and “Open App” button</li>
+<li><strong>CHANGES.md</strong> — This changelog</li>
+<li><strong>CHANGES.html</strong> — Styled changelog page</li>
+</ul>
+<hr />
+<p><em>Built with love and Tawakkul. بارك الله فيكم</em> 🌙✨</p>
+
+  </div>
+</div>
+
+<div class="footer">
+  <div class="bismillah-sm">بارك الله فيكم</div>
+  <p>Built with love and Tawakkul 🌙✨</p>
+  <div class="nav-links">
+    <a href="index.html" class="back-to-app">🚀 Open App</a>
+    <a href="README.html" class="back-to-app" style="background:transparent;border:2px solid #d4a04a;color:#d4a04a;">📖 Docs</a>
+  </div>
+</div>
+
+</body>
+</html>
