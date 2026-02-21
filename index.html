@@ -2176,7 +2176,7 @@ body.kb-open .kb-toggle-btn {
       <span class="app-title" data-i18n="appTitle">📝 Tethkir</span>
       <div class="sync-status" id="syncStatus">
         <span class="sync-dot offline" id="syncDot"></span>
-        <span id="syncLabel" data-i18n="offline">Offline</span>
+        <span id="syncLabel">Offline</span>
       </div>
     </div>
     <span class="bismillah-inline">بِسْمِ ٱللَّهِ</span>
@@ -2904,6 +2904,7 @@ function selectLang(lang) {
   document.getElementById('langPickerMenu').classList.remove('open');
   applyLang(lang);
   renderTasks();
+  updateSyncUI(firebaseAuth?.currentUser != null, firebaseAuth?.currentUser?.displayName);
 }
 
 // Close picker on outside click
