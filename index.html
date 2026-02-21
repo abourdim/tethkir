@@ -210,43 +210,14 @@ body::before {
 }
 
 /* ===== BISMILLAH HEADER ===== */
-.bismillah-header {
-  text-align: center;
-  padding: 30px 20px 15px;
-  position: relative;
-}
-
-.bismillah-text {
+.bismillah-inline {
   font-family: 'Aref Ruqaa', 'Amiri', serif;
-  font-size: 2.4em;
-  font-weight: 700;
+  font-size: 0.85em;
   color: var(--bismillah-color);
-  text-shadow: 0 0 30px var(--bismillah-glow), 0 2px 4px rgba(0,0,0,0.2);
-  line-height: 1.6;
-  letter-spacing: 2px;
+  opacity: 0.5;
   direction: rtl;
-}
-
-.bismillah-divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 10px;
-  color: var(--accent);
-  opacity: 0.6;
-}
-
-.bismillah-divider::before,
-.bismillah-divider::after {
-  content: '';
-  height: 1px;
-  width: 80px;
-  background: linear-gradient(to right, transparent, var(--accent), transparent);
-}
-
-.bismillah-divider span {
-  font-size: 1.2em;
+  white-space: nowrap;
+  user-select: none;
 }
 
 /* ===== TOP BAR ===== */
@@ -922,6 +893,7 @@ textarea { resize: vertical; min-height: 80px; }
 @media (max-width: 640px) {
   .app-container { padding: 10px; }
   .bismillah-text { font-size: 1.6em; }
+  .bismillah-inline { display: none; }
   .task-form-grid { grid-template-columns: 1fr; }
   .top-bar { flex-direction: column; align-items: stretch; }
   .top-bar-left, .top-bar-right { justify-content: center; }
@@ -989,6 +961,68 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 .shortcuts-drawer.open { transform: translateX(0); }
+
+/* Settings Sidebar */
+.settings-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 500;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+.settings-backdrop.open { display: block; }
+
+.settings-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 360px;
+  max-width: 90vw;
+  height: 100vh;
+  background: var(--bg-primary);
+  border-left: 2px solid var(--accent);
+  z-index: 501;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 30px rgba(0,0,0,0.4);
+  overflow: hidden;
+}
+
+[dir="rtl"] .settings-sidebar {
+  right: auto;
+  left: 0;
+  border-left: none;
+  border-right: 2px solid var(--accent);
+  transform: translateX(-100%);
+  box-shadow: 8px 0 30px rgba(0,0,0,0.4);
+}
+
+.settings-sidebar.open { transform: translateX(0); }
+
+.settings-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.settings-sidebar-header h3 {
+  color: var(--accent);
+  font-size: 1.1em;
+  margin: 0;
+}
+
+.settings-sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
 
 .shortcuts-header {
   display: flex;
@@ -2136,12 +2170,6 @@ body.kb-open .kb-toggle-btn {
 <!-- MAIN APP -->
 <div class="app-container" id="appContainer">
 
-  <!-- BISMILLAH HEADER -->
-  <div class="bismillah-header">
-    <div class="bismillah-text">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
-    <div class="bismillah-divider"><span>✦</span></div>
-  </div>
-
   <!-- TOP BAR -->
   <div class="top-bar">
     <div class="top-bar-left">
@@ -2151,6 +2179,7 @@ body.kb-open .kb-toggle-btn {
         <span id="syncLabel" data-i18n="offline">Offline</span>
       </div>
     </div>
+    <span class="bismillah-inline">بِسْمِ ٱللَّهِ</span>
     <div class="top-bar-right">
       <div class="lang-picker" id="langPicker">
         <button class="lang-picker-btn" onclick="toggleLangPicker()" id="langPickerBtn">
@@ -2174,6 +2203,7 @@ body.kb-open .kb-toggle-btn {
         </div>
       </div>
       <button class="btn" id="authBtn" onclick="toggleAuth()" data-i18n="signIn">☁️ Sign In</button>
+      <button class="btn btn-icon" onclick="toggleSettingsSidebar()" title="Settings" style="font-size:1.1em;">⚙️</button>
     </div>
   </div>
 
@@ -2187,7 +2217,6 @@ body.kb-open .kb-toggle-btn {
   <div class="tabs">
     <button class="tab active" data-tab="tasks" onclick="switchTab('tasks')">📝 <span data-i18n="tabTasks">Tasks</span></button>
     <button class="tab" data-tab="notes" onclick="switchTab('notes')">🔒 <span data-i18n="tabNotes">Secure Notes</span></button>
-    <button class="tab" data-tab="settings" onclick="switchTab('settings')">⚙️ <span data-i18n="tabSettings">Settings</span></button>
   </div>
 
   <!-- ===== TASKS PAGE ===== -->
@@ -2309,6 +2338,8 @@ body.kb-open .kb-toggle-btn {
         <!-- New Note Form (collapsible) -->
         <div id="newNoteFormWrapper">
           <button class="btn btn-accent" id="showNewNoteBtn" onclick="showNewNoteForm()" style="width:100%;padding:12px;margin-bottom:12px;">
+            ✏️ <span data-i18n="writeNewNote">Write New Note</span>
+          </button>
           <div class="task-form" id="newNoteForm" style="display:none;">
             <h3 style="color:var(--accent);margin-bottom:12px;">✏️ <span data-i18n="newNoteTitle">New Note</span></h3>
             <div class="form-group">
@@ -2341,8 +2372,16 @@ body.kb-open .kb-toggle-btn {
     </div>
   </div>
 
-  <!-- ===== SETTINGS PAGE ===== -->
-  <div class="page" id="page-settings">
+</div>
+
+<!-- ===== SETTINGS SIDEBAR ===== -->
+<div class="settings-backdrop" id="settingsBackdrop" onclick="toggleSettingsSidebar()"></div>
+<div class="settings-sidebar" id="settingsSidebar">
+  <div class="settings-sidebar-header">
+    <h3>⚙️ <span data-i18n="tabSettings">Settings</span></h3>
+    <button class="btn btn-icon" onclick="toggleSettingsSidebar()" style="font-size:1.2em;">✕</button>
+  </div>
+  <div class="settings-sidebar-body">
     <!-- Themes — open by default -->
     <div class="settings-section">
       <div class="settings-header open" onclick="toggleSettingsSection(this)">
@@ -2405,7 +2444,6 @@ body.kb-open .kb-toggle-btn {
         </div>
       </div>
     </div>
-    </div>
 
     <!-- Import / Export -->
     <div class="settings-section">
@@ -2462,6 +2500,7 @@ body.kb-open .kb-toggle-btn {
       </div>
     </div>
   </div>
+</div>
 
 <!-- ===== MODAL CONTAINER ===== -->
 <div class="modal-backdrop" id="modalBackdrop" style="display:none;" onclick="closeModal(event)">
@@ -3551,7 +3590,7 @@ function clearFirebaseConfig() {
 function toggleAuth() {
   if (!state.firebaseConfig) {
     showToast('Set Firebase config in Settings first ☁️');
-    switchTab('settings');
+    toggleSettingsSidebar();
     return;
   }
   if (!firebaseReady) {
@@ -3642,6 +3681,11 @@ function toggleSettingsSection(header) {
   const isOpen = body.classList.contains('open');
   header.classList.toggle('open', !isOpen);
   body.classList.toggle('open', !isOpen);
+}
+
+function toggleSettingsSidebar() {
+  document.getElementById('settingsBackdrop').classList.toggle('open');
+  document.getElementById('settingsSidebar').classList.toggle('open');
 }
 
 function filterHelp() {
