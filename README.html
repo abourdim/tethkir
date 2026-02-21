@@ -1,706 +1,116 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tethkir — Documentation</title>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tethkir — README</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #1a0f0a;
-  color: #f5e6d3;
-  line-height: 1.8;
-  overflow-x: hidden;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 40px, #d4a04a 40px, #d4a04a 41px),
-    repeating-linear-gradient(90deg, transparent, transparent 40px, #d4a04a 40px, #d4a04a 41px),
-    repeating-linear-gradient(45deg, transparent, transparent 28px, #d4a04a 28px, #d4a04a 29px),
-    repeating-linear-gradient(-45deg, transparent, transparent 28px, #d4a04a 28px, #d4a04a 29px);
-  opacity: 0.04;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.header-banner {
-  text-align: center;
-  padding: 50px 20px 30px;
-  position: relative;
-  z-index: 1;
-}
-
-.bismillah {
-  font-family: 'Aref Ruqaa', 'Amiri', serif;
-  font-size: 2.2em;
-  font-weight: 700;
-  color: #d4a04a;
-  text-shadow: 0 0 30px rgba(212,160,74,0.5), 0 2px 4px rgba(0,0,0,0.3);
-  direction: rtl;
-  margin-bottom: 10px;
-}
-
-.header-banner h1 {
-  font-family: 'Poppins', sans-serif;
-  font-size: 2em;
-  color: #d4a04a;
-  margin: 10px 0 5px;
-}
-
-.header-banner .subtitle {
-  color: #c4a882;
-  font-size: 1.05em;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  color: #d4a04a;
-  opacity: 0.5;
-  margin: 10px 0;
-}
-
-.divider::before, .divider::after {
-  content: '';
-  height: 1px;
-  width: 100px;
-  background: linear-gradient(to right, transparent, #d4a04a, transparent);
-}
-
-.container {
-  position: relative;
-  z-index: 1;
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 0 24px 60px;
-}
-
-.content {
-  background: #2d1810;
-  border: 1px solid rgba(212,160,74,0.15);
-  border-radius: 16px;
-  padding: 36px 40px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-}
-
-h1 { display: none; } /* Hide the first h1 since we have the banner */
-
-h2 {
-  font-size: 1.5em;
-  color: #d4a04a;
-  margin: 36px 0 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(212,160,74,0.2);
-}
-
-h2:first-child { margin-top: 0; }
-
-h3 {
-  font-size: 1.15em;
-  color: #e8b85c;
-  margin: 24px 0 10px;
-}
-
-p { margin: 10px 0; color: #ddd0c0; }
-
-a {
-  color: #d4a04a;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(212,160,74,0.3);
-  transition: all 0.3s ease;
-}
-
-a:hover { color: #e8b85c; border-bottom-color: #e8b85c; }
-
-strong { color: #f5e6d3; }
-
-ul, ol {
-  margin: 10px 0;
-  padding-left: 24px;
-}
-
-li {
-  margin: 6px 0;
-  color: #ddd0c0;
-}
-
-li::marker { color: #d4a04a; }
-
-hr {
-  border: none;
-  height: 1px;
-  background: linear-gradient(to right, transparent, rgba(212,160,74,0.3), transparent);
-  margin: 30px 0;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 16px 0;
-  font-size: 0.92em;
-}
-
-th {
-  background: rgba(212,160,74,0.15);
-  color: #d4a04a;
-  padding: 10px 14px;
-  text-align: left;
-  border: 1px solid rgba(212,160,74,0.15);
-  font-weight: 600;
-}
-
-td {
-  padding: 9px 14px;
-  border: 1px solid rgba(212,160,74,0.1);
-  color: #ddd0c0;
-}
-
-tr:nth-child(even) td { background: rgba(212,160,74,0.04); }
-
-code {
-  background: rgba(212,160,74,0.1);
-  color: #e8b85c;
-  padding: 2px 7px;
-  border-radius: 5px;
-  font-size: 0.88em;
-  font-family: 'Courier New', monospace;
-}
-
-pre {
-  background: #1a0f0a;
-  border: 1px solid rgba(212,160,74,0.15);
-  border-radius: 10px;
-  padding: 18px 20px;
-  overflow-x: auto;
-  margin: 14px 0;
-  font-size: 0.85em;
-  line-height: 1.6;
-}
-
-pre code {
-  background: none;
-  padding: 0;
-  color: #c4a882;
-  font-size: 1em;
-}
-
-blockquote {
-  border-left: 3px solid #d4a04a;
-  padding: 10px 20px;
-  margin: 14px 0;
-  background: rgba(212,160,74,0.05);
-  border-radius: 0 8px 8px 0;
-  color: #c4a882;
-}
-
-.footer {
-  text-align: center;
-  padding: 30px 20px;
-  color: #c4a882;
-  font-size: 0.9em;
-  position: relative;
-  z-index: 1;
-}
-
-.footer .bismillah-sm {
-  font-family: 'Aref Ruqaa', serif;
-  color: #d4a04a;
-  font-size: 1.3em;
-  margin-bottom: 8px;
-}
-
-.back-to-app {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 10px 24px;
-  background: #d4a04a;
-  color: #1a0f0a;
-  border-radius: 10px;
-  font-weight: 600;
-  text-decoration: none;
-  border: none;
-  transition: all 0.3s ease;
-}
-
-.back-to-app:hover {
-  background: #e8b85c;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(212,160,74,0.4);
-  border: none;
-}
-
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #1a0f0a; }
-::-webkit-scrollbar-thumb { background: #d4a04a; border-radius: 4px; }
-
-@media (max-width: 640px) {
-  .content { padding: 24px 20px; }
-  .bismillah { font-size: 1.6em; }
-  .header-banner h1 { font-size: 1.5em; }
-  pre { padding: 12px 14px; font-size: 0.8em; }
-}
-</style>
-</head>
-<body>
-
-<div class="header-banner">
-  <div class="bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
-  <div class="divider"><span>✦</span></div>
-  <h1>📝 Tethkir — تذكير</h1>
-  <p class="subtitle">Islamic Task Memo App — Documentation</p>
-  <div style="display:flex;gap:12px;justify-content:center;margin-top:15px;">
-    <a href="index.html" class="back-to-app">🚀 Open App</a>
-    <a href="CHANGES.html" class="back-to-app" style="background:transparent;border:2px solid #d4a04a;color:#d4a04a;">📋 Changelog</a>
-  </div>
-</div>
-
+:root { --bg: #1a0f0a; --card: #2d1810; --text: #f5e6d3; --muted: #c4a882; --accent: #d4a04a; --border: rgba(212,160,74,0.15); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.7; }
+.container { max-width: 800px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; }
+h1 { color: var(--accent); font-size: 1.8em; margin-bottom: 8px; }
+h2 { color: var(--accent); font-size: 1.3em; margin-top: 28px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+h3 { color: var(--accent); font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }
+p { color: var(--muted); margin-bottom: 10px; }
+a { color: var(--accent); }
+ul, ol { color: var(--muted); margin: 8px 0 12px 24px; }
+li { margin-bottom: 4px; }
+strong { color: var(--text); }
+code { background: rgba(212,160,74,0.1); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+pre { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; margin: 10px 0; }
+pre code { background: none; padding: 0; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+th, td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; color: var(--muted); font-size: 0.9em; }
+th { background: rgba(212,160,74,0.08); color: var(--accent); }
+hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.top-link { display: inline-block; margin-bottom: 16px; color: var(--accent); text-decoration: none; font-weight: 500; }
+</style></head><body>
 <div class="container">
-  <div class="content" id="readme-content">
-<h1 id="tethkir-islamic-task-memo-app">📝 Tethkir — Islamic Task Memo App</h1>
+<a class="top-link" href="index.html">← Open App</a>
+<h1>📝 Tethkir — تذكير</h1>
+<p><strong>Islamic Task Manager &amp; Secure Notes</strong></p>
 <p>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
-<p><strong>Tethkir</strong> (تذكير — "Reminder") is a beautiful, feature-rich task management web app inspired by Islamic art and architecture. It works offline with localStorage and syncs to the cloud via Firebase with Google Sign-In.</p>
+<p>A single-file web app for managing tasks and encrypted notes with Islamic themes, Arabic keyboard, voice features, and optional Firebase cloud sync.</p>
 <hr />
-<h2 id="features">✨ Features</h2>
-<h3 id="task-management">📝 Task Management</h3>
-<ul>
-<li><strong>Add, edit, delete</strong> tasks with a single click</li>
-<li><strong>Mark as done</strong> with satisfying checkmarks</li>
-<li><strong>Priority levels</strong> — High (red), Medium (yellow), Low (green) with color-coded indicators</li>
-<li><strong>Due dates</strong> — Set deadlines for your tasks</li>
-<li><strong>Categories</strong> — General, Work, Personal, Homework, Chores, Dua/Quran, Activities, Fun</li>
-<li><strong>Tags</strong> — Add comma-separated tags for organization</li>
-<li><strong>Search &amp; filter</strong> — Find tasks instantly by title, tag, priority, category, or status</li>
-<li><strong>Drag-and-drop reorder</strong> — Organize tasks your way</li>
-</ul>
-<h3 id="7-islamic-inspired-themes">🕌 7 Islamic-Inspired Themes</h3>
-<table>
-<thead>
-<tr>
-<th>Theme</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>🏰 <strong>Alhambra / Andalusian</strong></td>
-<td>Warm gold, terracotta, deep red — inspired by Granada's Alhambra palace</td>
-</tr>
-<tr>
-<td>🔵 <strong>Ottoman / Turkish</strong></td>
-<td>Turquoise, cobalt blue, gold accents — Iznik tile inspired</td>
-</tr>
-<tr>
-<td>💎 <strong>Moroccan Zellige</strong></td>
-<td>Emerald, saffron, royal blue — vibrant jewel tones</td>
-</tr>
-<tr>
-<td>✒️ <strong>Calligraphy / Minimal</strong></td>
-<td>Cream, black ink, gold — manuscript/parchment aesthetic</td>
-</tr>
-<tr>
-<td>🌙 <strong>Ramadan Night</strong></td>
-<td>Deep navy, purple, twinkling gold stars — peaceful night sky</td>
-</tr>
-<tr>
-<td>🏜️ <strong>Desert Oasis</strong></td>
-<td>Sandy beige, palm green, sky blue — calm and soothing</td>
-</tr>
-<tr>
-<td>🧸 <strong>Kids / Playground</strong></td>
-<td>Bright, colorful, rounded — fun for children</td>
-</tr>
-</tbody>
-</table>
-<h3 id="multi-language-support">🌍 Multi-Language Support</h3>
-<ul>
-<li><strong>English</strong> 🇬🇧</li>
-<li><strong>French</strong> 🇫🇷</li>
-<li><strong>Arabic</strong> 🇸🇦 with full <strong>RTL (Right-to-Left)</strong> layout support</li>
-</ul>
-<h3 id="security-features">🔒 Security Features</h3>
-<ul>
-<li><strong>PIN Lock</strong> — 4-digit PIN to protect the app (SHA-256 hashed)</li>
-<li><strong>Encrypted Secure Notes</strong> — AES-256 client-side encryption using CryptoJS</li>
-<li>Your notes are encrypted <em>before</em> being stored — nobody can read them without your passphrase</li>
-</ul>
-<h3 id="kids-mode">👶 Kids Mode</h3>
-<ul>
-<li><strong>Toggle switch</strong> — Quick flip between Kids and Adult UI</li>
-<li><strong>Separate profiles</strong> — Each family member gets their own task space</li>
-<li><strong>Star rewards</strong> ⭐ — Earn stars for completing tasks</li>
-<li><strong>Confetti celebration</strong> 🎉 — Fun animations when tasks are done</li>
-<li><strong>Encouraging Islamic messages</strong> — "Ma Shaa Allah! Great job!"</li>
-<li><strong>Kid-friendly categories</strong> — Homework, Chores, Dua/Quran, Activities, Fun</li>
-</ul>
-<h3 id="dual-storage">💾 Dual Storage</h3>
-<ul>
-<li><strong>Local mode</strong> (default) — Works immediately, data saved in browser's localStorage</li>
-<li><strong>Cloud mode</strong> — Sync across all your devices via Firebase + Google Sign-In</li>
-<li><strong>Auto-sync</strong> — Every change is automatically pushed to the cloud when signed in</li>
-<li><strong>Firebase SDK</strong> loaded dynamically on demand (no performance hit in local mode)</li>
-</ul>
-<h3 id="import-export">📦 Import / Export</h3>
-<ul>
-<li><strong>Export</strong> all your data as a <code>.json</code> backup file</li>
-<li><strong>Import</strong> data from a <code>.json</code> file on any device</li>
-<li>Works in both local and cloud modes</li>
-</ul>
-<h3 id="multiple-profiles">👤 Multiple Profiles</h3>
-<ul>
-<li>Default and Kids profiles included</li>
-<li>Create custom profiles for family members</li>
-<li>Each profile has its own independent task list</li>
-</ul>
+<h2>Features</h2>
+<p><strong>Tasks</strong> — Full task management with priorities, due dates, categories, tags, search, filter, and drag-and-drop reorder.</p>
+<p><strong>Secure Notes</strong> — AES-256 encrypted notes with master passphrase. 🔊 Listen to notes read aloud.</p>
+<p><strong>6 Islamic Themes</strong> — Alhambra, Ottoman, Moroccan, Calligraphy, Ramadan, Desert.</p>
+<p><strong>3 Languages</strong> — English, French, Arabic with full RTL support.</p>
+<p><strong>Arabic Keyboard</strong> — Virtual keyboard with full alphabet, harakat, Arabic numerals, and 🤲 Islamic phrases drawer.</p>
+<p><strong>Voice</strong> — 🎤 Speech-to-text on task/note inputs. 🔊 Text-to-speech on saved notes.</p>
+<p><strong>Cloud Sync</strong> — Optional Firebase integration with Google Sign-In. Auto-syncs tasks, notes, profiles, theme, and language.</p>
+<p><strong>Profiles</strong> — Multiple independent task lists (Default + custom).</p>
+<p><strong>Security</strong> — PIN lock (SHA-256), encrypted notes (AES-256), change passphrase/PIN support.</p>
+<p><strong>Data</strong> — Import/Export JSON backups. Clear All Data option. Works offline with localStorage.</p>
 <hr />
-<h2 id="quick-start">🚀 Quick Start</h2>
-<h3 id="option-1-just-open-it">Option 1: Just Open It</h3>
-<p>Simply download <code>index.html</code> and open it in any modern browser. Everything works locally out of the box.</p>
-<h3 id="option-2-host-on-github-pages-recommended">Option 2: Host on GitHub Pages (Recommended)</h3>
+<h2>Deploy on GitHub Pages</h2>
 <ol>
-<li>
-<p><strong>Create a GitHub account</strong> (if you don't have one) at <a href="https://github.com">github.com</a></p>
-</li>
-<li>
-<p><strong>Create a new repository:</strong></p>
-</li>
-<li>Click the <strong>+</strong> button → <strong>New repository</strong></li>
-<li>Name it something like <code>tethkir</code> or <code>task-memo</code></li>
-<li>Set it to <strong>Public</strong> (required for free GitHub Pages)</li>
-<li>Check <strong>"Add a README file"</strong> (optional)</li>
-<li>
-<p>Click <strong>Create repository</strong></p>
-</li>
-<li>
-<p><strong>Upload the files:</strong></p>
-</li>
-<li>In your new repo, click <strong>Add file</strong> → <strong>Upload files</strong></li>
-<li>Drag and drop both <code>index.html</code> and <code>README.md</code></li>
-<li>
-<p>Click <strong>Commit changes</strong></p>
-</li>
-<li>
-<p><strong>Enable GitHub Pages:</strong></p>
-</li>
-<li>Go to <strong>Settings</strong> → <strong>Pages</strong> (in the left sidebar)</li>
-<li>Under <strong>Source</strong>, select <strong>Deploy from a branch</strong></li>
-<li>Select <strong>main</strong> branch, <strong>/ (root)</strong> folder</li>
-<li>
-<p>Click <strong>Save</strong></p>
-</li>
-<li>
-<p><strong>Access your app:</strong></p>
-</li>
-<li>Wait 1-2 minutes for deployment</li>
-<li>Your app will be live at: <code>https://YOUR-USERNAME.github.io/tethkir/</code></li>
-<li>Bookmark this URL on all your devices!</li>
+<li>Create a GitHub repository (e.g. <code>tethkir</code>)</li>
+<li>Upload all files: <code>index.html</code>, <code>README.html</code>, <code>CHANGES.html</code>, <code>CHANGES.md</code>, <code>README.md</code></li>
+<li>Go to Settings → Pages → Source: main branch → Save</li>
+<li>Your app is live at <code>https://yourusername.github.io/tethkir/</code></li>
 </ol>
 <hr />
-<h2 id="firebase-cloud-sync-setup-step-by-step">☁️ Firebase Cloud Sync Setup (Step-by-Step)</h2>
-<p>Firebase allows you to sync your tasks across all devices. Here's the complete setup guide:</p>
-<h3 id="step-1-create-a-firebase-project">Step 1: Create a Firebase Project</h3>
-<ol>
-<li>Go to <a href="https://console.firebase.google.com/">Firebase Console</a></li>
-<li>Click <strong>"Create a project"</strong> (or "Add project")</li>
-<li>Enter a project name: <code>tethkir</code> (or anything you like)</li>
-<li>Disable Google Analytics (not needed) or enable it — your choice</li>
-<li>Click <strong>Create project</strong></li>
-<li>Wait for setup to complete, then click <strong>Continue</strong></li>
-</ol>
-<h3 id="step-2-register-a-web-app">Step 2: Register a Web App</h3>
-<ol>
-<li>On the project overview page, click the <strong>Web icon</strong> <code>&lt;/&gt;</code> (looks like <code>&lt;/&gt;</code>)</li>
-<li>Enter an app nickname: <code>Tethkir Web</code></li>
-<li>✅ Check <strong>"Also set up Firebase Hosting"</strong> if you want Firebase hosting instead of GitHub Pages (optional)</li>
-<li>Click <strong>Register app</strong></li>
-<li>You'll see a code block with your Firebase config. It looks like this:</li>
-</ol>
-<pre><code class="language-javascript">const firebaseConfig = {
-  apiKey: &quot;AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
-  authDomain: &quot;tethkir-xxxxx.firebaseapp.com&quot;,
-  projectId: &quot;tethkir-xxxxx&quot;,
-  storageBucket: &quot;tethkir-xxxxx.appspot.com&quot;,
-  messagingSenderId: &quot;123456789012&quot;,
-  appId: &quot;1:123456789012:web:abcdef1234567890&quot;
-};
-</code></pre>
-<ol>
-<li><strong>Copy this entire config object</strong> — you'll need it later</li>
-<li>Click <strong>Continue to console</strong></li>
-</ol>
-<h3 id="step-3-enable-authentication-google-sign-in">Step 3: Enable Authentication (Google Sign-In)</h3>
-<ol>
-<li>In the Firebase Console, click <strong>Build</strong> → <strong>Authentication</strong> in the left sidebar</li>
-<li>Click <strong>Get started</strong></li>
-<li>Go to the <strong>Sign-in method</strong> tab</li>
-<li>Click <strong>Google</strong></li>
-<li>Toggle the <strong>Enable</strong> switch ON</li>
-<li>Select a <strong>Support email</strong> (your Gmail address)</li>
-<li>Click <strong>Save</strong></li>
-</ol>
-<h3 id="step-4-set-up-cloud-firestore-database">Step 4: Set Up Cloud Firestore Database</h3>
-<ol>
-<li>Click <strong>Build</strong> → <strong>Firestore Database</strong> in the left sidebar</li>
-<li>Click <strong>Create database</strong></li>
-<li>Choose a location closest to you:</li>
-<li>Europe: <code>europe-west1</code> (Belgium) or <code>europe-west6</code> (Zurich)</li>
-<li>Middle East: <code>me-south1</code> (Doha)</li>
-<li>US: <code>us-central1</code> (Iowa)</li>
-<li>Asia: <code>asia-southeast1</code> (Singapore)</li>
-<li>Click <strong>Next</strong></li>
-<li>Select <strong>Start in test mode</strong> (we'll secure it later)</li>
-<li>Click <strong>Create</strong></li>
-</ol>
-<h3 id="step-5-set-firestore-security-rules">Step 5: Set Firestore Security Rules</h3>
-<ol>
-<li>In Firestore, click the <strong>Rules</strong> tab</li>
-<li>Replace the default rules with:</li>
-</ol>
+<h2>Firebase Setup (Optional)</h2>
+<p>The app includes a built-in Firebase setup guide. Open the app → tap ❓ Help → scroll to <strong>Firebase Cloud Sync Setup</strong>.</p>
+<p><strong>Quick summary:</strong>
+1. Create a Firebase project at <a href="https://console.firebase.google.com">console.firebase.google.com</a>
+2. Register a web app and copy the config JSON
+3. Enable Google sign-in in Authentication
+4. Create a Firestore database
+5. Add your GitHub Pages domain as an authorized domain
+6. Paste the config JSON in Settings → Firebase Cloud Sync</p>
+<p><strong>Firestore Security Rules:</strong></p>
 <pre><code>rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can only read/write their own data
     match /users/{userId}/{document=**} {
       allow read, write: if request.auth != null &amp;&amp; request.auth.uid == userId;
     }
   }
 }
 </code></pre>
-<ol>
-<li>Click <strong>Publish</strong></li>
-</ol>
-<p>This ensures only authenticated users can access their own data — nobody else can see your tasks.</p>
-<h3 id="step-6-add-authorized-domains">Step 6: Add Authorized Domains</h3>
-<ol>
-<li>Go to <strong>Authentication</strong> → <strong>Settings</strong> tab</li>
-<li>Scroll to <strong>Authorized domains</strong></li>
-<li>Click <strong>Add domain</strong></li>
-<li>Add your GitHub Pages domain: <code>YOUR-USERNAME.github.io</code></li>
-<li>Click <strong>Add</strong></li>
-</ol>
-<p>This allows Google Sign-In to work from your GitHub Pages site.</p>
-<h3 id="step-7-paste-config-in-tethkir">Step 7: Paste Config in Tethkir</h3>
-<ol>
-<li>Open your Tethkir app</li>
-<li>Go to <strong>Settings</strong> tab (⚙️)</li>
-<li>Scroll down to <strong>Firebase Cloud Sync</strong></li>
-<li>Paste your Firebase config as JSON in the text area:</li>
-</ol>
-<pre><code class="language-json">{
-  &quot;apiKey&quot;: &quot;AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
-  &quot;authDomain&quot;: &quot;tethkir-xxxxx.firebaseapp.com&quot;,
-  &quot;projectId&quot;: &quot;tethkir-xxxxx&quot;,
-  &quot;storageBucket&quot;: &quot;tethkir-xxxxx.appspot.com&quot;,
-  &quot;messagingSenderId&quot;: &quot;123456789012&quot;,
-  &quot;appId&quot;: &quot;1:123456789012:web:abcdef1234567890&quot;
-}
-</code></pre>
-<ol>
-<li>Click <strong>Save Config</strong> — you'll see "Firebase ready!"</li>
-<li>Click <strong>☁️ Sign In</strong> in the top bar</li>
-<li>Sign in with your Google account via the popup</li>
-<li>The status dot turns <strong>green</strong> and shows your name — you're synced! 🎉</li>
-</ol>
-<blockquote>
-<p><strong>Note:</strong> As of v1.4.0, the Firebase SDK is loaded dynamically when you save your config — no manual script tags needed. Everything is built into the single <code>index.html</code> file. Every change (add/edit/delete tasks, notes, profiles) is automatically synced to the cloud.</p>
-</blockquote>
-<h3 id="troubleshooting">Troubleshooting</h3>
+<hr />
+<h2>Troubleshooting</h2>
 <table>
 <thead>
 <tr>
-<th>Problem</th>
-<th>Solution</th>
+<th>Issue</th>
+<th>Fix</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>"Add this domain to Firebase Authorized Domains"</strong></td>
-<td>Go to Firebase Console → Authentication → Settings → Authorized domains → Add your domain (e.g. <code>yourusername.github.io</code>)</td>
+<td>"Unauthorized domain" on sign-in</td>
+<td>Add your domain in Firebase Console → Authentication → Settings → Authorized domains</td>
 </tr>
 <tr>
-<td><strong>Popup blocked</strong></td>
+<td>Popup blocked</td>
 <td>Allow popups for your site in browser settings</td>
 </tr>
 <tr>
-<td><strong>Sign-in cancelled</strong></td>
-<td>Try again — the popup may have been closed accidentally</td>
+<td>"Invalid config"</td>
+<td>Check JSON format — must have apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId</td>
 </tr>
 <tr>
-<td><strong>Changes not syncing</strong></td>
-<td>Check that the green dot is showing. Try signing out and back in</td>
+<td>Notes won't decrypt</td>
+<td>Wrong passphrase — there is no recovery</td>
 </tr>
 <tr>
-<td><strong>"Firebase config invalid"</strong></td>
-<td>Make sure you pasted valid JSON with all required fields</td>
+<td>Old data after rename</td>
+<td>Clear browser localStorage (Settings → Clear All)</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="file-structure">📁 File Structure</h2>
-<pre><code>tethkir/
-├── index.html      ← The complete app (single file)
-└── README.md       ← This documentation
-</code></pre>
-<p>Everything is contained in a single <code>index.html</code> file for maximum simplicity and portability.</p>
-<hr />
-<h2 id="security-notes">🔐 Security Notes</h2>
-<h3 id="pin-lock">PIN Lock</h3>
+<h2>Tech Stack</h2>
 <ul>
-<li>Your PIN is hashed with SHA-256 before storage</li>
-<li>The PIN prevents casual access to the app UI</li>
-<li>It does NOT encrypt your task data</li>
-</ul>
-<h3 id="secure-notes-aes-encryption">Secure Notes (AES Encryption)</h3>
-<ul>
-<li>Notes are encrypted using AES-256 via <a href="https://github.com/brix/crypto-js">CryptoJS</a></li>
-<li>Encryption happens <strong>client-side</strong> — your passphrase never leaves your browser</li>
-<li>Without the passphrase, notes are unreadable gibberish</li>
-<li>If you forget your passphrase, <strong>notes cannot be recovered</strong></li>
-</ul>
-<h3 id="important-warnings">Important Warnings</h3>
-<ul>
-<li>⚠️ <strong>Do NOT store critical passwords</strong> in this app — use a proper password manager like <a href="https://bitwarden.com/">Bitwarden</a> (free) or KeePass</li>
-<li>⚠️ localStorage can be read by browser extensions and anyone with device access</li>
-<li>⚠️ Firebase data is stored as plain text unless you use the Secure Notes feature</li>
-<li>✅ Secure Notes with a strong passphrase are reasonably safe for personal memos</li>
+<li><strong>Single HTML file</strong> — No build tools, no dependencies to install</li>
+<li><strong>CryptoJS</strong> — AES-256 encryption for secure notes</li>
+<li><strong>Firebase 10.8</strong> — Auth + Firestore (loaded on demand)</li>
+<li><strong>Web Speech API</strong> — Speech-to-text and text-to-speech</li>
+<li><strong>localStorage</strong> — Offline data persistence</li>
 </ul>
 <hr />
-<h2 id="language-rtl-support">🌍 Language &amp; RTL Support</h2>
-<table>
-<thead>
-<tr>
-<th>Language</th>
-<th>Code</th>
-<th>Direction</th>
-<th>Font</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>English</td>
-<td><code>en</code></td>
-<td>LTR (Left-to-Right)</td>
-<td>Poppins</td>
-</tr>
-<tr>
-<td>French</td>
-<td><code>fr</code></td>
-<td>LTR (Left-to-Right)</td>
-<td>Poppins</td>
-</tr>
-<tr>
-<td>Arabic</td>
-<td><code>ar</code></td>
-<td>RTL (Right-to-Left)</td>
-<td>Amiri / Aref Ruqaa</td>
-</tr>
-</tbody>
-</table>
-<p>When Arabic is selected, the entire layout flips automatically — text alignment, sidebar, icons, and all UI elements adapt to RTL.</p>
-<hr />
-<h2 id="kids-mode-guide">🧸 Kids Mode Guide</h2>
-<h3 id="how-it-works">How It Works</h3>
-<ol>
-<li><strong>Toggle Kids Mode</strong> in Settings or click the 🧸 button</li>
-<li><strong>Switch to Kids profile</strong> in the profile bar</li>
-<li>Kids see simplified categories: Homework, Chores, Dua/Quran, Activities, Fun</li>
-<li>Completing tasks earns ⭐ stars with confetti animations</li>
-<li>Encouraging Islamic messages appear: "Ma Shaa Allah! Great job!"</li>
-</ol>
-<h3 id="for-parents">For Parents</h3>
-<ul>
-<li>Set up tasks for your children</li>
-<li>Track their progress via the star counter</li>
-<li>Use the PIN lock to prevent kids from accessing Secure Notes or Settings</li>
-<li>Create separate profiles for each child</li>
-</ul>
-<hr />
-<h2 id="import-export-guide">📦 Import &amp; Export Guide</h2>
-<h3 id="exporting-data">Exporting Data</h3>
-<ol>
-<li>Go to <strong>Settings</strong> → <strong>Data Management</strong></li>
-<li>Click <strong>📥 Export</strong></li>
-<li>A <code>.json</code> file will download with all your tasks, notes, profiles, and settings</li>
-</ol>
-<h3 id="importing-data">Importing Data</h3>
-<ol>
-<li>Go to <strong>Settings</strong> → <strong>Data Management</strong></li>
-<li>Click <strong>📤 Import</strong></li>
-<li>Select your <code>.json</code> backup file</li>
-<li>All data will be restored instantly</li>
-</ol>
-<h3 id="use-cases">Use Cases</h3>
-<ul>
-<li><strong>Backup</strong> your data regularly</li>
-<li><strong>Transfer</strong> tasks between devices without Firebase</li>
-<li><strong>Share</strong> task templates with others</li>
-<li><strong>Migrate</strong> from one browser to another</li>
-</ul>
-<hr />
-<h2 id="customization">🛠️ Customization</h2>
-<h3 id="adding-new-themes">Adding New Themes</h3>
-<p>You can add new themes by adding a CSS <code>[data-theme="yourtheme"]</code> block with the following variables:</p>
-<pre><code class="language-css">[data-theme=&quot;yourtheme&quot;] {
-  --bg-primary: #...;
-  --bg-secondary: #...;
-  --bg-card: #...;
-  --bg-input: #...;
-  --text-primary: #...;
-  --text-secondary: #...;
-  --accent: #...;
-  --accent-hover: #...;
-  --accent-glow: rgba(...);
-  --border: rgba(...);
-  --bismillah-color: #...;
-  --bismillah-glow: rgba(...);
-  --pattern-opacity: 0.06;
-}
-</code></pre>
-<p>Then add a theme card in the Settings HTML section.</p>
-<h3 id="adding-new-languages">Adding New Languages</h3>
-<p>Add a new language object in the <code>i18n</code> constant following the existing <code>en</code>, <code>fr</code>, <code>ar</code> pattern, and add the language option in the <code>langSelect</code> dropdown.</p>
-<hr />
-<h2 id="contributing">🤝 Contributing</h2>
-<p>Feel free to fork, improve, and share! Some ideas for contributions:
-- Additional Islamic themes (Persian, Mughal, Mamluk...)
-- More languages (Turkish, Urdu, Malay, Indonesian...)
-- Push notifications for due dates
-- Recurring tasks
-- Calendar view
-- Voice input for tasks</p>
-<hr />
-<h2 id="license">📄 License</h2>
-<p>This project is open source and free to use. Built with love and Tawakkul.</p>
-<hr />
-<h2 id="acknowledgments">🤲 Acknowledgments</h2>
-<ul>
-<li><strong>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</strong> — In the name of Allah, the Most Gracious, the Most Merciful</li>
-<li>Fonts: <a href="https://fonts.google.com/specimen/Amiri">Amiri</a>, <a href="https://fonts.google.com/specimen/Aref+Ruqaa">Aref Ruqaa</a>, <a href="https://fonts.google.com/specimen/Scheherazade+New">Scheherazade New</a></li>
-<li>Encryption: <a href="https://github.com/brix/crypto-js">CryptoJS</a></li>
-<li>Hosting: <a href="https://pages.github.com/">GitHub Pages</a></li>
-<li>Backend: <a href="https://firebase.google.com/">Firebase</a></li>
-</ul>
-<hr />
-<p><strong>May this app help you stay organized and focused on what matters. بارك الله فيكم</strong> 🌙✨</p>
-  </div>
-</div>
-
-<div class="footer">
-  <div class="bismillah-sm">بارك الله فيكم</div>
-  <p>Built with love and Tawakkul 🌙✨</p>
-  <div style="display:flex;gap:12px;justify-content:center;margin-top:15px;">
-    <a href="index.html" class="back-to-app">🚀 Open App</a>
-    <a href="CHANGES.html" class="back-to-app" style="background:transparent;border:2px solid #d4a04a;color:#d4a04a;">📋 Changelog</a>
-  </div>
-</div>
-
-</body>
-</html>
+<p><em>v1.0 — Built with love and Tawakkul. بارك الله فيكم</em> 🌙✨</p>
+</div></body></html>
