@@ -3469,6 +3469,17 @@ function initFirebase(config) {
 }
 
 function setupAuthListener() {
+  // Handle redirect result (for iOS Safari sign-in)
+  firebaseAuth.getRedirectResult().then(result => {
+    if (result && result.user) {
+      showToast('Welcome, ' + result.user.displayName + '! ☁️');
+    }
+  }).catch(e => {
+    if (e.code !== 'auth/no-auth-event') {
+      console.error('Redirect result error:', e);
+    }
+  });
+
   firebaseAuth.onAuthStateChanged(user => {
     if (user) {
       updateSyncUI(true, user.displayName);
@@ -3614,9 +3625,23 @@ function toggleAuth() {
 
 async function doSignIn() {
   try {
+    // Guard: ensure auth module is ready
+    if (!firebase.auth || !firebase.auth.GoogleAuthProvider) {
+      showToast('Firebase auth not ready — try again');
+      return;
+    }
     const provider = new firebase.auth.GoogleAuthProvider();
-    const result = await firebaseAuth.signInWithPopup(provider);
-    showToast('Welcome, ' + result.user.displayName + '! ☁️');
+
+    // iOS Safari doesn't support popups well — use redirect
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    if (isIOS || (isSafari && 'ontouchstart' in window)) {
+      await firebaseAuth.signInWithRedirect(provider);
+    } else {
+      const result = await firebaseAuth.signInWithPopup(provider);
+      showToast('Welcome, ' + result.user.displayName + '! ☁️');
+    }
   } catch(e) {
     if (e.code === 'auth/popup-closed-by-user') {
       showToast('Sign-in cancelled');
