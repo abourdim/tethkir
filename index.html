@@ -220,6 +220,47 @@ body::before {
   user-select: none;
 }
 
+/* ===== SIMPLE MODE ===== */
+body.simple-mode .profiles-bar { display: none !important; }
+body.simple-mode .task-form-grid .form-group:not(.full-width) { display: none !important; }
+body.simple-mode .search-filter-bar { display: none !important; }
+body.simple-mode .task-meta { display: none !important; }
+body.simple-mode .kb-toggle-btn { display: none !important; }
+body.simple-mode .help-toggle-btn { display: none !important; }
+body.simple-mode .secure-notes-section { display: none !important; }
+body.simple-mode .simple-notes-section { display: block !important; }
+body.simple-mode .task-form-grid { grid-template-columns: 1fr !important; }
+body.simple-mode .task-item { padding-left: 16px; }
+body.simple-mode .bismillah-inline { display: none; }
+
+body:not(.simple-mode) .simple-notes-section { display: none !important; }
+
+.simple-notes-section .simple-note-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.simple-notes-section .simple-note-card h4 {
+  color: var(--accent);
+  font-size: 1em;
+  margin: 0 0 6px 0;
+}
+.simple-notes-section .simple-note-card p {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+.simple-notes-section .simple-note-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  justify-content: flex-end;
+}
+
 /* ===== TOP BAR ===== */
 .top-bar {
   display: flex;
@@ -901,6 +942,18 @@ textarea { resize: vertical; min-height: 80px; }
   .theme-grid { grid-template-columns: repeat(3, 1fr); }
   .tabs { flex-wrap: nowrap; overflow-x: auto; }
   .tab { min-width: fit-content; flex: unset; padding: 10px 14px; }
+
+  /* Mobile simple mode: bigger targets, more breathing room */
+  body.simple-mode .task-form { padding: 12px; }
+  body.simple-mode .task-form input,
+  body.simple-mode .task-form textarea { font-size: 16px; padding: 12px; }
+  body.simple-mode .btn { min-height: 44px; font-size: 0.95em; }
+  body.simple-mode .task-item { padding: 14px 16px; }
+  body.simple-mode .task-title { font-size: 1em; }
+  body.simple-mode .simple-note-card { padding: 14px; }
+  body.simple-mode .tabs { justify-content: center; }
+  body.simple-mode .tab { flex: 1; text-align: center; padding: 12px 8px; font-size: 1em; }
+  body.simple-mode .top-bar-right { gap: 6px; }
 }
 
 /* ===== NOTIFICATION TOAST ===== */
@@ -2303,6 +2356,31 @@ body.kb-open .kb-toggle-btn {
 
   <!-- ===== SECURE NOTES PAGE ===== -->
   <div class="page" id="page-notes">
+    <!-- SIMPLE MODE NOTES -->
+    <div class="simple-notes-section">
+      <div id="simpleNotesList" style="margin-bottom:16px;"></div>
+      <div class="task-form">
+        <div class="form-group">
+          <label data-i18n="noteTitle">Note Title</label>
+          <div class="stt-input-wrap">
+            <input type="text" id="simpleNoteTitleInput" data-i18n-placeholder="noteTitlePlaceholder" placeholder="Note title...">
+            <button type="button" class="btn-mic" onclick="toggleSTT('simpleNoteTitleInput', this)" title="Voice input">🎤</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label data-i18n="noteContent">Content</label>
+          <div class="stt-input-wrap" style="align-items:flex-start;">
+            <textarea id="simpleNoteContentInput" rows="3" data-i18n-placeholder="noteContentPlaceholder" placeholder="Your note..."></textarea>
+            <button type="button" class="btn-mic" style="margin-top:4px;" onclick="toggleSTT('simpleNoteContentInput', this)" title="Voice input">🎤</button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-accent" onclick="addSimpleNote()" data-i18n="saveNote">💾 Save Note</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADVANCED MODE NOTES (encrypted) -->
     <div class="secure-notes-section">
       <div id="notePasswordSection">
         <div class="task-form">
@@ -2382,6 +2460,17 @@ body.kb-open .kb-toggle-btn {
     <button class="btn btn-icon" onclick="toggleSettingsSidebar()" style="font-size:1.2em;">✕</button>
   </div>
   <div class="settings-sidebar-body">
+    <!-- Mode Toggle -->
+    <div class="settings-section">
+      <div class="settings-section-static">
+        <div class="setting-row">
+          <span class="setting-label" style="font-weight:600;color:var(--accent);" data-i18n="modeLabel">Simple Mode</span>
+          <div class="toggle active" id="simpleModeToggle" onclick="toggleSimpleMode()"></div>
+        </div>
+        <p style="color:var(--text-secondary);font-size:0.8em;margin-top:4px;" data-i18n="modeDesc">Hide advanced features (profiles, filters, encryption)</p>
+      </div>
+    </div>
+
     <!-- Themes — open by default -->
     <div class="settings-section">
       <div class="settings-header open" onclick="toggleSettingsSection(this)">
@@ -2519,9 +2608,11 @@ const APP_VERSION = 'v1.0';
 const i18n = {
   en: {
     appTitle: '📝 Tethkir',
+    modeLabel: 'Simple Mode', modeDesc: 'Hide advanced features (profiles, filters, encryption)',
+    noNotesYet: 'No notes yet!', noteSaved: 'Note saved! ✅',
     offline: 'Offline', online: 'Synced', syncing: 'Syncing...',
     signIn: '☁️ Sign In', signOut: '☁️ Sign Out',
-    tabTasks: 'Tasks', tabNotes: 'Secure Notes', tabSettings: 'Settings',
+    tabTasks: 'Tasks', tabNotes: 'Secure Notes', tabNotesSimple: 'Notes', tabSettings: 'Settings',
     taskTitle: 'Task Title', taskTitlePlaceholder: 'What do you need to do?',
     priority: 'Priority', dueDate: 'Due Date', category: 'Category', tags: 'Tags',
     tagsPlaceholder: 'comma separated',
@@ -2615,9 +2706,11 @@ const i18n = {
   },
   fr: {
     appTitle: '📝 Tethkir',
+    modeLabel: 'Mode Simple', modeDesc: 'Masquer les fonctions avancées (profils, filtres, chiffrement)',
+    noNotesYet: 'Aucune note !', noteSaved: 'Note enregistrée ! ✅',
     offline: 'Hors ligne', online: 'Synchronisé', syncing: 'Synchronisation...',
     signIn: '☁️ Connexion', signOut: '☁️ Déconnexion',
-    tabTasks: 'Tâches', tabNotes: 'Notes Sécurisées', tabSettings: 'Paramètres',
+    tabTasks: 'Tâches', tabNotes: 'Notes Sécurisées', tabNotesSimple: 'Notes', tabSettings: 'Paramètres',
     taskTitle: 'Titre de la tâche', taskTitlePlaceholder: 'Que devez-vous faire?',
     priority: 'Priorité', dueDate: 'Date limite', category: 'Catégorie', tags: 'Étiquettes',
     tagsPlaceholder: 'séparées par des virgules',
@@ -2711,9 +2804,11 @@ const i18n = {
   },
   ar: {
     appTitle: '📝 تذكير',
+    modeLabel: 'الوضع البسيط', modeDesc: 'إخفاء الميزات المتقدمة (الملفات، الفلاتر، التشفير)',
+    noNotesYet: 'لا توجد ملاحظات!', noteSaved: 'تم حفظ الملاحظة! ✅',
     offline: 'غير متصل', online: 'متصل', syncing: 'جاري المزامنة...',
     signIn: '☁️ تسجيل الدخول', signOut: '☁️ تسجيل الخروج',
-    tabTasks: 'المهام', tabNotes: 'ملاحظات آمنة', tabSettings: 'الإعدادات',
+    tabTasks: 'المهام', tabNotes: 'ملاحظات آمنة', tabNotesSimple: 'ملاحظات', tabSettings: 'الإعدادات',
     taskTitle: 'عنوان المهمة', taskTitlePlaceholder: 'ماذا تريد أن تفعل؟',
     priority: 'الأولوية', dueDate: 'تاريخ الاستحقاق', category: 'الفئة', tags: 'العلامات',
     tagsPlaceholder: 'مفصولة بفواصل',
@@ -2817,6 +2912,8 @@ let state = {
   profiles: ['default'],
   tasks: {},        // { profileId: [ task, ... ] }
   notes: [],        // encrypted notes
+  simpleNotes: {},  // { profileId: [ {id, title, content, created}, ... ] }
+  simpleMode: true, // default simple
   firebaseConfig: null,
   notePassphrase: null,
   editingTaskId: null,
@@ -2825,6 +2922,9 @@ let state = {
 // ===== INIT =====
 function init() {
   loadState();
+  // Default to simple mode for new users
+  if (state.simpleMode === undefined) state.simpleMode = true;
+  applySimpleMode();
   applyLang(state.lang);
   setTheme(state.theme);
   if (state.pinEnabled && state.pin) showPinLock();
@@ -2913,6 +3013,7 @@ function toggleLangPicker() {
 function selectLang(lang) {
   document.getElementById('langPickerMenu').classList.remove('open');
   applyLang(lang);
+  applySimpleMode();
   renderTasks();
   updateSyncUI(firebaseAuth?.currentUser != null, firebaseAuth?.currentUser?.displayName);
 }
@@ -2939,6 +3040,7 @@ function setTheme(themeId) {
 function switchTab(tabName) {
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === `page-${tabName}`));
+  if (tabName === 'notes' && state.simpleMode) renderSimpleNotes();
 }
 
 // ===== PROFILES =====
@@ -3739,6 +3841,86 @@ function toggleSettingsSection(header) {
 function toggleSettingsSidebar() {
   document.getElementById('settingsBackdrop').classList.toggle('open');
   document.getElementById('settingsSidebar').classList.toggle('open');
+}
+
+// ===== SIMPLE MODE =====
+function toggleSimpleMode() {
+  state.simpleMode = !state.simpleMode;
+  applySimpleMode();
+  saveState();
+}
+
+function applySimpleMode() {
+  const on = state.simpleMode !== false; // default true
+  document.body.classList.toggle('simple-mode', on);
+  const toggle = document.getElementById('simpleModeToggle');
+  if (toggle) toggle.classList.toggle('active', on);
+  // Update notes tab label
+  const notesTab = document.querySelector('[data-tab="notes"] span');
+  if (notesTab) {
+    const t = i18n[state.lang] || i18n.en;
+    notesTab.textContent = on ? (t.tabNotesSimple || 'Notes') : (t.tabNotes || 'Secure Notes');
+  }
+  if (on) renderSimpleNotes();
+}
+
+function addSimpleNote() {
+  const title = document.getElementById('simpleNoteTitleInput').value.trim();
+  const content = document.getElementById('simpleNoteContentInput').value.trim();
+  if (!title && !content) { showToast('Write something first!'); return; }
+  if (!state.simpleNotes) state.simpleNotes = {};
+  if (!state.simpleNotes[state.currentProfile]) state.simpleNotes[state.currentProfile] = [];
+  state.simpleNotes[state.currentProfile].push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    title: title || 'Untitled',
+    content: content,
+    created: Date.now()
+  });
+  document.getElementById('simpleNoteTitleInput').value = '';
+  document.getElementById('simpleNoteContentInput').value = '';
+  saveState();
+  renderSimpleNotes();
+  const t = i18n[state.lang] || i18n.en;
+  showToast(t.noteSaved || 'Note saved! ✅');
+}
+
+function renderSimpleNotes() {
+  const container = document.getElementById('simpleNotesList');
+  if (!container) return;
+  const notes = (state.simpleNotes && state.simpleNotes[state.currentProfile]) || [];
+  if (notes.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:30px 10px;color:var(--text-secondary);"><div style="font-size:2em;margin-bottom:8px;">📝</div><p data-i18n="noNotesYet"><b>No notes yet!</b></p></div>';
+    return;
+  }
+  container.innerHTML = notes.map(n => `
+    <div class="simple-note-card">
+      <h4>${n.title}</h4>
+      <p>${n.content}</p>
+      <div class="simple-note-actions">
+        <button class="btn btn-sm" onclick="speakSimpleNote('${n.id}')" title="Read aloud">🔊</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteSimpleNote('${n.id}')" title="Delete">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function deleteSimpleNote(id) {
+  if (!state.simpleNotes || !state.simpleNotes[state.currentProfile]) return;
+  state.simpleNotes[state.currentProfile] = state.simpleNotes[state.currentProfile].filter(n => n.id !== id);
+  saveState();
+  renderSimpleNotes();
+}
+
+function speakSimpleNote(id) {
+  const notes = (state.simpleNotes && state.simpleNotes[state.currentProfile]) || [];
+  const note = notes.find(n => n.id === id);
+  if (!note) return;
+  if (window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); return; }
+  const text = note.title + '. ' + note.content;
+  const utter = new SpeechSynthesisUtterance(text);
+  const langMap = { en: 'en-US', fr: 'fr-FR', ar: 'ar-SA' };
+  utter.lang = langMap[state.lang] || 'en-US';
+  window.speechSynthesis.speak(utter);
 }
 
 function filterHelp() {
