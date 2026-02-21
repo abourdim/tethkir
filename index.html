@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tethkir — Task Memo v1.4.0</title>
+<title>Tethkir — Task Memo v1.5.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
@@ -715,18 +715,44 @@ textarea { resize: vertical; min-height: 80px; }
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 20px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
+  overflow: hidden;
 }
 
 .settings-section h3 {
   color: var(--accent);
-  margin-bottom: 14px;
-  font-size: 1.1em;
+  margin: 0;
+  font-size: 1.05em;
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
+/* Collapsible settings header */
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.settings-header:hover { background: rgba(255,255,255,0.04); }
+.settings-arrow {
+  font-size: 0.7em;
+  color: var(--text-secondary);
+  transition: transform 0.2s;
+}
+.settings-header.open .settings-arrow { transform: rotate(180deg); }
+.settings-body {
+  display: none;
+  padding: 0 18px 16px;
+}
+.settings-body.open { display: block; animation: fadeIn 0.2s ease; }
+
+/* Non-collapsible (About section) */
+.settings-section-static { padding: 20px; }
 
 .setting-row {
   display: flex;
@@ -740,6 +766,42 @@ textarea { resize: vertical; min-height: 80px; }
 .setting-row:last-child { border-bottom: none; }
 
 .setting-label { font-size: 0.9em; color: var(--text-secondary); }
+
+/* Speech-to-Text Mic Button */
+.stt-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+.stt-input-wrap input,
+.stt-input-wrap textarea { flex: 1; min-width: 0; }
+.btn-mic {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.btn-mic:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-mic.listening {
+  background: #e74c3c;
+  color: #fff;
+  border-color: #e74c3c;
+  animation: micPulse 1s ease infinite;
+}
+@keyframes micPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(231,76,60,0); }
+}
 
 /* Toggle Switch */
 .toggle {
@@ -2293,7 +2355,10 @@ service cloud.firestore {
       <div class="task-form-grid">
         <div class="form-group full-width">
           <label data-i18n="taskTitle">Task Title</label>
-          <input type="text" id="taskTitleInput" data-i18n-placeholder="taskTitlePlaceholder" placeholder="What do you need to do?">
+          <div class="stt-input-wrap">
+            <input type="text" id="taskTitleInput" data-i18n-placeholder="taskTitlePlaceholder" placeholder="What do you need to do?">
+            <button type="button" class="btn-mic" onclick="toggleSTT('taskTitleInput', this)" title="Voice input">🎤</button>
+          </div>
         </div>
         <div class="form-group">
           <label data-i18n="priority">Priority</label><button class="tooltip-trigger" tabindex="0">?<span class="tooltip-bubble" data-i18n="tooltipPriority">High = urgent (red), Medium = normal (yellow), Low = can wait (green). Color bar shows on each task.</span></button>
@@ -2402,17 +2467,21 @@ service cloud.firestore {
         <!-- New Note Form (collapsible) -->
         <div id="newNoteFormWrapper">
           <button class="btn btn-accent" id="showNewNoteBtn" onclick="showNewNoteForm()" style="width:100%;padding:12px;margin-bottom:12px;">
-            ✏️ <span data-i18n="writeNewNote">Write New Note</span>
-          </button>
           <div class="task-form" id="newNoteForm" style="display:none;">
             <h3 style="color:var(--accent);margin-bottom:12px;">✏️ <span data-i18n="newNoteTitle">New Note</span></h3>
             <div class="form-group">
               <label data-i18n="noteTitle">Note Title</label>
-              <input type="text" id="noteTitleInput" data-i18n-placeholder="noteTitlePlaceholder" placeholder="Note title...">
+              <div class="stt-input-wrap">
+                <input type="text" id="noteTitleInput" data-i18n-placeholder="noteTitlePlaceholder" placeholder="Note title...">
+                <button type="button" class="btn-mic" onclick="toggleSTT('noteTitleInput', this)" title="Voice input">🎤</button>
+              </div>
             </div>
             <div class="form-group">
               <label data-i18n="noteContent">Content</label>
-              <textarea id="noteContentInput" rows="4" data-i18n-placeholder="noteContentPlaceholder" placeholder="Your secret note..."></textarea>
+              <div class="stt-input-wrap" style="align-items:flex-start;">
+                <textarea id="noteContentInput" rows="4" data-i18n-placeholder="noteContentPlaceholder" placeholder="Your secret note..."></textarea>
+                <button type="button" class="btn-mic" style="margin-top:4px;" onclick="toggleSTT('noteContentInput', this)" title="Voice input">🎤</button>
+              </div>
             </div>
             <div class="form-actions">
               <button class="btn" onclick="cancelNewNote()" data-i18n="cancel">Cancel</button>
@@ -2432,108 +2501,136 @@ service cloud.firestore {
 
   <!-- ===== SETTINGS PAGE ===== -->
   <div class="page" id="page-settings">
-    <!-- Themes -->
+    <!-- Themes — open by default -->
     <div class="settings-section">
-      <h3>🕌 <span data-i18n="themesTitle">Themes</span></h3>
-      <div class="theme-grid" id="themeGrid">
-        <div class="theme-card active" data-themeid="alhambra" onclick="setTheme('alhambra')">
-          <div class="theme-icon">🏰</div>
-          <div>Alhambra</div>
-        </div>
-        <div class="theme-card" data-themeid="ottoman" onclick="setTheme('ottoman')">
-          <div class="theme-icon">🔵</div>
-          <div>Ottoman</div>
-        </div>
-        <div class="theme-card" data-themeid="moroccan" onclick="setTheme('moroccan')">
-          <div class="theme-icon">💎</div>
-          <div>Moroccan</div>
-        </div>
-        <div class="theme-card" data-themeid="calligraphy" onclick="setTheme('calligraphy')">
-          <div class="theme-icon">✒️</div>
-          <div>Calligraphy</div>
-        </div>
-        <div class="theme-card" data-themeid="ramadan" onclick="setTheme('ramadan')">
-          <div class="theme-icon">🌙</div>
-          <div>Ramadan</div>
-        </div>
-        <div class="theme-card" data-themeid="desert" onclick="setTheme('desert')">
-          <div class="theme-icon">🏜️</div>
-          <div>Desert</div>
-        </div>
-        <div class="theme-card" data-themeid="kids" onclick="setTheme('kids')">
-          <div class="theme-icon">⭐</div>
-          <div>Kids</div>
+      <div class="settings-header open" onclick="toggleSettingsSection(this)">
+        <h3>🕌 <span data-i18n="themesTitle">Themes</span></h3>
+        <span class="settings-arrow">▼</span>
+      </div>
+      <div class="settings-body open">
+        <div class="theme-grid" id="themeGrid">
+          <div class="theme-card active" data-themeid="alhambra" onclick="setTheme('alhambra')">
+            <div class="theme-icon">🏰</div>
+            <div>Alhambra</div>
+          </div>
+          <div class="theme-card" data-themeid="ottoman" onclick="setTheme('ottoman')">
+            <div class="theme-icon">🔵</div>
+            <div>Ottoman</div>
+          </div>
+          <div class="theme-card" data-themeid="moroccan" onclick="setTheme('moroccan')">
+            <div class="theme-icon">💎</div>
+            <div>Moroccan</div>
+          </div>
+          <div class="theme-card" data-themeid="calligraphy" onclick="setTheme('calligraphy')">
+            <div class="theme-icon">✒️</div>
+            <div>Calligraphy</div>
+          </div>
+          <div class="theme-card" data-themeid="ramadan" onclick="setTheme('ramadan')">
+            <div class="theme-icon">🌙</div>
+            <div>Ramadan</div>
+          </div>
+          <div class="theme-card" data-themeid="desert" onclick="setTheme('desert')">
+            <div class="theme-icon">🏜️</div>
+            <div>Desert</div>
+          </div>
+          <div class="theme-card" data-themeid="kids" onclick="setTheme('kids')">
+            <div class="theme-icon">⭐</div>
+            <div>Kids</div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- PIN Lock -->
     <div class="settings-section">
-      <h3>🔒 <span data-i18n="pinLockTitle">PIN Lock</span></h3>
-      <div class="setting-row">
-        <span class="setting-label" data-i18n="enablePin">Enable PIN Lock</span><button class="tooltip-trigger" tabindex="0">?<span class="tooltip-bubble" data-i18n="tooltipPin">Locks the app with a 4-digit code on startup. Prevents casual access but not bulletproof security.</span></button>
-        <div class="toggle" id="pinToggle" onclick="togglePinSetting()"></div>
+      <div class="settings-header" onclick="toggleSettingsSection(this)">
+        <h3>🔒 <span data-i18n="pinLockTitle">PIN Lock</span></h3>
+        <span class="settings-arrow">▼</span>
       </div>
-      <div id="pinSetupArea" style="display:none;margin-top:12px;">
-        <div class="form-group">
-          <label data-i18n="setPin">Set 4-digit PIN</label>
-          <div class="password-wrapper" style="max-width:160px;">
-            <input type="password" id="pinSetInput" maxlength="4" inputmode="numeric" placeholder="0000">
-            <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('pinSetInput', this)" title="Show/Hide">عـ</button>
-          </div>
+      <div class="settings-body">
+        <div class="setting-row">
+          <span class="setting-label" data-i18n="enablePin">Enable PIN Lock</span><button class="tooltip-trigger" tabindex="0">?<span class="tooltip-bubble" data-i18n="tooltipPin">Locks the app with a 4-digit code on startup. Prevents casual access but not bulletproof security.</span></button>
+          <div class="toggle" id="pinToggle" onclick="togglePinSetting()"></div>
         </div>
-        <div style="display:flex;gap:8px;margin-top:8px;">
-          <button class="btn btn-accent btn-sm" onclick="savePin()" data-i18n="savePin">Save PIN</button>
-          <button class="btn btn-sm" id="changePinBtn" onclick="showChangePinModal()" style="display:none;" data-i18n="changePin">🔑 Change PIN</button>
+        <div id="pinSetupArea" style="display:none;margin-top:12px;">
+          <div class="form-group">
+            <label data-i18n="setPin">Set 4-digit PIN</label>
+            <div class="password-wrapper" style="max-width:160px;">
+              <input type="password" id="pinSetInput" maxlength="4" inputmode="numeric" placeholder="0000">
+              <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('pinSetInput', this)" title="Show/Hide">عـ</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="btn btn-accent btn-sm" onclick="savePin()" data-i18n="savePin">Save PIN</button>
+            <button class="btn btn-sm" id="changePinBtn" onclick="showChangePinModal()" style="display:none;" data-i18n="changePin">🔑 Change PIN</button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Kids Mode -->
     <div class="settings-section">
-      <h3>⭐ <span data-i18n="kidsModeTitle">Kids Mode</span></h3>
-      <div class="setting-row">
-        <span class="setting-label" data-i18n="enableKids">Enable Kids Mode</span><button class="tooltip-trigger" tabindex="0">?<span class="tooltip-bubble" data-i18n="tooltipKids">Fun mode for children! Earn stars for completing tasks, with confetti animations and encouraging messages.</span></button>
-        <div class="toggle" id="kidsToggle" onclick="toggleKidsMode()"></div>
+      <div class="settings-header" onclick="toggleSettingsSection(this)">
+        <h3>⭐ <span data-i18n="kidsModeTitle">Kids Mode</span></h3>
+        <span class="settings-arrow">▼</span>
+      </div>
+      <div class="settings-body">
+        <div class="setting-row">
+          <span class="setting-label" data-i18n="enableKids">Enable Kids Mode</span><button class="tooltip-trigger" tabindex="0">?<span class="tooltip-bubble" data-i18n="tooltipKids">Fun mode for children! Earn stars for completing tasks, with confetti animations and encouraging messages.</span></button>
+          <div class="toggle" id="kidsToggle" onclick="toggleKidsMode()"></div>
+        </div>
       </div>
     </div>
 
     <!-- Import / Export -->
     <div class="settings-section">
-      <h3>📦 <span data-i18n="dataTitle">Data Management</span></h3>
-      <div class="setting-row">
-        <span class="setting-label" data-i18n="exportDesc">Export all data as JSON</span>
-        <button class="btn btn-sm" onclick="exportData()" data-i18n="export">📥 Export</button>
+      <div class="settings-header" onclick="toggleSettingsSection(this)">
+        <h3>📦 <span data-i18n="dataTitle">Data Management</span></h3>
+        <span class="settings-arrow">▼</span>
       </div>
-      <div class="setting-row">
-        <span class="setting-label" data-i18n="importDesc">Import data from JSON</span>
-        <button class="btn btn-sm" onclick="document.getElementById('importFile').click()" data-i18n="import">📤 Import</button>
-        <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+      <div class="settings-body">
+        <div class="setting-row">
+          <span class="setting-label" data-i18n="exportDesc">Export all data as JSON</span>
+          <button class="btn btn-sm" onclick="exportData()" data-i18n="export">📥 Export</button>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label" data-i18n="importDesc">Import data from JSON</span>
+          <button class="btn btn-sm" onclick="document.getElementById('importFile').click()" data-i18n="import">📤 Import</button>
+          <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+        </div>
       </div>
     </div>
 
-    <!-- Firebase Config (for advanced users) -->
+    <!-- Firebase Config — collapsed by default -->
     <div class="settings-section">
-      <h3>☁️ <span data-i18n="firebaseTitle">Firebase Cloud Sync</span></h3>
-      <p style="color:var(--text-secondary);font-size:0.85em;margin-bottom:12px;" data-i18n="firebaseDesc">
-        To enable cloud sync, create a Firebase project and paste your config below.
-      </p>
-      <div class="form-group">
-        <label>Firebase Config (JSON)</label>
-        <textarea id="firebaseConfigInput" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'></textarea>
+      <div class="settings-header" onclick="toggleSettingsSection(this)">
+        <h3>☁️ <span data-i18n="firebaseTitle">Firebase Cloud Sync</span></h3>
+        <span class="settings-arrow">▼</span>
       </div>
-      <div class="form-actions" style="margin-top:8px;">
-        <button class="btn btn-accent btn-sm" onclick="saveFirebaseConfig()" data-i18n="saveConfig">Save Config</button>
-        <button class="btn btn-sm btn-danger" onclick="clearFirebaseConfig()" data-i18n="clearConfig">Clear Config</button>
+      <div class="settings-body">
+        <p style="color:var(--text-secondary);font-size:0.85em;margin-bottom:12px;" data-i18n="firebaseDesc">
+          To enable cloud sync, create a Firebase project and paste your config below.
+        </p>
+        <div class="form-group">
+          <label>Firebase Config (JSON)</label>
+          <textarea id="firebaseConfigInput" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'></textarea>
+        </div>
+        <div class="form-actions" style="margin-top:8px;">
+          <button class="btn btn-accent btn-sm" onclick="saveFirebaseConfig()" data-i18n="saveConfig">Save Config</button>
+          <button class="btn btn-sm btn-danger" onclick="clearFirebaseConfig()" data-i18n="clearConfig">Clear Config</button>
+        </div>
       </div>
     </div>
 
-    <!-- About / Version -->
-    <div class="settings-section" style="text-align:center;">
-      <p style="font-family:var(--font-arabic);font-size:1.3em;color:var(--bismillah-color);margin-bottom:8px;">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
-      <p style="color:var(--accent);font-weight:600;font-size:1.1em;">📝 Tethkir — تذكير</p>
-      <p id="appVersion" style="color:var(--text-secondary);font-size:0.85em;margin-top:4px;"></p>
-      <a href="CHANGES.html" target="_blank" style="color:var(--accent);font-size:0.8em;text-decoration:underline;cursor:pointer;" data-i18n="viewChangelog">View Changelog</a>
+    <!-- About / Version — always visible -->
+    <div class="settings-section">
+      <div class="settings-section-static" style="text-align:center;">
+        <p style="color:var(--accent);font-weight:600;font-size:1em;display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;">
+          📝 Tethkir — تذكير
+          <span id="appVersion" style="color:var(--text-secondary);font-size:0.8em;font-weight:400;"></span>
+          <a href="CHANGES.html" target="_blank" style="color:var(--accent);font-size:0.8em;text-decoration:underline;cursor:pointer;font-weight:400;" data-i18n="viewChangelog">View Changelog</a>
+        </p>
+      </div>
     </div>
   </div>
 </div>
@@ -2545,7 +2642,7 @@ service cloud.firestore {
 
 <script>
 // ===== VERSION =====
-const APP_VERSION = 'v1.4.0';
+const APP_VERSION = 'v1.5.1';
 
 // ===== TRANSLATIONS =====
 const i18n = {
@@ -3311,12 +3408,15 @@ function renderNotes() {
       return `
         <div class="note-item">
           <div style="display:flex;justify-content:space-between;align-items:start;">
-            <div>
+            <div style="flex:1;min-width:0;">
               <strong>${escapeHtml(data.title)}</strong>
               <p style="color:var(--text-secondary);font-size:0.9em;margin-top:6px;white-space:pre-wrap;">${escapeHtml(data.content)}</p>
               <small style="color:var(--text-secondary);opacity:0.6;">${new Date(note.createdAt).toLocaleDateString()}</small>
             </div>
-            <button class="btn btn-sm btn-icon btn-danger" onclick="deleteNote('${note.id}')">🗑️</button>
+            <div style="display:flex;gap:4px;flex-shrink:0;">
+              <button class="btn btn-sm btn-icon" onclick="speakNote('${note.id}')" title="Listen">🔊</button>
+              <button class="btn btn-sm btn-icon btn-danger" onclick="deleteNote('${note.id}')">🗑️</button>
+            </div>
           </div>
         </div>`;
     } catch(e) {
@@ -3724,6 +3824,13 @@ function toggleAccordion(header) {
   // document.querySelectorAll('.help-accordion-header.active').forEach(h => h.classList.remove('active'));
 
   header.classList.toggle('active', !isOpen);
+  body.classList.toggle('open', !isOpen);
+}
+
+function toggleSettingsSection(header) {
+  const body = header.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  header.classList.toggle('open', !isOpen);
   body.classList.toggle('open', !isOpen);
 }
 
@@ -4234,6 +4341,127 @@ function updateNoteCountHint() {
     const setLabels = { en: '🔐 Set Passphrase & Start', fr: '🔐 Définir & Commencer', ar: '🔐 تعيين كلمة المرور' };
     unlockBtn.textContent = setLabels[state.lang] || setLabels.en;
   }
+}
+
+// ===== TEXT-TO-SPEECH (Read Note Aloud) =====
+let ttsUtterance = null;
+
+function speakNote(noteId) {
+  // If already speaking, stop
+  if (speechSynthesis.speaking) {
+    speechSynthesis.cancel();
+    // If same note, just stop
+    if (ttsUtterance && ttsUtterance._noteId === noteId) {
+      ttsUtterance = null;
+      return;
+    }
+  }
+
+  const note = state.notes.find(n => n.id === noteId);
+  if (!note || !state.notePassphrase) return;
+
+  try {
+    const decrypted = CryptoJS.AES.decrypt(note.encrypted, state.notePassphrase);
+    const data = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+    const text = data.title + '. ' + data.content;
+
+    const langMap = { en: 'en-US', fr: 'fr-FR', ar: 'ar-SA' };
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = langMap[state.lang] || 'en-US';
+    utterance.rate = 0.95;
+    utterance._noteId = noteId;
+    ttsUtterance = utterance;
+
+    utterance.onend = () => { ttsUtterance = null; };
+    utterance.onerror = () => { ttsUtterance = null; };
+
+    speechSynthesis.speak(utterance);
+  } catch(e) {
+    showToast('Cannot read note — wrong passphrase?');
+  }
+}
+
+// ===== SPEECH-TO-TEXT =====
+let sttRecognition = null;
+let sttActiveBtn = null;
+
+function toggleSTT(inputId, btn) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    showToast('Speech recognition not supported in this browser');
+    return;
+  }
+
+  // If already listening on this button, stop
+  if (sttActiveBtn === btn && sttRecognition) {
+    sttRecognition.stop();
+    return;
+  }
+
+  // If listening on another button, stop that first
+  if (sttRecognition) {
+    sttRecognition.stop();
+  }
+
+  const input = document.getElementById(inputId);
+  const recognition = new SR();
+
+  // Map app language to speech lang
+  const langMap = { en: 'en-US', fr: 'fr-FR', ar: 'ar-SA' };
+  recognition.lang = langMap[state.lang] || 'en-US';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+
+  let finalText = '';
+
+  recognition.onstart = () => {
+    btn.classList.add('listening');
+    sttActiveBtn = btn;
+    sttRecognition = recognition;
+  };
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    finalText = '';
+    for (let i = 0; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        finalText += e.results[i][0].transcript;
+      } else {
+        interim += e.results[i][0].transcript;
+      }
+    }
+    // Append to existing content
+    const existing = input.dataset.sttBase || '';
+    if (input.tagName === 'TEXTAREA') {
+      input.value = existing + (existing ? ' ' : '') + (finalText || interim);
+    } else {
+      input.value = existing + (existing ? ' ' : '') + (finalText || interim);
+    }
+  };
+
+  recognition.onend = () => {
+    btn.classList.remove('listening');
+    sttActiveBtn = null;
+    sttRecognition = null;
+    delete input.dataset.sttBase;
+    input.focus();
+  };
+
+  recognition.onerror = (e) => {
+    btn.classList.remove('listening');
+    sttActiveBtn = null;
+    sttRecognition = null;
+    delete input.dataset.sttBase;
+    if (e.error === 'not-allowed') {
+      showToast('Microphone access denied — check browser permissions');
+    } else if (e.error !== 'aborted') {
+      showToast('Speech error: ' + e.error);
+    }
+  };
+
+  // Save current input value as base to append to
+  input.dataset.sttBase = input.value;
+  recognition.start();
 }
 
 // ===== START =====
