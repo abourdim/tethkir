@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tethkir — Task Memo v1.5.1</title>
+<title>Tethkir — Task Memo v1.6.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
@@ -34,7 +34,6 @@
   --font-body: 'Poppins', sans-serif;
   --font-arabic: 'Amiri', 'Scheherazade New', serif;
   --font-display: 'Playfair Display', serif;
-  --font-kids: 'Nunito', sans-serif;
   --radius: 12px;
   --radius-lg: 20px;
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -140,26 +139,6 @@
   --bismillah-color: #8b6914;
   --bismillah-glow: rgba(139,105,20,0.2);
   --pattern-opacity: 0.04;
-}
-
-/* ===== THEME: KIDS ===== */
-[data-theme="kids"] {
-  --bg-primary: #fff5f5;
-  --bg-secondary: #ffeaa7;
-  --bg-card: #ffffff;
-  --bg-input: #fff3e0;
-  --text-primary: #2d1b69;
-  --text-secondary: #6c5ce7;
-  --accent: #e17055;
-  --accent-hover: #f0826f;
-  --accent-glow: rgba(225,112,85,0.3);
-  --border: rgba(108,92,231,0.2);
-  --bismillah-color: #6c5ce7;
-  --bismillah-glow: rgba(108,92,231,0.3);
-  --pattern-opacity: 0.06;
-  --radius: 20px;
-  --radius-lg: 28px;
-  --font-body: 'Nunito', sans-serif;
 }
 
 /* ===== RESET & BASE ===== */
@@ -298,8 +277,6 @@ body::before {
   color: var(--accent);
 }
 
-[data-theme="kids"] .app-title { font-family: var(--font-kids); }
-
 /* ===== BUTTONS ===== */
 .btn {
   padding: 8px 14px;
@@ -358,13 +335,6 @@ body::before {
   justify-content: center;
 }
 
-[data-theme="kids"] .btn {
-  border-radius: 20px;
-  font-size: 0.95em;
-  font-weight: 700;
-  padding: 10px 18px;
-}
-
 /* ===== SELECT / INPUT ===== */
 select, input, textarea {
   padding: 8px 12px;
@@ -419,13 +389,6 @@ textarea { resize: vertical; min-height: 80px; }
   color: var(--bg-primary);
   font-weight: 600;
   box-shadow: 0 2px 8px var(--accent-glow);
-}
-
-[data-theme="kids"] .tab {
-  border-radius: 20px;
-  font-size: 1em;
-  font-weight: 700;
-  padding: 12px 20px;
 }
 
 /* ===== TASK FORM ===== */
@@ -561,10 +524,6 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 .task-checkbox:hover { box-shadow: 0 0 0 3px var(--accent-glow); }
-
-[data-theme="kids"] .task-checkbox {
-  width: 30px; height: 30px; border-radius: 50%; font-size: 18px;
-}
 
 .task-content { flex: 1; min-width: 0; }
 
@@ -882,37 +841,6 @@ textarea { resize: vertical; min-height: 80px; }
   border-color: var(--accent);
 }
 
-/* ===== KIDS MODE EXTRAS ===== */
-.stars-counter {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 1.1em;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.confetti-container {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 999;
-}
-
-.confetti {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-  animation: confettiFall 2s ease-out forwards;
-}
-
-@keyframes confettiFall {
-  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-}
-
 /* ===== FIREBASE STATUS ===== */
 .sync-status {
   display: flex;
@@ -930,7 +858,58 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 .sync-dot.online { background: var(--success); }
+.sync-dot.warning { background: var(--warning); }
 .sync-dot.offline { background: var(--danger); }
+
+/* Language Picker */
+.lang-picker { position: relative; }
+.lang-picker-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.lang-picker-btn:hover { border-color: var(--accent); }
+.lang-picker-btn svg { border-radius: 2px; flex-shrink: 0; }
+.lang-picker-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  z-index: 100;
+  min-width: 90px;
+  overflow: hidden;
+}
+[dir="rtl"] .lang-picker-menu { right: auto; left: 0; }
+.lang-picker-menu.open { display: block; animation: fadeIn 0.15s ease; }
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: background 0.1s;
+}
+.lang-option:hover { background: rgba(255,255,255,0.08); }
+.lang-option svg { border-radius: 2px; flex-shrink: 0; }
 
 /* ===== RTL SUPPORT ===== */
 [dir="rtl"] .task-priority-indicator { left: auto; right: 0; }
@@ -1825,9 +1804,6 @@ body.kb-open .kb-toggle-btn {
   <p id="pinError" style="color:var(--danger);display:none;font-size:0.9em;"></p>
 </div>
 
-<!-- CONFETTI CONTAINER -->
-<div class="confetti-container" id="confettiContainer"></div>
-
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -1852,7 +1828,7 @@ body.kb-open .kb-toggle-btn {
       <div class="help-tip-card" data-help-keywords="done complete check finish">
         <div class="help-tip-icon">✅</div>
         <div class="help-tip-title" data-i18n="helpTip2Title">Complete a Task</div>
-        <div class="help-tip-desc" data-i18n="helpTip2Desc">Click the checkbox on any task to mark it done. In Kids Mode, you'll earn a star! ⭐</div>
+        <div class="help-tip-desc" data-i18n="helpTip2Desc">Click the checkbox on any task to mark it done.</div>
       </div>
       <div class="help-tip-card" data-help-keywords="theme style design color">
         <div class="help-tip-icon">🕌</div>
@@ -1862,7 +1838,7 @@ body.kb-open .kb-toggle-btn {
       <div class="help-tip-card" data-help-keywords="language arabic french english rtl">
         <div class="help-tip-icon">🌍</div>
         <div class="help-tip-title" data-i18n="helpTip4Title">Switch Language</div>
-        <div class="help-tip-desc" data-i18n="helpTip4Desc">Use the language dropdown (🇬🇧/🇫🇷/🇸🇦) in the top bar. Arabic automatically enables RTL layout.</div>
+        <div class="help-tip-desc" data-i18n="helpTip4Desc">Use the language dropdown (EN/FR/AR) in the top bar. Arabic automatically enables RTL layout.</div>
       </div>
     </div>
 
@@ -1917,7 +1893,7 @@ body.kb-open .kb-toggle-btn {
       </div>
     </div>
 
-    <div class="help-accordion" data-help-keywords="theme alhambra ottoman moroccan calligraphy ramadan desert kids style">
+    <div class="help-accordion" data-help-keywords="theme alhambra ottoman moroccan calligraphy ramadan desert style">
       <button class="help-accordion-header" onclick="toggleAccordion(this)">
         <span class="help-accordion-icon">🕌 <span data-i18n="helpFeatThemes">Themes</span></span>
         <span class="help-accordion-arrow">▼</span>
@@ -1930,155 +1906,8 @@ body.kb-open .kb-toggle-btn {
           <li>✒️ <strong>Calligraphy</strong> — <span data-i18n="helpThemeCalligraphy">Cream & black ink, manuscript aesthetic</span></li>
           <li>🌙 <strong>Ramadan</strong> — <span data-i18n="helpThemeRamadan">Deep navy with twinkling gold stars</span></li>
           <li>🏜️ <strong>Desert</strong> — <span data-i18n="helpThemeDesert">Sandy beige & palm green, calm oasis feel</span></li>
-          <li>⭐ <strong>Kids</strong> — <span data-i18n="helpThemeKids">Bright, colorful, rounded — fun for children</span></li>
         </ul>
         <p data-i18n="helpThemeHow">Go to Settings → Themes to switch. Your choice is saved automatically.</p>
-      </div>
-    </div>
-
-    <div class="help-accordion" data-help-keywords="kids children stars confetti profile parent">
-      <button class="help-accordion-header" onclick="toggleAccordion(this)">
-        <span class="help-accordion-icon">⭐ <span data-i18n="helpFeatKids">Kids Mode</span></span>
-        <span class="help-accordion-arrow">▼</span>
-      </button>
-      <div class="help-accordion-body">
-        <ul>
-          <li><strong data-i18n="helpFeatKidsToggle">Enable</strong> — <span data-i18n="helpFeatKidsToggleDesc">Click ⭐ in top bar or toggle in Settings</span></li>
-          <li><strong data-i18n="helpFeatKidsStars">Stars</strong> — <span data-i18n="helpFeatKidsStarsDesc">Completing tasks earns ⭐ stars with confetti 🎉</span></li>
-          <li><strong data-i18n="helpFeatKidsProfiles">Profiles</strong> — <span data-i18n="helpFeatKidsProfilesDesc">Create separate profiles for each child</span></li>
-          <li><strong data-i18n="helpFeatKidsCats">Categories</strong> — <span data-i18n="helpFeatKidsCatsDesc">Kid-friendly: Homework, Chores, Dua/Quran, Activities, Fun</span></li>
-          <li><strong data-i18n="helpFeatKidsMsg">Messages</strong> — <span data-i18n="helpFeatKidsMsgDesc">Encouraging Islamic messages: "Ma Shaa Allah! Great job!"</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="help-accordion" data-help-keywords="profile create switch family member">
-      <button class="help-accordion-header" onclick="toggleAccordion(this)">
-        <span class="help-accordion-icon">👤 <span data-i18n="helpFeatProfiles">Profiles</span></span>
-        <span class="help-accordion-arrow">▼</span>
-      </button>
-      <div class="help-accordion-body">
-        <ul>
-          <li><strong data-i18n="helpFeatProfilesDefault">Default profiles</strong> — <span data-i18n="helpFeatProfilesDefaultDesc">Default and Kids profiles are included</span></li>
-          <li><strong data-i18n="helpFeatProfilesCreate">Create</strong> — <span data-i18n="helpFeatProfilesCreateDesc">Click "+ Profile" to add a custom profile (e.g., for each family member)</span></li>
-          <li><strong data-i18n="helpFeatProfilesSwitch">Switch</strong> — <span data-i18n="helpFeatProfilesSwitchDesc">Click on any profile chip in the bar to switch. Each has its own task list.</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="help-accordion" data-help-keywords="import export backup json data transfer">
-      <button class="help-accordion-header" onclick="toggleAccordion(this)">
-        <span class="help-accordion-icon">📦 <span data-i18n="helpFeatData">Import & Export</span></span>
-        <span class="help-accordion-arrow">▼</span>
-      </button>
-      <div class="help-accordion-body">
-        <ul>
-          <li><strong data-i18n="helpFeatDataExport">Export</strong> — <span data-i18n="helpFeatDataExportDesc">Settings → Export → Downloads a .json file with all your tasks, notes, and settings</span></li>
-          <li><strong data-i18n="helpFeatDataImport">Import</strong> — <span data-i18n="helpFeatDataImportDesc">Settings → Import → Upload a .json backup file to restore everything</span></li>
-          <li><strong data-i18n="helpFeatDataUse">Use cases</strong> — <span data-i18n="helpFeatDataUseDesc">Regular backups, transfer between devices, share task templates</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="help-accordion" data-help-keywords="firebase cloud sync google sign login setup config">
-      <button class="help-accordion-header" onclick="toggleAccordion(this)">
-        <span class="help-accordion-icon">☁️ <span data-i18n="helpFeatFirebase">Cloud Sync (Firebase)</span></span>
-        <span class="help-accordion-arrow">▼</span>
-      </button>
-      <div class="help-accordion-body">
-        <p style="margin:0 0 8px;font-size:0.9em;">Sync your tasks across all your devices for <strong>free</strong> using Google Firebase. Follow these steps:</p>
-
-        <details class="help-sub-accordion" open>
-          <summary>📋 Step 1 — Create a Firebase Project</summary>
-          <ol class="help-steps">
-            <li>Go to <a href="https://console.firebase.google.com/" target="_blank" style="color:var(--accent)">console.firebase.google.com</a></li>
-            <li>Click <strong>"Create a project"</strong> (or "Add project")</li>
-            <li>Name it <code>tethkir</code> (or anything you like)</li>
-            <li>Disable Google Analytics (not needed) → click <strong>Create project</strong></li>
-            <li>Wait for setup → click <strong>Continue</strong></li>
-          </ol>
-        </details>
-
-        <details class="help-sub-accordion">
-          <summary>🌐 Step 2 — Register a Web App</summary>
-          <ol class="help-steps">
-            <li>On the project overview page, click the <strong>Web icon</strong> <code>&lt;/&gt;</code></li>
-            <li>Enter an app nickname: <code>Tethkir Web</code></li>
-            <li>Skip Firebase Hosting (not needed) → click <strong>Register app</strong></li>
-            <li>You'll see a config block — <strong>copy the entire config object</strong> (you'll need it in Step 7)</li>
-            <li>Click <strong>Continue to console</strong></li>
-          </ol>
-        </details>
-
-        <details class="help-sub-accordion">
-          <summary>🔑 Step 3 — Enable Google Sign-In</summary>
-          <ol class="help-steps">
-            <li>In the left sidebar → <strong>Build</strong> → <strong>Authentication</strong></li>
-            <li>Click <strong>Get started</strong></li>
-            <li>Go to the <strong>Sign-in method</strong> tab</li>
-            <li>Click <strong>Google</strong> → toggle <strong>Enable</strong> ON</li>
-            <li>Select a support email (your Gmail) → click <strong>Save</strong></li>
-          </ol>
-        </details>
-
-        <details class="help-sub-accordion">
-          <summary>🗄️ Step 4 — Set Up Firestore Database</summary>
-          <ol class="help-steps">
-            <li>In the left sidebar → <strong>Build</strong> → <strong>Firestore Database</strong></li>
-            <li>Click <strong>Create database</strong></li>
-            <li>Choose a location closest to you (e.g. <code>europe-west1</code> for Europe, <code>me-south1</code> for Middle East)</li>
-            <li>Select <strong>Start in test mode</strong> → click <strong>Create</strong></li>
-          </ol>
-        </details>
-
-        <details class="help-sub-accordion">
-          <summary>🛡️ Step 5 — Secure Firestore Rules</summary>
-          <ol class="help-steps">
-            <li>In Firestore, click the <strong>Rules</strong> tab</li>
-            <li>Replace the default rules with:
-              <code style="display:block;margin:6px 0;padding:8px;font-size:0.82em;white-space:pre-wrap;line-height:1.4">rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId}/{document=**} {
-      allow read, write: if request.auth != null
-        && request.auth.uid == userId;
-    }
-  }
-}</code></li>
-            <li>Click <strong>Publish</strong> — this ensures only you can access your own data</li>
-          </ol>
-        </details>
-
-        <details class="help-sub-accordion">
-          <summary>🌍 Step 6 — Add Authorized Domain</summary>
-          <ol class="help-steps">
-            <li>Go to <strong>Authentication</strong> → <strong>Settings</strong> tab</li>
-            <li>Scroll to <strong>Authorized domains</strong></li>
-            <li>Click <strong>Add domain</strong> → enter your GitHub Pages domain (e.g. <code>yourusername.github.io</code>)</li>
-            <li>Click <strong>Add</strong> — this allows Google Sign-In to work from your hosted site</li>
-          </ol>
-        </details>
-
-        <details class="help-sub-accordion">
-          <summary>✅ Step 7 — Paste Config in Tethkir</summary>
-          <ol class="help-steps">
-            <li>In this app, go to <strong>Settings</strong> tab (⚙️)</li>
-            <li>Scroll to <strong>Firebase Cloud Sync</strong></li>
-            <li>Paste your Firebase config as JSON:
-              <code style="display:block;margin:6px 0;padding:8px;font-size:0.82em;white-space:pre-wrap;line-height:1.4">{"apiKey":"AIzaSy...",
-"authDomain":"tethkir-xxx.firebaseapp.com",
-"projectId":"tethkir-xxx",
-"storageBucket":"tethkir-xxx.appspot.com",
-"messagingSenderId":"123456789",
-"appId":"1:123456789:web:abc..."}</code></li>
-            <li>Click <strong>Save Config</strong> — you'll see "Firebase ready!"</li>
-            <li>Click <strong>☁️ Sign In</strong> in the top bar → sign in with Google 🎉</li>
-          </ol>
-        </details>
-
-        <div class="help-note">
-          ⚡ <strong>After setup:</strong> Everything auto-syncs! Add/edit/delete tasks on any device and they'll appear everywhere. The green dot shows you're connected.
-        </div>
       </div>
     </div>
 
@@ -2323,13 +2152,27 @@ service cloud.firestore {
       </div>
     </div>
     <div class="top-bar-right">
-      <div class="stars-counter" id="starsCounter" style="display:none;">⭐ <span id="starsCount">0</span></div>
-      <select id="langSelect" class="btn" style="padding:6px 10px;">
-        <option value="en">🇬🇧 EN</option>
-        <option value="fr">🇫🇷 FR</option>
-        <option value="ar">🇸🇦 AR</option>
-      </select>
-      <button class="btn btn-icon" onclick="toggleKidsMode()" title="Kids Mode" id="kidsModeBtn">⭐</button>
+      <div class="lang-picker" id="langPicker">
+        <button class="lang-picker-btn" onclick="toggleLangPicker()" id="langPickerBtn">
+          <span id="langFlag" style="display:inline-flex;align-items:center;"></span>
+          <span id="langCode">EN</span>
+          <span style="font-size:0.6em;opacity:0.6;">▼</span>
+        </button>
+        <div class="lang-picker-menu" id="langPickerMenu">
+          <button class="lang-option" onclick="selectLang('en')">
+            <svg width="24" height="16" viewBox="0 0 60 30"><clipPath id="ukc"><rect width="60" height="30" rx="2"/></clipPath><g clip-path="url(#ukc)"><rect width="60" height="30" fill="#012169"/><path d="M0,0L60,30M60,0L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0L60,30M60,0L0,30" stroke="#C8102E" stroke-width="4" clip-path="url(#ukc)"/><path d="M30,0V30M0,15H60" stroke="#fff" stroke-width="10"/><path d="M30,0V30M0,15H60" stroke="#C8102E" stroke-width="6"/></g></svg>
+            EN
+          </button>
+          <button class="lang-option" onclick="selectLang('fr')">
+            <svg width="24" height="16" viewBox="0 0 60 30"><rect width="20" height="30" fill="#002395"/><rect x="20" width="20" height="30" fill="#fff"/><rect x="40" width="20" height="30" fill="#ED2939"/></svg>
+            FR
+          </button>
+          <button class="lang-option" onclick="selectLang('ar')">
+            <svg width="24" height="16" viewBox="0 0 60 30"><rect width="30" height="30" fill="#006233"/><rect x="30" width="30" height="30" fill="#fff"/><circle cx="30" cy="15" r="7" fill="#D21034"/><circle cx="32" cy="15" r="5.8" fill="#fff"/><polygon points="33.5,9.5 34.8,13 38.5,13 35.5,15.3 36.5,19 33.5,16.5 30.5,19 31.5,15.3 28.5,13 32.2,13" fill="#D21034"/></svg>
+            AR
+          </button>
+        </div>
+      </div>
       <button class="btn" id="authBtn" onclick="toggleAuth()" data-i18n="signIn">☁️ Sign In</button>
     </div>
   </div>
@@ -2337,7 +2180,6 @@ service cloud.firestore {
   <!-- PROFILES BAR -->
   <div class="profiles-bar" id="profilesBar">
     <button class="profile-chip active" data-profile="default" onclick="switchProfile('default')">👤 <span data-i18n="defaultProfile">Default</span></button>
-    <button class="profile-chip" data-profile="kids" onclick="switchProfile('kids')">🧒 <span data-i18n="kidsProfile">Kids</span></button>
     <button class="btn btn-sm" onclick="showAddProfileModal()">+ <span data-i18n="addProfile">Profile</span></button>
   </div>
 
@@ -2533,10 +2375,6 @@ service cloud.firestore {
             <div class="theme-icon">🏜️</div>
             <div>Desert</div>
           </div>
-          <div class="theme-card" data-themeid="kids" onclick="setTheme('kids')">
-            <div class="theme-icon">⭐</div>
-            <div>Kids</div>
-          </div>
         </div>
       </div>
     </div>
@@ -2567,19 +2405,6 @@ service cloud.firestore {
         </div>
       </div>
     </div>
-
-    <!-- Kids Mode -->
-    <div class="settings-section">
-      <div class="settings-header" onclick="toggleSettingsSection(this)">
-        <h3>⭐ <span data-i18n="kidsModeTitle">Kids Mode</span></h3>
-        <span class="settings-arrow">▼</span>
-      </div>
-      <div class="settings-body">
-        <div class="setting-row">
-          <span class="setting-label" data-i18n="enableKids">Enable Kids Mode</span><button class="tooltip-trigger" tabindex="0">?<span class="tooltip-bubble" data-i18n="tooltipKids">Fun mode for children! Earn stars for completing tasks, with confetti animations and encouraging messages.</span></button>
-          <div class="toggle" id="kidsToggle" onclick="toggleKidsMode()"></div>
-        </div>
-      </div>
     </div>
 
     <!-- Import / Export -->
@@ -2597,6 +2422,10 @@ service cloud.firestore {
           <span class="setting-label" data-i18n="importDesc">Import data from JSON</span>
           <button class="btn btn-sm" onclick="document.getElementById('importFile').click()" data-i18n="import">📤 Import</button>
           <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+        </div>
+        <div class="setting-row">
+          <span class="setting-label" data-i18n="clearAllDesc">Clear all data (tasks, notes, settings)</span>
+          <button class="btn btn-sm btn-danger" onclick="clearAllData()" data-i18n="clearAll">🗑️ Clear All</button>
         </div>
       </div>
     </div>
@@ -2633,7 +2462,6 @@ service cloud.firestore {
       </div>
     </div>
   </div>
-</div>
 
 <!-- ===== MODAL CONTAINER ===== -->
 <div class="modal-backdrop" id="modalBackdrop" style="display:none;" onclick="closeModal(event)">
@@ -2642,7 +2470,7 @@ service cloud.firestore {
 
 <script>
 // ===== VERSION =====
-const APP_VERSION = 'v1.5.1';
+const APP_VERSION = 'v1.6.1';
 
 // ===== TRANSLATIONS =====
 const i18n = {
@@ -2663,7 +2491,6 @@ const i18n = {
     allPriorities: 'All Priorities', allCategories: 'All Categories',
     allStatus: 'All', active: 'Active', done: 'Done',
     emptyTitle: 'No tasks yet!', emptyDesc: 'Add your first task above',
-    emptyKidsTitle: 'No tasks yet! 🎉', emptyKidsDesc: 'Let\'s add something fun!',
     secureNotesTitle: '🔐 Secure Notes (AES Encrypted)',
     secureNotesDesc: 'Notes are encrypted with your passphrase. Without it, nobody can read them.',
     passphrase: 'Master Passphrase', passphrasePlaceholder: 'Enter your secret passphrase',
@@ -2680,17 +2507,18 @@ const i18n = {
     cancel: 'Cancel',
     themesTitle: 'Themes', pinLockTitle: 'PIN Lock',
     enablePin: 'Enable PIN Lock', setPin: 'Set 4-digit PIN', savePin: 'Save PIN',
-    kidsModeTitle: 'Kids Mode', enableKids: 'Enable Kids Mode',
     dataTitle: 'Data Management',
     exportDesc: 'Export all data as JSON', export: '📥 Export',
     importDesc: 'Import data from JSON', import: '📤 Import',
+    clearAllDesc: 'Clear all data (tasks, notes, settings)', clearAll: '🗑️ Clear All',
+    clearAllConfirm: 'This will delete ALL your tasks, notes, profiles, and settings. This cannot be undone!\n\nAre you sure?',
+    clearAllDone: 'All data cleared! 🗑️',
     firebaseTitle: 'Firebase Cloud Sync',
     firebaseDesc: 'To enable cloud sync, create a Firebase project and paste your config below.',
     saveConfig: 'Save Config', clearConfig: 'Clear Config',
-    defaultProfile: 'Default', kidsProfile: 'Kids', addProfile: 'Profile',
+    defaultProfile: 'Default',
     enterPin: 'Enter PIN', wrongPin: 'Wrong PIN, try again',
     taskAdded: 'Task added! ✨', taskDone: 'Ma Shaa Allah! ✅',
-    taskDoneKids: 'Ma Shaa Allah! Great job! ⭐🎉',
     taskDeleted: 'Task deleted', noteAdded: 'Note encrypted & saved 🔐',
     dataExported: 'Data exported! 📦', dataImported: 'Data imported! ✅',
     confirmDelete: 'Delete this?',
@@ -2726,13 +2554,12 @@ const i18n = {
     helpTitle: 'Help & Guide', helpSearchPlaceholder: 'Search help...',
     helpQuickStart: '🚀 QUICK START', helpFeatures: '📚 FEATURE GUIDE', helpFAQ: '❓ FREQUENTLY ASKED QUESTIONS',
     helpTip1Title: 'Add a Task', helpTip1Desc: 'Type a title in the Tasks tab and click "+ Add Task". Set priority, due date, and category.',
-    helpTip2Title: 'Complete a Task', helpTip2Desc: 'Click the checkbox on any task to mark it done. In Kids Mode, you\'ll earn a star! ⭐',
+    helpTip2Title: 'Complete a Task', helpTip2Desc: 'Click the checkbox on any task to mark it done.',
     helpTip3Title: 'Change Theme', helpTip3Desc: 'Go to Settings → Themes and pick from 7 beautiful Islamic-inspired designs.',
-    helpTip4Title: 'Switch Language', helpTip4Desc: 'Use the language dropdown (🇬🇧/🇫🇷/🇸🇦) in the top bar. Arabic enables RTL layout.',
+    helpTip4Title: 'Switch Language', helpTip4Desc: 'Use the language dropdown (EN/FR/AR) in the top bar. Arabic enables RTL layout.',
     tooltipPriority: 'High = urgent (red), Medium = normal (yellow), Low = can wait (green).',
     tooltipTags: 'Add labels separated by commas. Use search to find tasks by tag.',
     tooltipPin: 'Locks the app with a 4-digit code on startup.',
-    tooltipKids: 'Fun mode for children! Stars, confetti, and encouraging messages.',
     shortcutsTitle: 'Islamic Phrases', addCustomShortcut: '+ Add Custom Phrase',
     scArabic: 'Arabic Text *', scTranslit: 'Transliteration', scMeaning: 'Meaning', scSave: 'Save',
     scCustomLabel: '✏️ YOUR CUSTOM PHRASES', scBuiltinLabel: '🤲 ISLAMIC PHRASES',
@@ -2758,7 +2585,6 @@ const i18n = {
     allPriorities: 'Toutes priorités', allCategories: 'Toutes catégories',
     allStatus: 'Tout', active: 'Actif', done: 'Fait',
     emptyTitle: 'Aucune tâche!', emptyDesc: 'Ajoutez votre première tâche',
-    emptyKidsTitle: 'Aucune tâche! 🎉', emptyKidsDesc: 'Ajoutons quelque chose!',
     secureNotesTitle: '🔐 Notes Sécurisées (Chiffrement AES)',
     secureNotesDesc: 'Les notes sont chiffrées avec votre mot de passe.',
     passphrase: 'Mot de passe maître', passphrasePlaceholder: 'Entrez votre mot de passe secret',
@@ -2775,17 +2601,18 @@ const i18n = {
     cancel: 'Annuler',
     themesTitle: 'Thèmes', pinLockTitle: 'Verrouillage PIN',
     enablePin: 'Activer le PIN', setPin: 'PIN à 4 chiffres', savePin: 'Sauvegarder',
-    kidsModeTitle: 'Mode Enfants', enableKids: 'Activer le mode enfants',
     dataTitle: 'Gestion des données',
     exportDesc: 'Exporter en JSON', export: '📥 Exporter',
     importDesc: 'Importer depuis JSON', import: '📤 Importer',
+    clearAllDesc: 'Supprimer toutes les données', clearAll: '🗑️ Tout effacer',
+    clearAllConfirm: 'Cela supprimera TOUTES vos tâches, notes, profils et paramètres. Cette action est irréversible !\n\nÊtes-vous sûr ?',
+    clearAllDone: 'Toutes les données supprimées ! 🗑️',
     firebaseTitle: 'Firebase Synchronisation',
     firebaseDesc: 'Créez un projet Firebase et collez la configuration.',
     saveConfig: 'Sauvegarder', clearConfig: 'Effacer',
-    defaultProfile: 'Par défaut', kidsProfile: 'Enfants', addProfile: 'Profil',
+    defaultProfile: 'Par défaut',
     enterPin: 'Entrez le PIN', wrongPin: 'PIN incorrect, réessayez',
     taskAdded: 'Tâche ajoutée! ✨', taskDone: 'Ma Shaa Allah! ✅',
-    taskDoneKids: 'Ma Shaa Allah! Bravo! ⭐🎉',
     taskDeleted: 'Tâche supprimée', noteAdded: 'Note chiffrée et sauvée 🔐',
     dataExported: 'Données exportées! 📦', dataImported: 'Données importées! ✅',
     confirmDelete: 'Supprimer?',
@@ -2823,11 +2650,10 @@ const i18n = {
     helpTip1Title: 'Ajouter une tâche', helpTip1Desc: 'Tapez un titre dans l\'onglet Tâches et cliquez "+ Ajouter". Définissez priorité, date et catégorie.',
     helpTip2Title: 'Terminer une tâche', helpTip2Desc: 'Cliquez la case à cocher pour marquer une tâche comme terminée. En mode enfants, gagnez une étoile! ⭐',
     helpTip3Title: 'Changer le thème', helpTip3Desc: 'Allez dans Paramètres → Thèmes et choisissez parmi 7 designs islamiques.',
-    helpTip4Title: 'Changer la langue', helpTip4Desc: 'Utilisez le menu déroulant (🇬🇧/🇫🇷/🇸🇦) dans la barre supérieure. L\'arabe active le mode RTL.',
+    helpTip4Title: 'Changer la langue', helpTip4Desc: 'Utilisez le menu déroulant (EN/FR/AR) dans la barre supérieure. L\'arabe active le mode RTL.',
     tooltipPriority: 'Haute = urgent (rouge), Moyenne = normal (jaune), Basse = peut attendre (vert).',
     tooltipTags: 'Ajoutez des étiquettes séparées par des virgules.',
     tooltipPin: 'Verrouille l\'appli avec un code à 4 chiffres au démarrage.',
-    tooltipKids: 'Mode amusant pour les enfants! Étoiles, confettis et messages encourageants.',
     shortcutsTitle: 'Phrases Islamiques', addCustomShortcut: '+ Ajouter une phrase',
     scArabic: 'Texte arabe *', scTranslit: 'Translittération', scMeaning: 'Signification', scSave: 'Sauver',
     scCustomLabel: '✏️ VOS PHRASES PERSONNALISÉES', scBuiltinLabel: '🤲 PHRASES ISLAMIQUES',
@@ -2853,7 +2679,6 @@ const i18n = {
     allPriorities: 'كل الأولويات', allCategories: 'كل الفئات',
     allStatus: 'الكل', active: 'نشط', done: 'مكتمل',
     emptyTitle: 'لا توجد مهام!', emptyDesc: 'أضف مهمتك الأولى',
-    emptyKidsTitle: '!لا توجد مهام 🎉', emptyKidsDesc: '!هيا نضيف شيئاً ممتعاً',
     secureNotesTitle: '🔐 ملاحظات آمنة (تشفير AES)',
     secureNotesDesc: 'الملاحظات مشفرة بكلمة المرور الخاصة بك.',
     passphrase: 'كلمة المرور الرئيسية', passphrasePlaceholder: 'أدخل كلمة المرور السرية',
@@ -2870,17 +2695,18 @@ const i18n = {
     cancel: 'إلغاء',
     themesTitle: 'السمات', pinLockTitle: 'قفل PIN',
     enablePin: 'تفعيل قفل PIN', setPin: 'PIN من 4 أرقام', savePin: 'حفظ',
-    kidsModeTitle: 'وضع الأطفال', enableKids: 'تفعيل وضع الأطفال',
     dataTitle: 'إدارة البيانات',
     exportDesc: 'تصدير كملف JSON', export: '📥 تصدير',
     importDesc: 'استيراد من JSON', import: '📤 استيراد',
+    clearAllDesc: 'حذف جميع البيانات (المهام، الملاحظات، الإعدادات)', clearAll: '🗑️ حذف الكل',
+    clearAllConfirm: 'سيتم حذف جميع المهام والملاحظات والملفات الشخصية والإعدادات. لا يمكن التراجع عن هذا!\n\nهل أنت متأكد؟',
+    clearAllDone: 'تم حذف جميع البيانات! 🗑️',
     firebaseTitle: 'مزامنة Firebase السحابية',
     firebaseDesc: 'أنشئ مشروع Firebase والصق الإعدادات.',
     saveConfig: 'حفظ', clearConfig: 'مسح',
-    defaultProfile: 'الرئيسي', kidsProfile: 'أطفال', addProfile: 'ملف شخصي',
+    defaultProfile: 'الرئيسي',
     enterPin: 'أدخل PIN', wrongPin: 'PIN خاطئ، حاول مرة أخرى',
     taskAdded: 'تمت إضافة المهمة! ✨', taskDone: 'ما شاء الله! ✅',
-    taskDoneKids: 'ما شاء الله! أحسنت! ⭐🎉',
     taskDeleted: 'تم حذف المهمة', noteAdded: 'تم تشفير وحفظ الملاحظة 🔐',
     dataExported: 'تم التصدير! 📦', dataImported: 'تم الاستيراد! ✅',
     confirmDelete: 'حذف هذا؟',
@@ -2918,11 +2744,10 @@ const i18n = {
     helpTip1Title: 'إضافة مهمة', helpTip1Desc: 'اكتب عنواناً في تبويب المهام وانقر "+ إضافة مهمة". حدد الأولوية والتاريخ والفئة.',
     helpTip2Title: 'إكمال مهمة', helpTip2Desc: 'انقر على مربع الاختيار لتحديد المهمة كمكتملة. في وضع الأطفال، ستحصل على نجمة! ⭐',
     helpTip3Title: 'تغيير السمة', helpTip3Desc: 'اذهب إلى الإعدادات → السمات واختر من 7 تصاميم إسلامية جميلة.',
-    helpTip4Title: 'تبديل اللغة', helpTip4Desc: 'استخدم قائمة اللغات (🇬🇧/🇫🇷/🇸🇦) في الشريط العلوي. العربية تفعّل التخطيط من اليمين لليسار.',
+    helpTip4Title: 'تبديل اللغة', helpTip4Desc: 'استخدم قائمة اللغات (EN/FR/AR) في الشريط العلوي. العربية تفعّل التخطيط من اليمين لليسار.',
     tooltipPriority: 'عالية = عاجل (أحمر)، متوسطة = عادي (أصفر)، منخفضة = يمكن الانتظار (أخضر).',
     tooltipTags: 'أضف علامات مفصولة بفواصل. استخدم البحث للعثور على المهام.',
     tooltipPin: 'يقفل التطبيق برمز من 4 أرقام عند البدء.',
-    tooltipKids: 'وضع ممتع للأطفال! نجوم وقصاصات ورسائل تشجيعية.',
     shortcutsTitle: 'عبارات إسلامية', addCustomShortcut: '+ إضافة عبارة مخصصة',
     scArabic: 'النص العربي *', scTranslit: 'النقل الحرفي', scMeaning: 'المعنى', scSave: 'حفظ',
     scCustomLabel: '✏️ عباراتك المخصصة', scBuiltinLabel: '🤲 عبارات إسلامية',
@@ -2937,14 +2762,12 @@ const i18n = {
 let state = {
   lang: 'en',
   theme: 'alhambra',
-  kidsMode: false,
   pinEnabled: false,
   pin: '',
   currentProfile: 'default',
-  profiles: ['default', 'kids'],
+  profiles: ['default'],
   tasks: {},        // { profileId: [ task, ... ] }
   notes: [],        // encrypted notes
-  stars: 0,
   firebaseConfig: null,
   notePassphrase: null,
   editingTaskId: null,
@@ -2955,11 +2778,11 @@ function init() {
   loadState();
   applyLang(state.lang);
   setTheme(state.theme);
-  if (state.kidsMode) enableKidsUI();
   if (state.pinEnabled && state.pin) showPinLock();
   renderProfiles();
   renderTasks();
-  updateStars();
+  // Set initial connection status
+  updateSyncUI(false);
   // Load firebase config
   const fc = localStorage.getItem('tethkir_firebase');
   if (fc) {
@@ -2972,9 +2795,6 @@ function init() {
   }
   if (state.pinEnabled) {
     document.getElementById('pinToggle').classList.add('active');
-  }
-  if (state.kidsMode) {
-    document.getElementById('kidsToggle').classList.add('active');
   }
   updateChangePinBtn();
   document.getElementById('appVersion').textContent = APP_VERSION;
@@ -3004,7 +2824,7 @@ function saveState() {
 // ===== LANGUAGE =====
 function applyLang(lang) {
   state.lang = lang;
-  document.getElementById('langSelect').value = lang;
+  updateLangPicker(lang);
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.setAttribute('dir', dir);
@@ -3025,9 +2845,34 @@ function applyLang(lang) {
   saveState();
 }
 
-document.getElementById('langSelect').addEventListener('change', (e) => {
-  applyLang(e.target.value);
+// ===== LANGUAGE PICKER =====
+const langFlags = {
+  en: '<svg width="22" height="16" viewBox="0 0 60 30"><clipPath id="ukc2"><rect width="60" height="30" rx="2"/></clipPath><g clip-path="url(#ukc2)"><rect width="60" height="30" fill="#012169"/><path d="M0,0L60,30M60,0L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0L60,30M60,0L0,30" stroke="#C8102E" stroke-width="4"/><path d="M30,0V30M0,15H60" stroke="#fff" stroke-width="10"/><path d="M30,0V30M0,15H60" stroke="#C8102E" stroke-width="6"/></g></svg>',
+  fr: '<svg width="22" height="16" viewBox="0 0 60 30"><rect width="20" height="30" fill="#002395"/><rect x="20" width="20" height="30" fill="#fff"/><rect x="40" width="20" height="30" fill="#ED2939"/></svg>',
+  ar: '<svg width="22" height="16" viewBox="0 0 60 30"><rect width="30" height="30" fill="#006233"/><rect x="30" width="30" height="30" fill="#fff"/><circle cx="30" cy="15" r="7" fill="#D21034"/><circle cx="32" cy="15" r="5.8" fill="#fff"/><polygon points="33.5,9.5 34.8,13 38.5,13 35.5,15.3 36.5,19 33.5,16.5 30.5,19 31.5,15.3 28.5,13 32.2,13" fill="#D21034"/></svg>'
+};
+
+function updateLangPicker(lang) {
+  document.getElementById('langFlag').innerHTML = langFlags[lang] || langFlags.en;
+  document.getElementById('langCode').textContent = lang.toUpperCase();
+}
+
+function toggleLangPicker() {
+  document.getElementById('langPickerMenu').classList.toggle('open');
+}
+
+function selectLang(lang) {
+  document.getElementById('langPickerMenu').classList.remove('open');
+  applyLang(lang);
   renderTasks();
+}
+
+// Close picker on outside click
+document.addEventListener('click', (e) => {
+  const picker = document.getElementById('langPicker');
+  if (picker && !picker.contains(e.target)) {
+    document.getElementById('langPickerMenu').classList.remove('open');
+  }
 });
 
 // ===== THEMES =====
@@ -3052,7 +2897,6 @@ function switchProfile(profileId) {
   if (!state.tasks[profileId]) state.tasks[profileId] = [];
   renderProfiles();
   renderTasks();
-  updateStars();
   saveState();
 }
 
@@ -3060,10 +2904,10 @@ function renderProfiles() {
   const bar = document.getElementById('profilesBar');
   let html = '';
   state.profiles.forEach(p => {
-    const icon = p === 'kids' ? '🧒' : (p === 'default' ? '👤' : '👤');
+    const icon = '👤';
     const active = p === state.currentProfile ? 'active' : '';
     const label = p === 'default' ? (i18n[state.lang]?.defaultProfile || 'Default') :
-                  p === 'kids' ? (i18n[state.lang]?.kidsProfile || 'Kids') : p;
+                  p;
     html += `<button class="profile-chip ${active}" onclick="switchProfile('${p}')">${icon} ${label}</button>`;
   });
   html += `<button class="btn btn-sm" onclick="showAddProfileModal()">+ ${i18n[state.lang]?.addProfile || 'Profile'}</button>`;
@@ -3151,15 +2995,7 @@ function toggleTaskDone(id) {
   renderTasks();
 
   if (task.done) {
-    if (state.kidsMode || state.currentProfile === 'kids') {
-      state.stars++;
-      updateStars();
-      saveState();
-      showConfetti();
-      showToast(i18n[state.lang]?.taskDoneKids || 'Ma Shaa Allah! Great job! ⭐🎉');
-    } else {
-      showToast(i18n[state.lang]?.taskDone || 'Ma Shaa Allah! ✅');
-    }
+    showToast(i18n[state.lang]?.taskDone || 'Ma Shaa Allah! ✅');
   }
 }
 
@@ -3213,12 +3049,11 @@ function renderTasks() {
   if (fStatus === 'done') tasks = tasks.filter(t => t.done);
 
   if (tasks.length === 0) {
-    const isKids = state.kidsMode || state.currentProfile === 'kids';
     container.innerHTML = `
       <div class="empty-state">
-        <div class="icon">${isKids ? '🌟' : '📝'}</div>
-        <h3>${isKids ? (t.emptyKidsTitle) : (t.emptyTitle)}</h3>
-        <p>${isKids ? (t.emptyKidsDesc) : (t.emptyDesc)}</p>
+        <div class="icon">📝</div>
+        <h3>${t.emptyTitle}</h3>
+        <p>${t.emptyDesc}</p>
       </div>`;
     return;
   }
@@ -3489,53 +3324,6 @@ function checkPin() {
   }
 }
 
-// ===== KIDS MODE =====
-function toggleKidsMode() {
-  state.kidsMode = !state.kidsMode;
-  document.getElementById('kidsToggle').classList.toggle('active', state.kidsMode);
-  if (state.kidsMode) {
-    enableKidsUI();
-  } else {
-    disableKidsUI();
-  }
-  saveState();
-  renderTasks();
-}
-
-function enableKidsUI() {
-  document.getElementById('starsCounter').style.display = 'flex';
-  document.getElementById('kidsModeBtn').style.background = 'var(--accent)';
-  document.getElementById('kidsModeBtn').style.color = 'var(--bg-primary)';
-  updateStars();
-}
-
-function disableKidsUI() {
-  document.getElementById('starsCounter').style.display = 'none';
-  document.getElementById('kidsModeBtn').style.background = '';
-  document.getElementById('kidsModeBtn').style.color = '';
-}
-
-function updateStars() {
-  document.getElementById('starsCount').textContent = state.stars;
-}
-
-function showConfetti() {
-  const container = document.getElementById('confettiContainer');
-  const colors = ['#e74c3c', '#f39c12', '#27ae60', '#3498db', '#9b59b6', '#e91e63', '#00bcd4'];
-  for (let i = 0; i < 40; i++) {
-    const confetti = document.createElement('div');
-    confetti.className = 'confetti';
-    confetti.style.left = Math.random() * 100 + '%';
-    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-    confetti.style.animationDelay = Math.random() * 0.5 + 's';
-    confetti.style.animationDuration = (1.5 + Math.random()) + 's';
-    confetti.style.width = (6 + Math.random() * 8) + 'px';
-    confetti.style.height = (6 + Math.random() * 8) + 'px';
-    container.appendChild(confetti);
-    setTimeout(() => confetti.remove(), 2500);
-  }
-}
-
 // ===== IMPORT / EXPORT =====
 function exportData() {
   const data = {
@@ -3567,13 +3355,29 @@ function importData(event) {
         setTheme(state.theme);
         renderProfiles();
         renderTasks();
-        updateStars();
-        showToast(i18n[state.lang]?.dataImported || 'Data imported! ✅');
+              showToast(i18n[state.lang]?.dataImported || 'Data imported! ✅');
       }
     } catch(err) { showToast('Invalid file ❌'); }
   };
   reader.readAsText(file);
   event.target.value = '';
+}
+
+function clearAllData() {
+  const t = i18n[state.lang] || i18n.en;
+  const msg = t.clearAllConfirm || 'This will delete ALL your tasks, notes, profiles, and settings. This cannot be undone!\n\nAre you sure?';
+  if (!confirm(msg)) return;
+  // Sign out of Firebase if connected
+  if (firebaseAuth?.currentUser) {
+    firebaseAuth.signOut();
+  }
+  // Clear all localStorage
+  localStorage.removeItem('tethkir_state');
+  localStorage.removeItem('tethkir_firebase');
+  localStorage.removeItem('tethkir_custom_shortcuts');
+  // Reload the page to reset everything
+  showToast(t.clearAllDone || 'All data cleared! 🗑️');
+  setTimeout(() => location.reload(), 800);
 }
 
 // ===== FIREBASE =====
@@ -3635,21 +3439,31 @@ function setupAuthListener() {
   });
 }
 
-function updateSyncUI(online, name) {
+function updateSyncUI(firebaseOnline, name) {
   const dot = document.getElementById('syncDot');
   const label = document.getElementById('syncLabel');
   const btn = document.getElementById('authBtn');
   const lang = state.lang || 'en';
-  if (online) {
+  const hasInternet = navigator.onLine;
+
+  if (firebaseOnline && hasInternet) {
     dot.className = 'sync-dot online';
     label.textContent = name || (i18n[lang]?.synced || 'Synced');
     btn.textContent = i18n[lang]?.signOut || '☁️ Sign Out';
+  } else if (hasInternet) {
+    dot.className = 'sync-dot warning';
+    label.textContent = i18n[lang]?.online || 'Online';
+    btn.textContent = i18n[lang]?.signIn || '☁️ Sign In';
   } else {
     dot.className = 'sync-dot offline';
     label.textContent = i18n[lang]?.offline || 'Offline';
     btn.textContent = i18n[lang]?.signIn || '☁️ Sign In';
   }
 }
+
+// Listen for internet connectivity changes
+window.addEventListener('online', () => updateSyncUI(firebaseAuth?.currentUser != null, firebaseAuth?.currentUser?.displayName));
+window.addEventListener('offline', () => updateSyncUI(false));
 
 async function syncToCloud() {
   if (!firebaseReady || !firebaseAuth?.currentUser) return;
@@ -3661,10 +3475,8 @@ async function syncToCloud() {
       tasks: state.tasks,
       profiles: state.profiles,
       notes: state.notes,
-      stars: state.stars,
       theme: state.theme,
       lang: state.lang,
-      kidsMode: state.kidsMode,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     console.log('✅ Synced to cloud');
@@ -3686,7 +3498,6 @@ async function syncFromCloud() {
       state.tasks = data.tasks || state.tasks;
       state.profiles = data.profiles || state.profiles;
       state.notes = data.notes || state.notes;
-      state.stars = data.stars ?? state.stars;
       if (data.theme) { state.theme = data.theme; setTheme(data.theme); }
       if (data.lang) { state.lang = data.lang; applyLang(data.lang); }
       if (!state.tasks[state.currentProfile]) state.tasks[state.currentProfile] = [];
@@ -3694,8 +3505,7 @@ async function syncFromCloud() {
       localStorage.setItem('tethkir_state', JSON.stringify(toSave));
       renderProfiles();
       renderTasks();
-      updateStars();
-      updateNoteCountHint();
+          updateNoteCountHint();
       showToast('☁️ Synced from cloud!');
     } else {
       await syncToCloud();
