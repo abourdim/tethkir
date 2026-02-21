@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tadhkir — Task Memo v1.3.3</title>
+<title>Tethkir — Task Memo v1.4.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
@@ -1342,6 +1342,61 @@ body.help-open .help-toggle-btn { bottom: calc(65vh + 10px); }
 .help-accordion-body li::marker { color: var(--accent); }
 .help-accordion-body strong { color: var(--text-primary); }
 
+/* Step-by-step guide */
+.help-steps { counter-reset: step-counter; padding: 0; list-style: none; margin: 8px 0; }
+.help-steps li {
+  counter-increment: step-counter;
+  position: relative;
+  padding: 10px 12px 10px 44px;
+  margin: 6px 0;
+  background: var(--bg-input);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+  font-size: 0.88em;
+  line-height: 1.5;
+}
+[dir="rtl"] .help-steps li { padding: 10px 44px 10px 12px; border-left: none; border-right: 3px solid var(--accent); }
+.help-steps li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 10px; top: 10px;
+  width: 24px; height: 24px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.78em;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+[dir="rtl"] .help-steps li::before { left: auto; right: 10px; }
+.help-steps code {
+  background: rgba(255,255,255,0.08);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: var(--accent);
+  word-break: break-all;
+}
+.help-sub-accordion { margin: 8px 0 4px; }
+.help-sub-accordion summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9em;
+  padding: 4px 0;
+}
+.help-sub-accordion summary:hover { text-decoration: underline; }
+.help-note {
+  background: rgba(255,193,7,0.1);
+  border-left: 3px solid #ffc107;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  margin: 8px 0;
+  color: var(--text-secondary);
+}
+[dir="rtl"] .help-note { border-left: none; border-right: 3px solid #ffc107; }
+
 /* Contextual Tooltips */
 .tooltip-trigger {
   display: inline-flex;
@@ -1863,17 +1918,105 @@ body.kb-open .kb-toggle-btn {
       </div>
     </div>
 
-    <div class="help-accordion" data-help-keywords="firebase cloud sync google sign login">
+    <div class="help-accordion" data-help-keywords="firebase cloud sync google sign login setup config">
       <button class="help-accordion-header" onclick="toggleAccordion(this)">
         <span class="help-accordion-icon">☁️ <span data-i18n="helpFeatFirebase">Cloud Sync (Firebase)</span></span>
         <span class="help-accordion-arrow">▼</span>
       </button>
       <div class="help-accordion-body">
-        <ul>
-          <li><strong data-i18n="helpFeatFirebaseWhat">What</strong> — <span data-i18n="helpFeatFirebaseWhatDesc">Sync your tasks across all devices using Google Firebase (free)</span></li>
-          <li><strong data-i18n="helpFeatFirebaseHow">How</strong> — <span data-i18n="helpFeatFirebaseHowDesc">Create a Firebase project → paste config in Settings → Sign in with Google</span></li>
-          <li><strong data-i18n="helpFeatFirebaseGuide">Full guide</strong> — <span data-i18n="helpFeatFirebaseGuideDesc">See README.html for step-by-step setup with screenshots</span></li>
-        </ul>
+        <p style="margin:0 0 8px;font-size:0.9em;">Sync your tasks across all your devices for <strong>free</strong> using Google Firebase. Follow these steps:</p>
+
+        <details class="help-sub-accordion" open>
+          <summary>📋 Step 1 — Create a Firebase Project</summary>
+          <ol class="help-steps">
+            <li>Go to <a href="https://console.firebase.google.com/" target="_blank" style="color:var(--accent)">console.firebase.google.com</a></li>
+            <li>Click <strong>"Create a project"</strong> (or "Add project")</li>
+            <li>Name it <code>tethkir</code> (or anything you like)</li>
+            <li>Disable Google Analytics (not needed) → click <strong>Create project</strong></li>
+            <li>Wait for setup → click <strong>Continue</strong></li>
+          </ol>
+        </details>
+
+        <details class="help-sub-accordion">
+          <summary>🌐 Step 2 — Register a Web App</summary>
+          <ol class="help-steps">
+            <li>On the project overview page, click the <strong>Web icon</strong> <code>&lt;/&gt;</code></li>
+            <li>Enter an app nickname: <code>Tethkir Web</code></li>
+            <li>Skip Firebase Hosting (not needed) → click <strong>Register app</strong></li>
+            <li>You'll see a config block — <strong>copy the entire config object</strong> (you'll need it in Step 7)</li>
+            <li>Click <strong>Continue to console</strong></li>
+          </ol>
+        </details>
+
+        <details class="help-sub-accordion">
+          <summary>🔑 Step 3 — Enable Google Sign-In</summary>
+          <ol class="help-steps">
+            <li>In the left sidebar → <strong>Build</strong> → <strong>Authentication</strong></li>
+            <li>Click <strong>Get started</strong></li>
+            <li>Go to the <strong>Sign-in method</strong> tab</li>
+            <li>Click <strong>Google</strong> → toggle <strong>Enable</strong> ON</li>
+            <li>Select a support email (your Gmail) → click <strong>Save</strong></li>
+          </ol>
+        </details>
+
+        <details class="help-sub-accordion">
+          <summary>🗄️ Step 4 — Set Up Firestore Database</summary>
+          <ol class="help-steps">
+            <li>In the left sidebar → <strong>Build</strong> → <strong>Firestore Database</strong></li>
+            <li>Click <strong>Create database</strong></li>
+            <li>Choose a location closest to you (e.g. <code>europe-west1</code> for Europe, <code>me-south1</code> for Middle East)</li>
+            <li>Select <strong>Start in test mode</strong> → click <strong>Create</strong></li>
+          </ol>
+        </details>
+
+        <details class="help-sub-accordion">
+          <summary>🛡️ Step 5 — Secure Firestore Rules</summary>
+          <ol class="help-steps">
+            <li>In Firestore, click the <strong>Rules</strong> tab</li>
+            <li>Replace the default rules with:
+              <code style="display:block;margin:6px 0;padding:8px;font-size:0.82em;white-space:pre-wrap;line-height:1.4">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null
+        && request.auth.uid == userId;
+    }
+  }
+}</code></li>
+            <li>Click <strong>Publish</strong> — this ensures only you can access your own data</li>
+          </ol>
+        </details>
+
+        <details class="help-sub-accordion">
+          <summary>🌍 Step 6 — Add Authorized Domain</summary>
+          <ol class="help-steps">
+            <li>Go to <strong>Authentication</strong> → <strong>Settings</strong> tab</li>
+            <li>Scroll to <strong>Authorized domains</strong></li>
+            <li>Click <strong>Add domain</strong> → enter your GitHub Pages domain (e.g. <code>yourusername.github.io</code>)</li>
+            <li>Click <strong>Add</strong> — this allows Google Sign-In to work from your hosted site</li>
+          </ol>
+        </details>
+
+        <details class="help-sub-accordion">
+          <summary>✅ Step 7 — Paste Config in Tethkir</summary>
+          <ol class="help-steps">
+            <li>In this app, go to <strong>Settings</strong> tab (⚙️)</li>
+            <li>Scroll to <strong>Firebase Cloud Sync</strong></li>
+            <li>Paste your Firebase config as JSON:
+              <code style="display:block;margin:6px 0;padding:8px;font-size:0.82em;white-space:pre-wrap;line-height:1.4">{"apiKey":"AIzaSy...",
+"authDomain":"tethkir-xxx.firebaseapp.com",
+"projectId":"tethkir-xxx",
+"storageBucket":"tethkir-xxx.appspot.com",
+"messagingSenderId":"123456789",
+"appId":"1:123456789:web:abc..."}</code></li>
+            <li>Click <strong>Save Config</strong> — you'll see "Firebase ready!"</li>
+            <li>Click <strong>☁️ Sign In</strong> in the top bar → sign in with Google 🎉</li>
+          </ol>
+        </details>
+
+        <div class="help-note">
+          ⚡ <strong>After setup:</strong> Everything auto-syncs! Add/edit/delete tasks on any device and they'll appear everywhere. The green dot shows you're connected.
+        </div>
       </div>
     </div>
 
@@ -1930,7 +2073,7 @@ body.kb-open .kb-toggle-btn {
         <span class="help-accordion-arrow">▼</span>
       </button>
       <div class="help-accordion-body" data-i18n="helpFaq4A">
-        Set up Firebase Cloud Sync: Create a free Firebase project → paste config in Settings → Sign in with Google. See the full guide in README.html. Alternatively, use Export/Import to manually transfer data via JSON files.
+        Set up Firebase Cloud Sync: scroll up to the <strong>☁️ Cloud Sync (Firebase)</strong> section above for a full step-by-step guide. Alternatively, use <strong>Export/Import</strong> in Settings to manually transfer data via JSON files.
       </div>
     </div>
 
@@ -2111,7 +2254,7 @@ body.kb-open .kb-toggle-btn {
   <!-- TOP BAR -->
   <div class="top-bar">
     <div class="top-bar-left">
-      <span class="app-title" data-i18n="appTitle">📝 Tadhkir</span>
+      <span class="app-title" data-i18n="appTitle">📝 Tethkir</span>
       <div class="sync-status" id="syncStatus">
         <span class="sync-dot offline" id="syncDot"></span>
         <span id="syncLabel" data-i18n="offline">Offline</span>
@@ -2388,7 +2531,7 @@ body.kb-open .kb-toggle-btn {
     <!-- About / Version -->
     <div class="settings-section" style="text-align:center;">
       <p style="font-family:var(--font-arabic);font-size:1.3em;color:var(--bismillah-color);margin-bottom:8px;">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
-      <p style="color:var(--accent);font-weight:600;font-size:1.1em;">📝 Tadhkir — تذكير</p>
+      <p style="color:var(--accent);font-weight:600;font-size:1.1em;">📝 Tethkir — تذكير</p>
       <p id="appVersion" style="color:var(--text-secondary);font-size:0.85em;margin-top:4px;"></p>
       <a href="CHANGES.html" target="_blank" style="color:var(--accent);font-size:0.8em;text-decoration:underline;cursor:pointer;" data-i18n="viewChangelog">View Changelog</a>
     </div>
@@ -2402,12 +2545,12 @@ body.kb-open .kb-toggle-btn {
 
 <script>
 // ===== VERSION =====
-const APP_VERSION = 'v1.3.3';
+const APP_VERSION = 'v1.4.0';
 
 // ===== TRANSLATIONS =====
 const i18n = {
   en: {
-    appTitle: '📝 Tadhkir',
+    appTitle: '📝 Tethkir',
     offline: 'Offline', online: 'Synced', syncing: 'Syncing...',
     signIn: '☁️ Sign In', signOut: '☁️ Sign Out',
     tabTasks: 'Tasks', tabNotes: 'Secure Notes', tabSettings: 'Settings',
@@ -2502,7 +2645,7 @@ const i18n = {
     createProfile: 'Create',
   },
   fr: {
-    appTitle: '📝 Tadhkir',
+    appTitle: '📝 Tethkir',
     offline: 'Hors ligne', online: 'Synchronisé', syncing: 'Synchronisation...',
     signIn: '☁️ Connexion', signOut: '☁️ Déconnexion',
     tabTasks: 'Tâches', tabNotes: 'Notes Sécurisées', tabSettings: 'Paramètres',
@@ -2721,10 +2864,14 @@ function init() {
   renderTasks();
   updateStars();
   // Load firebase config
-  const fc = localStorage.getItem('tadhkir_firebase');
+  const fc = localStorage.getItem('tethkir_firebase');
   if (fc) {
     state.firebaseConfig = JSON.parse(fc);
     document.getElementById('firebaseConfigInput').value = fc;
+    // Auto-load Firebase SDK and init
+    loadFirebaseSDK().then(() => {
+      initFirebase(state.firebaseConfig);
+    }).catch(e => console.error('Firebase auto-load failed:', e));
   }
   if (state.pinEnabled) {
     document.getElementById('pinToggle').classList.add('active');
@@ -2738,7 +2885,7 @@ function init() {
 
 function loadState() {
   try {
-    const saved = localStorage.getItem('tadhkir_state');
+    const saved = localStorage.getItem('tethkir_state');
     if (saved) {
       const parsed = JSON.parse(saved);
       state = { ...state, ...parsed };
@@ -2751,7 +2898,9 @@ function saveState() {
   try {
     // Exclude notePassphrase from storage for security
     const toSave = { ...state, notePassphrase: null };
-    localStorage.setItem('tadhkir_state', JSON.stringify(toSave));
+    localStorage.setItem('tethkir_state', JSON.stringify(toSave));
+    // Auto-sync to cloud if signed in
+    if (firebaseReady && firebaseAuth?.currentUser) syncToCloud();
   } catch(e) { console.error('Save error', e); }
 }
 
@@ -3298,7 +3447,7 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `tadhkir-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.download = `tethkir-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
   showToast(i18n[state.lang]?.dataExported || 'Data exported! 📦');
@@ -3327,24 +3476,165 @@ function importData(event) {
   event.target.value = '';
 }
 
-// ===== FIREBASE (Placeholder) =====
+// ===== FIREBASE =====
+let firebaseReady = false;
+let firebaseAuth = null;
+let firebaseDb = null;
+let syncInProgress = false;
+
+function loadFirebaseSDK() {
+  return new Promise((resolve, reject) => {
+    if (firebaseReady) { resolve(); return; }
+    if (typeof firebase !== 'undefined' && firebase.apps) { resolve(); return; }
+    const scripts = [
+      'https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js',
+      'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js',
+      'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js'
+    ];
+    let loaded = 0;
+    scripts.forEach(src => {
+      if (document.querySelector('script[src="' + src + '"]')) {
+        loaded++; if (loaded === scripts.length) resolve(); return;
+      }
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = () => { loaded++; if (loaded === scripts.length) resolve(); };
+      s.onerror = () => reject(new Error('Failed to load Firebase SDK'));
+      document.head.appendChild(s);
+    });
+  });
+}
+
+function initFirebase(config) {
+  try {
+    if (typeof firebase === 'undefined') return;
+    if (firebase.apps && firebase.apps.length) {
+      // Already initialized — just grab references
+      firebaseAuth = firebase.auth();
+      firebaseDb = firebase.firestore();
+      firebaseReady = true;
+      setupAuthListener();
+      return;
+    }
+    firebase.initializeApp(config);
+    firebaseAuth = firebase.auth();
+    firebaseDb = firebase.firestore();
+    firebaseReady = true;
+    setupAuthListener();
+  } catch(e) { console.error('Firebase init error:', e); }
+}
+
+function setupAuthListener() {
+  firebaseAuth.onAuthStateChanged(user => {
+    if (user) {
+      updateSyncUI(true, user.displayName);
+      syncFromCloud();
+    } else {
+      updateSyncUI(false);
+    }
+  });
+}
+
+function updateSyncUI(online, name) {
+  const dot = document.getElementById('syncDot');
+  const label = document.getElementById('syncLabel');
+  const btn = document.getElementById('authBtn');
+  const lang = state.lang || 'en';
+  if (online) {
+    dot.className = 'sync-dot online';
+    label.textContent = name || (i18n[lang]?.synced || 'Synced');
+    btn.textContent = i18n[lang]?.signOut || '☁️ Sign Out';
+  } else {
+    dot.className = 'sync-dot offline';
+    label.textContent = i18n[lang]?.offline || 'Offline';
+    btn.textContent = i18n[lang]?.signIn || '☁️ Sign In';
+  }
+}
+
+async function syncToCloud() {
+  if (!firebaseReady || !firebaseAuth?.currentUser) return;
+  if (syncInProgress) return;
+  syncInProgress = true;
+  try {
+    const user = firebaseAuth.currentUser;
+    await firebaseDb.collection('users').doc(user.uid).set({
+      tasks: state.tasks,
+      profiles: state.profiles,
+      notes: state.notes,
+      stars: state.stars,
+      theme: state.theme,
+      lang: state.lang,
+      kidsMode: state.kidsMode,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    console.log('✅ Synced to cloud');
+  } catch(e) {
+    console.error('Sync to cloud error:', e);
+    showToast('Sync error — check console');
+  } finally {
+    syncInProgress = false;
+  }
+}
+
+async function syncFromCloud() {
+  if (!firebaseReady || !firebaseAuth?.currentUser) return;
+  try {
+    const user = firebaseAuth.currentUser;
+    const doc = await firebaseDb.collection('users').doc(user.uid).get();
+    if (doc.exists) {
+      const data = doc.data();
+      state.tasks = data.tasks || state.tasks;
+      state.profiles = data.profiles || state.profiles;
+      state.notes = data.notes || state.notes;
+      state.stars = data.stars ?? state.stars;
+      if (data.theme) { state.theme = data.theme; setTheme(data.theme); }
+      if (data.lang) { state.lang = data.lang; applyLang(data.lang); }
+      if (!state.tasks[state.currentProfile]) state.tasks[state.currentProfile] = [];
+      const toSave = { ...state, notePassphrase: null };
+      localStorage.setItem('tethkir_state', JSON.stringify(toSave));
+      renderProfiles();
+      renderTasks();
+      updateStars();
+      updateNoteCountHint();
+      showToast('☁️ Synced from cloud!');
+    } else {
+      await syncToCloud();
+      showToast('☁️ Data uploaded to cloud!');
+    }
+  } catch(e) {
+    console.error('Sync from cloud error:', e);
+    showToast('Cloud fetch error — check console');
+  }
+}
+
 function saveFirebaseConfig() {
   const val = document.getElementById('firebaseConfigInput').value.trim();
   try {
     const config = JSON.parse(val);
     state.firebaseConfig = config;
-    localStorage.setItem('tadhkir_firebase', val);
+    localStorage.setItem('tethkir_firebase', val);
     saveState();
-    showToast('Firebase config saved! ☁️');
-    // In production, you'd init Firebase here
+    showToast('Firebase config saved! Loading SDK... ☁️');
+    loadFirebaseSDK().then(() => {
+      initFirebase(config);
+      showToast('Firebase ready! Click Sign In ☁️');
+    }).catch(e => {
+      showToast('Failed to load Firebase SDK ❌');
+      console.error(e);
+    });
   } catch(e) { showToast('Invalid JSON ❌'); }
 }
 
 function clearFirebaseConfig() {
+  if (firebaseAuth?.currentUser) firebaseAuth.signOut();
   state.firebaseConfig = null;
-  localStorage.removeItem('tadhkir_firebase');
+  firebaseReady = false;
+  firebaseAuth = null;
+  firebaseDb = null;
+  localStorage.removeItem('tethkir_firebase');
   document.getElementById('firebaseConfigInput').value = '';
   saveState();
+  updateSyncUI(false);
   showToast('Firebase config cleared');
 }
 
@@ -3354,8 +3644,39 @@ function toggleAuth() {
     switchTab('settings');
     return;
   }
-  // Placeholder: In production, use Firebase Auth
-  showToast('Firebase Auth: Configure your project to enable sign-in');
+  if (!firebaseReady) {
+    showToast('Loading Firebase...');
+    loadFirebaseSDK().then(() => {
+      initFirebase(state.firebaseConfig);
+      doSignIn();
+    }).catch(() => showToast('Failed to load Firebase SDK ❌'));
+    return;
+  }
+  if (firebaseAuth?.currentUser) {
+    firebaseAuth.signOut().then(() => {
+      updateSyncUI(false);
+      showToast('Signed out ☁️');
+    });
+  } else {
+    doSignIn();
+  }
+}
+
+async function doSignIn() {
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await firebaseAuth.signInWithPopup(provider);
+    showToast('Welcome, ' + result.user.displayName + '! ☁️');
+  } catch(e) {
+    if (e.code === 'auth/popup-closed-by-user') {
+      showToast('Sign-in cancelled');
+    } else if (e.code === 'auth/unauthorized-domain') {
+      showToast('Add this domain to Firebase Authorized Domains ⚠️');
+    } else {
+      console.error('Sign-in error:', e);
+      showToast('Sign-in failed: ' + e.message);
+    }
+  }
 }
 
 // ===== TOAST =====
@@ -3647,12 +3968,12 @@ let customFormOpen = false;
 
 function getCustomShortcuts() {
   try {
-    return JSON.parse(localStorage.getItem('tadhkir_custom_shortcuts') || '[]');
+    return JSON.parse(localStorage.getItem('tethkir_custom_shortcuts') || '[]');
   } catch(e) { return []; }
 }
 
 function saveCustomShortcuts(list) {
-  localStorage.setItem('tadhkir_custom_shortcuts', JSON.stringify(list));
+  localStorage.setItem('tethkir_custom_shortcuts', JSON.stringify(list));
 }
 
 function toggleShortcutsDrawer() {

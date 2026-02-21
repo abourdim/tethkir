@@ -1,8 +1,8 @@
-# 📝 Tadhkir — Islamic Task Memo App
+# 📝 Tethkir — Islamic Task Memo App
 
 بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
 
-**Tadhkir** (تذكير — "Reminder") is a beautiful, feature-rich task management web app inspired by Islamic art and architecture. It works offline with localStorage and optionally syncs to the cloud via Firebase.
+**Tethkir** (تذكير — "Reminder") is a beautiful, feature-rich task management web app inspired by Islamic art and architecture. It works offline with localStorage and syncs to the cloud via Firebase with Google Sign-In.
 
 ---
 
@@ -49,7 +49,9 @@
 
 ### 💾 Dual Storage
 - **Local mode** (default) — Works immediately, data saved in browser's localStorage
-- **Cloud mode** (optional) — Sync across all your devices via Firebase
+- **Cloud mode** — Sync across all your devices via Firebase + Google Sign-In
+- **Auto-sync** — Every change is automatically pushed to the cloud when signed in
+- **Firebase SDK** loaded dynamically on demand (no performance hit in local mode)
 
 ### 📦 Import / Export
 - **Export** all your data as a `.json` backup file
@@ -74,7 +76,7 @@ Simply download `index.html` and open it in any modern browser. Everything works
 
 2. **Create a new repository:**
    - Click the **+** button → **New repository**
-   - Name it something like `tadhkir` or `task-memo`
+   - Name it something like `tethkir` or `task-memo`
    - Set it to **Public** (required for free GitHub Pages)
    - Check **"Add a README file"** (optional)
    - Click **Create repository**
@@ -92,7 +94,7 @@ Simply download `index.html` and open it in any modern browser. Everything works
 
 5. **Access your app:**
    - Wait 1-2 minutes for deployment
-   - Your app will be live at: `https://YOUR-USERNAME.github.io/tadhkir/`
+   - Your app will be live at: `https://YOUR-USERNAME.github.io/tethkir/`
    - Bookmark this URL on all your devices!
 
 ---
@@ -105,7 +107,7 @@ Firebase allows you to sync your tasks across all devices. Here's the complete s
 
 1. Go to [Firebase Console](https://console.firebase.google.com/)
 2. Click **"Create a project"** (or "Add project")
-3. Enter a project name: `tadhkir` (or anything you like)
+3. Enter a project name: `tethkir` (or anything you like)
 4. Disable Google Analytics (not needed) or enable it — your choice
 5. Click **Create project**
 6. Wait for setup to complete, then click **Continue**
@@ -113,7 +115,7 @@ Firebase allows you to sync your tasks across all devices. Here's the complete s
 ### Step 2: Register a Web App
 
 1. On the project overview page, click the **Web icon** `</>` (looks like `</>`)
-2. Enter an app nickname: `Tadhkir Web`
+2. Enter an app nickname: `Tethkir Web`
 3. ✅ Check **"Also set up Firebase Hosting"** if you want Firebase hosting instead of GitHub Pages (optional)
 4. Click **Register app**
 5. You'll see a code block with your Firebase config. It looks like this:
@@ -121,9 +123,9 @@ Firebase allows you to sync your tasks across all devices. Here's the complete s
 ```javascript
 const firebaseConfig = {
   apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  authDomain: "tadhkir-xxxxx.firebaseapp.com",
-  projectId: "tadhkir-xxxxx",
-  storageBucket: "tadhkir-xxxxx.appspot.com",
+  authDomain: "tethkir-xxxxx.firebaseapp.com",
+  projectId: "tethkir-xxxxx",
+  storageBucket: "tethkir-xxxxx.appspot.com",
   messagingSenderId: "123456789012",
   appId: "1:123456789012:web:abcdef1234567890"
 };
@@ -186,9 +188,9 @@ This ensures only authenticated users can access their own data — nobody else 
 
 This allows Google Sign-In to work from your GitHub Pages site.
 
-### Step 7: Paste Config in Tadhkir
+### Step 7: Paste Config in Tethkir
 
-1. Open your Tadhkir app
+1. Open your Tethkir app
 2. Go to **Settings** tab (⚙️)
 3. Scroll down to **Firebase Cloud Sync**
 4. Paste your Firebase config as JSON in the text area:
@@ -196,136 +198,37 @@ This allows Google Sign-In to work from your GitHub Pages site.
 ```json
 {
   "apiKey": "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  "authDomain": "tadhkir-xxxxx.firebaseapp.com",
-  "projectId": "tadhkir-xxxxx",
-  "storageBucket": "tadhkir-xxxxx.appspot.com",
+  "authDomain": "tethkir-xxxxx.firebaseapp.com",
+  "projectId": "tethkir-xxxxx",
+  "storageBucket": "tethkir-xxxxx.appspot.com",
   "messagingSenderId": "123456789012",
   "appId": "1:123456789012:web:abcdef1234567890"
 }
 ```
 
-5. Click **Save Config**
+5. Click **Save Config** — you'll see "Firebase ready!"
 6. Click **☁️ Sign In** in the top bar
-7. Sign in with your Google account
-8. Your tasks will now sync across all devices! 🎉
+7. Sign in with your Google account via the popup
+8. The status dot turns **green** and shows your name — you're synced! 🎉
 
-### Step 8: Enable Firebase on the HTML (Developer Step)
+> **Note:** As of v1.4.0, the Firebase SDK is loaded dynamically when you save your config — no manual script tags needed. Everything is built into the single `index.html` file. Every change (add/edit/delete tasks, notes, profiles) is automatically synced to the cloud.
 
-> **Note:** The current version has Firebase config storage ready. To make the actual sync work, you need to add the Firebase SDK scripts to the HTML file. Add these lines before the closing `</body>` tag:
+### Troubleshooting
 
-```html
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-<script>
-// Initialize Firebase with saved config
-const savedConfig = localStorage.getItem('tadhkir_firebase');
-if (savedConfig) {
-  const app = firebase.initializeApp(JSON.parse(savedConfig));
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  // Google Sign-In
-  window.firebaseSignIn = async () => {
-    try {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      const result = await auth.signInWithPopup(provider);
-      console.log('Signed in:', result.user.displayName);
-      syncFromCloud();
-      updateSyncUI(true);
-    } catch (error) {
-      console.error('Sign-in error:', error);
-    }
-  };
-
-  // Sign Out
-  window.firebaseSignOut = async () => {
-    await auth.signOut();
-    updateSyncUI(false);
-  };
-
-  // Sync tasks to cloud
-  window.syncToCloud = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-    try {
-      await db.collection('users').doc(user.uid).set({
-        tasks: state.tasks,
-        profiles: state.profiles,
-        notes: state.notes,
-        stars: state.stars,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      console.log('Synced to cloud');
-    } catch (error) {
-      console.error('Sync error:', error);
-    }
-  };
-
-  // Sync tasks from cloud
-  window.syncFromCloud = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-    try {
-      const doc = await db.collection('users').doc(user.uid).get();
-      if (doc.exists) {
-        const data = doc.data();
-        state.tasks = data.tasks || state.tasks;
-        state.profiles = data.profiles || state.profiles;
-        state.notes = data.notes || state.notes;
-        state.stars = data.stars || state.stars;
-        saveState();
-        renderProfiles();
-        renderTasks();
-        updateStars();
-      }
-    } catch (error) {
-      console.error('Fetch error:', error);
-    }
-  };
-
-  // Update UI for sync status
-  function updateSyncUI(online) {
-    document.getElementById('syncDot').className = 'sync-dot ' + (online ? 'online' : 'offline');
-    document.getElementById('syncLabel').textContent = online ? 'Synced' : 'Offline';
-    document.getElementById('authBtn').textContent = online ? '☁️ Sign Out' : '☁️ Sign In';
-  }
-
-  // Override toggleAuth
-  window.toggleAuth = () => {
-    if (auth.currentUser) {
-      firebaseSignOut();
-    } else {
-      firebaseSignIn();
-    }
-  };
-
-  // Auto-sync when tasks change (override saveState)
-  const originalSaveState = saveState;
-  window.saveState = () => {
-    originalSaveState();
-    if (auth.currentUser) syncToCloud();
-  };
-
-  // Check auth state on load
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      updateSyncUI(true);
-      syncFromCloud();
-    }
-  });
-}
-</script>
-```
+| Problem | Solution |
+|---------|----------|
+| **"Add this domain to Firebase Authorized Domains"** | Go to Firebase Console → Authentication → Settings → Authorized domains → Add your domain (e.g. `yourusername.github.io`) |
+| **Popup blocked** | Allow popups for your site in browser settings |
+| **Sign-in cancelled** | Try again — the popup may have been closed accidentally |
+| **Changes not syncing** | Check that the green dot is showing. Try signing out and back in |
+| **"Firebase config invalid"** | Make sure you pasted valid JSON with all required fields |
 
 ---
 
 ## 📁 File Structure
 
 ```
-tadhkir/
+tethkir/
 ├── index.html      ← The complete app (single file)
 └── README.md       ← This documentation
 ```

@@ -1,6 +1,32 @@
-# 📝 Tadhkir — Changelog
+# 📝 Tethkir — Changelog
 
 All notable changes to this project will be documented in this file.
+
+---
+
+## v1.4.0 — 2026-02-21 — Firebase Cloud Sync ☁️🔥
+
+### ✨ New Features
+- **☁️ Full Firebase Integration** — Google Sign-In and Firestore cloud sync now fully working
+- **Dynamic SDK Loading** — Firebase SDK loaded on demand from CDN (no performance hit in local mode)
+- **Auto-Sync** — Every change (tasks, notes, profiles, stars, theme, language) auto-syncs to cloud when signed in
+- **Bidirectional Sync** — Pull from cloud on sign-in, push on every save
+- **Auth State Persistence** — Stay signed in across page reloads
+- **Sync Status UI** — Green dot + user name when connected, red dot when offline
+- **Error Handling** — Clear toast messages for unauthorized domain, popup closed, invalid config, etc.
+
+### 📖 Documentation
+- **In-App Firebase Guide** — Full 7-step setup guide with collapsible sections added to Help tab
+- **Styled Steps** — Numbered step indicators with accent colors and code blocks
+- **Updated README** — Removed old "Developer Step 8", added Troubleshooting table
+- **Updated FAQ** — "How do I sync across devices?" now references in-app guide
+
+### 🔧 Improvements
+- `saveState()` now auto-syncs to cloud when signed in
+- `init()` auto-loads Firebase SDK on page load if config was previously saved
+- `toggleAuth()` performs actual Google sign-in/sign-out instead of placeholder toast
+- `saveFirebaseConfig()` loads SDK immediately after saving config
+- `clearFirebaseConfig()` signs out and cleans up Firebase state
 
 ---
 
