@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tethkir — Task Memo v1.0</title>
+<title>Tethkir — Task Memo v1.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
@@ -1875,6 +1875,13 @@ body.kb-open .kb-toggle-btn {
 .page { display: none; }
 .page.active { display: block; animation: fadeIn 0.3s ease; }
 </style>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a0f0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tethkir">
+<link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body data-theme="alhambra">
 
@@ -2602,14 +2609,14 @@ body.kb-open .kb-toggle-btn {
 
 <script>
 // ===== VERSION =====
-const APP_VERSION = 'v1.0';
+const APP_VERSION = 'v1.1';
 
 // ===== TRANSLATIONS =====
 const i18n = {
   en: {
     appTitle: '📝 Tethkir',
     modeLabel: 'Simple Mode', modeDesc: 'Hide advanced features (profiles, filters, encryption)',
-    noNotesYet: 'No notes yet!', noteSaved: 'Note saved! ✅',
+    noNotesYet: 'No notes yet!', noteSaved: 'Note saved! ✅', copied: 'Copied! 📋',
     offline: 'Offline', online: 'Synced', syncing: 'Syncing...',
     signIn: '☁️ Sign In', signOut: '☁️ Sign Out',
     tabTasks: 'Tasks', tabNotes: 'Secure Notes', tabNotesSimple: 'Notes', tabSettings: 'Settings',
@@ -2707,7 +2714,7 @@ const i18n = {
   fr: {
     appTitle: '📝 Tethkir',
     modeLabel: 'Mode Simple', modeDesc: 'Masquer les fonctions avancées (profils, filtres, chiffrement)',
-    noNotesYet: 'Aucune note !', noteSaved: 'Note enregistrée ! ✅',
+    noNotesYet: 'Aucune note !', noteSaved: 'Note enregistrée ! ✅', copied: 'Copié ! 📋',
     offline: 'Hors ligne', online: 'Synchronisé', syncing: 'Synchronisation...',
     signIn: '☁️ Connexion', signOut: '☁️ Déconnexion',
     tabTasks: 'Tâches', tabNotes: 'Notes Sécurisées', tabNotesSimple: 'Notes', tabSettings: 'Paramètres',
@@ -2805,7 +2812,7 @@ const i18n = {
   ar: {
     appTitle: '📝 تذكير',
     modeLabel: 'الوضع البسيط', modeDesc: 'إخفاء الميزات المتقدمة (الملفات، الفلاتر، التشفير)',
-    noNotesYet: 'لا توجد ملاحظات!', noteSaved: 'تم حفظ الملاحظة! ✅',
+    noNotesYet: 'لا توجد ملاحظات!', noteSaved: 'تم حفظ الملاحظة! ✅', copied: 'تم النسخ! 📋',
     offline: 'غير متصل', online: 'متصل', syncing: 'جاري المزامنة...',
     signIn: '☁️ تسجيل الدخول', signOut: '☁️ تسجيل الخروج',
     tabTasks: 'المهام', tabNotes: 'ملاحظات آمنة', tabNotesSimple: 'ملاحظات', tabSettings: 'الإعدادات',
@@ -3884,6 +3891,10 @@ function addSimpleNote() {
   showToast(t.noteSaved || 'Note saved! ✅');
 }
 
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function renderSimpleNotes() {
   const container = document.getElementById('simpleNotesList');
   if (!container) return;
@@ -3894,9 +3905,10 @@ function renderSimpleNotes() {
   }
   container.innerHTML = notes.map(n => `
     <div class="simple-note-card">
-      <h4>${n.title}</h4>
-      <p>${n.content}</p>
+      <h4>${escHtml(n.title)}</h4>
+      <p>${escHtml(n.content)}</p>
       <div class="simple-note-actions">
+        <button class="btn btn-sm" onclick="copySimpleNote('${n.id}')" title="Copy">📋</button>
         <button class="btn btn-sm" onclick="speakSimpleNote('${n.id}')" title="Read aloud">🔊</button>
         <button class="btn btn-sm btn-danger" onclick="deleteSimpleNote('${n.id}')" title="Delete">🗑️</button>
       </div>
@@ -3909,6 +3921,18 @@ function deleteSimpleNote(id) {
   state.simpleNotes[state.currentProfile] = state.simpleNotes[state.currentProfile].filter(n => n.id !== id);
   saveState();
   renderSimpleNotes();
+}
+
+function copySimpleNote(id) {
+  const notes = (state.simpleNotes && state.simpleNotes[state.currentProfile]) || [];
+  const note = notes.find(n => n.id === id);
+  if (!note) return;
+  const text = note.title + '\n' + note.content;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(i18n[state.lang]?.copied || 'Copied! 📋');
+  }).catch(() => {
+    showToast('Copy failed — try long-press to select');
+  });
 }
 
 function speakSimpleNote(id) {
@@ -4556,6 +4580,11 @@ function toggleSTT(inputId, btn) {
 // ===== START =====
 init();
 updateNoteCountHint();
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.7; }
 .container { max-width: 800px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; }
+@media (max-width: 640px) { .container { padding: 20px 16px; } }
 h1 { color: var(--accent); font-size: 1.8em; margin-bottom: 8px; }
 h2 { color: var(--accent); font-size: 1.3em; margin-top: 28px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 h3 { color: var(--accent); font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }
@@ -28,54 +29,72 @@ hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 <a class="top-link" href="index.html">← Open App</a>
 <h1>📝 Tethkir — Changelog</h1>
 <hr />
-<h2>v1.0 — 2026-02-21 — Initial Release 🚀</h2>
+<h2>v1.1 — 2026-02-22 — Android PWA &amp; Offline 📱</h2>
+<h3>✨ New Features</h3>
+<ul>
+<li><strong>Progressive Web App (PWA)</strong> — Install on Android/iOS home screen, runs fullscreen like a native app</li>
+<li><strong>Service Worker</strong> — Caches all assets for true offline use. App works without internet</li>
+<li><strong>App Icons</strong> — 192px and 512px icons for home screen and splash screen</li>
+<li><strong>Theme Color</strong> — Android status bar matches the Alhambra dark theme</li>
+</ul>
+<h3>🔧 Improvements</h3>
+<ul>
+<li><code>manifest.json</code> with app name, icons, standalone display mode</li>
+<li><code>sw.js</code> caches core assets on install, cache-first strategy, old cache cleanup</li>
+<li>Firebase/Google auth requests bypass the cache</li>
+<li>Offline navigation falls back to cached index.html</li>
+<li>Apple mobile web app meta tags for iOS home screen</li>
+</ul>
+<hr />
+<h2>v1.0 — 2026-02-22 — Initial Release 🚀</h2>
 <p>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
 <h3>✨ Core Features</h3>
 <ul>
-<li><strong>Task Management</strong> — Add, edit, delete, complete tasks with priority (High/Medium/Low), due dates, categories, tags, search, filter, drag-and-drop reorder</li>
-<li><strong>Secure Notes</strong> — AES-256 encrypted notes with master passphrase, change passphrase support, 🔊 text-to-speech playback</li>
-<li><strong>Firebase Cloud Sync</strong> — Google Sign-In, auto-sync tasks/notes/settings to Firestore, bidirectional sync on sign-in</li>
-<li><strong>Multiple Profiles</strong> — Default + custom profiles with independent task lists</li>
-<li><strong>PIN Lock</strong> — 4-digit protection with SHA-256 hashing, change PIN support</li>
+<li><strong>Simple Mode</strong> (default) — Clean, minimal interface: just tasks and plain notes with voice input</li>
+<li><strong>Advanced Mode</strong> — Toggle in Settings to unlock profiles, priorities, categories, tags, filters, encrypted notes, Arabic keyboard, and help system</li>
+<li><strong>Task Management</strong> — Add, complete, delete, drag-and-drop reorder. Advanced: priority, due date, category, tags, search, filter</li>
+<li><strong>Notes</strong> — Simple mode: plain text with 📋 copy, 🔊 read aloud, 🗑️ delete. Advanced mode: AES-256 encrypted with master passphrase</li>
+<li><strong>Firebase Cloud Sync</strong> — Google Sign-In, auto-sync, bidirectional sync, manual ☁️ Sync Now button</li>
+<li><strong>Multiple Profiles</strong> — Default + custom profiles with independent task lists (Advanced)</li>
+<li><strong>PIN Lock</strong> — 4-digit protection with SHA-256 hashing</li>
+</ul>
+<h3>🎤 Voice Features</h3>
+<ul>
+<li><strong>Speech-to-Text</strong> — 🎤 mic button on task title, note title, note content</li>
+<li><strong>Text-to-Speech</strong> — 🔊 button on each note reads it aloud</li>
+<li>Auto-detects app language (EN/FR/AR)</li>
 </ul>
 <h3>🎨 Design</h3>
 <ul>
 <li><strong>6 Islamic Themes</strong> — Alhambra, Ottoman, Moroccan, Calligraphy, Ramadan, Desert</li>
-<li><strong>3 Languages</strong> — English 🇬🇧, French 🇫🇷, Arabic 🇩🇿 with full RTL support and SVG flags</li>
+<li><strong>3 Languages</strong> — English, French, Arabic with full RTL support and SVG flags</li>
 <li><strong>Settings Sidebar</strong> — Slides from right (left in RTL), collapsible accordion sections</li>
 <li><strong>Discrete Bismillah</strong> — بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ in the header bar</li>
 <li><strong>Status Indicator</strong> — 🟢 Synced / 🟠 Online / 🔴 Offline</li>
+<li><strong>Mobile-first</strong> — 16px inputs, 44px touch targets, responsive layout</li>
 </ul>
-<h3>⌨️ Arabic Virtual Keyboard</h3>
+<h3>⌨️ Arabic Virtual Keyboard (Advanced)</h3>
 <ul>
 <li>Full alphabet, harakat/diacritics, Arabic numerals</li>
 <li>Preview bar with copy/paste toolbar</li>
-<li>🤲 Islamic phrases drawer with 14 built-in phrases + custom phrases</li>
-<li>Keyboard shortcuts saved in localStorage</li>
+<li>🤲 Islamic phrases drawer with 14 built-in + custom phrases</li>
 </ul>
-<h3>🎤 Voice Features</h3>
+<h3>❓ Help System (Advanced)</h3>
 <ul>
-<li><strong>Speech-to-Text</strong> — 🎤 mic button on task title, note title, note content inputs</li>
-<li><strong>Text-to-Speech</strong> — 🔊 button on each note reads it aloud</li>
-<li>Auto-detects app language (EN/FR/AR)</li>
-</ul>
-<h3>❓ Help System</h3>
-<ul>
-<li>Floating help panel with quick start tips, feature guide, FAQ</li>
-<li>Search help content by keyword</li>
-<li>In-app Firebase setup guide (7 steps)</li>
-<li>Contextual ? tooltips on key UI elements</li>
+<li>Floating help panel with quick tips, feature guide, FAQ</li>
+<li>In-app Firebase setup guide</li>
+<li>Contextual ? tooltips</li>
 </ul>
 <h3>📦 Data Management</h3>
 <ul>
-<li>Import/Export all data as JSON backup</li>
-<li>🗑️ Clear All Data with confirmation</li>
-<li>Dual storage: localStorage offline + Firebase cloud</li>
+<li>☁️ Sync Now — manual push/pull to Firebase</li>
+<li>📥 Export / 📤 Import JSON backups</li>
+<li>🗑️ Clear Cache — wipe local data (cloud data unaffected)</li>
 </ul>
-<h3>📄 Documentation</h3>
+<h3>📱 iOS Support</h3>
 <ul>
-<li>README.md / README.html — Feature overview, deployment guide</li>
-<li>CHANGES.md / CHANGES.html — This changelog</li>
+<li>Redirect-based Google Sign-In for iOS Safari</li>
+<li>No-zoom inputs (16px), large touch targets</li>
 </ul>
 <hr />
 <p><em>Built with love and Tawakkul. بارك الله فيكم</em> 🌙✨</p>

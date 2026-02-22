@@ -7,6 +7,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.7; }
 .container { max-width: 800px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; }
+@media (max-width: 640px) { .container { padding: 20px 16px; } }
 h1 { color: var(--accent); font-size: 1.8em; margin-bottom: 8px; }
 h2 { color: var(--accent); font-size: 1.3em; margin-top: 28px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 h3 { color: var(--accent); font-size: 1.05em; margin-top: 18px; margin-bottom: 8px; }
@@ -29,38 +30,48 @@ hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 <h1>📝 Tethkir — تذكير</h1>
 <p><strong>Islamic Task Manager &amp; Secure Notes</strong></p>
 <p>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
-<p>A single-file web app for managing tasks and encrypted notes with Islamic themes, Arabic keyboard, voice features, and optional Firebase cloud sync.</p>
+<p>A single-file web app for managing tasks and notes with Islamic themes, voice input, and optional cloud sync. Installable as a PWA on Android and iOS.</p>
+<hr />
+<h2>Install</h2>
+<p><strong>Android</strong> — Open in Chrome → tap ⋮ menu → "Add to Home Screen" or "Install App"</p>
+<p><strong>iOS</strong> — Open in Safari → tap Share → "Add to Home Screen"</p>
+<p>The app runs fullscreen without a browser bar and works offline.</p>
+<hr />
+<h2>Two Modes</h2>
+<p><strong>Simple Mode</strong> (default) — Open the app, type a task or note, done. Voice input with 🎤, read notes aloud with 🔊, copy with 📋. Nothing else in the way.</p>
+<p><strong>Advanced Mode</strong> — Toggle in ⚙️ Settings. Unlocks: multiple profiles, task priorities/dates/categories/tags, search &amp; filters, AES-256 encrypted notes, Arabic virtual keyboard, and the help system.</p>
 <hr />
 <h2>Features</h2>
-<p><strong>Tasks</strong> — Full task management with priorities, due dates, categories, tags, search, filter, and drag-and-drop reorder.</p>
-<p><strong>Secure Notes</strong> — AES-256 encrypted notes with master passphrase. 🔊 Listen to notes read aloud.</p>
+<p><strong>Tasks</strong> — Add, complete, delete, reorder. In Advanced mode: priority, due date, category, tags, search, filter, drag-and-drop.</p>
+<p><strong>Notes</strong> — Simple mode: plain text, just type and save. 📋 Copy, 🔊 Read aloud, 🗑️ Delete. Advanced mode: AES-256 encrypted with master passphrase.</p>
+<p><strong>Voice</strong> — 🎤 Speech-to-text on task/note inputs. 🔊 Text-to-speech on saved notes. Detects app language (EN/FR/AR).</p>
 <p><strong>6 Islamic Themes</strong> — Alhambra, Ottoman, Moroccan, Calligraphy, Ramadan, Desert.</p>
 <p><strong>3 Languages</strong> — English, French, Arabic with full RTL support.</p>
-<p><strong>Arabic Keyboard</strong> — Virtual keyboard with full alphabet, harakat, Arabic numerals, and 🤲 Islamic phrases drawer.</p>
-<p><strong>Voice</strong> — 🎤 Speech-to-text on task/note inputs. 🔊 Text-to-speech on saved notes.</p>
-<p><strong>Cloud Sync</strong> — Optional Firebase integration with Google Sign-In. Auto-syncs tasks, notes, profiles, theme, and language.</p>
-<p><strong>Profiles</strong> — Multiple independent task lists (Default + custom).</p>
-<p><strong>Security</strong> — PIN lock (SHA-256), encrypted notes (AES-256), change passphrase/PIN support.</p>
-<p><strong>Data</strong> — Import/Export JSON backups. Clear All Data option. Works offline with localStorage.</p>
+<p><strong>Cloud Sync</strong> — Optional Firebase with Google Sign-In. ☁️ Sync Now button for manual sync.</p>
+<p><strong>Offline</strong> — Service worker caches the app. Works without internet.</p>
+<p><strong>Profiles</strong> — Multiple independent task lists (Advanced mode).</p>
+<p><strong>Security</strong> — PIN lock (SHA-256), encrypted notes (AES-256), change passphrase/PIN (Advanced mode).</p>
+<p><strong>Data</strong> — Export/Import JSON backups. 🗑️ Clear Cache. Works offline with localStorage.</p>
+<p><strong>Mobile-first</strong> — 16px inputs (no iOS zoom), 44px touch targets, responsive layout. PWA installable.</p>
 <hr />
 <h2>Deploy on GitHub Pages</h2>
 <ol>
 <li>Create a GitHub repository (e.g. <code>tethkir</code>)</li>
-<li>Upload all files: <code>index.html</code>, <code>README.html</code>, <code>CHANGES.html</code>, <code>CHANGES.md</code>, <code>README.md</code></li>
-<li>Go to Settings → Pages → Source: main branch → Save</li>
-<li>Your app is live at <code>https://yourusername.github.io/tethkir/</code></li>
+<li>Upload: <code>index.html</code>, <code>manifest.json</code>, <code>sw.js</code>, <code>icon-192.png</code>, <code>icon-512.png</code>, <code>README.html</code>, <code>CHANGES.html</code>, <code>CHANGES.md</code>, <code>README.md</code></li>
+<li>Settings → Pages → Source: main branch → Save</li>
+<li>Live at <code>https://yourusername.github.io/tethkir/</code></li>
 </ol>
 <hr />
 <h2>Firebase Setup (Optional)</h2>
-<p>The app includes a built-in Firebase setup guide. Open the app → tap ❓ Help → scroll to <strong>Firebase Cloud Sync Setup</strong>.</p>
-<p><strong>Quick summary:</strong>
+<p>Open the app → ❓ Help → <strong>Firebase Cloud Sync Setup</strong> (in Advanced mode).</p>
+<p><strong>Quick steps:</strong>
 1. Create a Firebase project at <a href="https://console.firebase.google.com">console.firebase.google.com</a>
-2. Register a web app and copy the config JSON
+2. Register a web app, copy the config JSON
 3. Enable Google sign-in in Authentication
 4. Create a Firestore database
-5. Add your GitHub Pages domain as an authorized domain
-6. Paste the config JSON in Settings → Firebase Cloud Sync</p>
-<p><strong>Firestore Security Rules:</strong></p>
+5. Add your GitHub Pages domain as authorized
+6. Paste config in ⚙️ Settings → Firebase Cloud Sync</p>
+<p><strong>Firestore Rules:</strong></p>
 <pre><code>rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -81,36 +92,41 @@ service cloud.firestore {
 </thead>
 <tbody>
 <tr>
-<td>"Unauthorized domain" on sign-in</td>
-<td>Add your domain in Firebase Console → Authentication → Settings → Authorized domains</td>
+<td>"Unauthorized domain"</td>
+<td>Add domain in Firebase → Authentication → Authorized domains</td>
+</tr>
+<tr>
+<td>Sign-in fails on iOS</td>
+<td>Uses redirect auth — wait for page to reload</td>
 </tr>
 <tr>
 <td>Popup blocked</td>
-<td>Allow popups for your site in browser settings</td>
-</tr>
-<tr>
-<td>"Invalid config"</td>
-<td>Check JSON format — must have apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId</td>
+<td>Allow popups for your site</td>
 </tr>
 <tr>
 <td>Notes won't decrypt</td>
-<td>Wrong passphrase — there is no recovery</td>
+<td>Wrong passphrase — no recovery</td>
 </tr>
 <tr>
-<td>Old data after rename</td>
-<td>Clear browser localStorage (Settings → Clear All)</td>
+<td>Old data showing</td>
+<td>⚙️ Settings → 🗑️ Clear Cache</td>
+</tr>
+<tr>
+<td>App not updating</td>
+<td>Clear browser cache or unregister service worker in DevTools</td>
 </tr>
 </tbody>
 </table>
 <hr />
 <h2>Tech Stack</h2>
+<p>Single HTML file. No build tools. PWA installable.</p>
 <ul>
-<li><strong>Single HTML file</strong> — No build tools, no dependencies to install</li>
-<li><strong>CryptoJS</strong> — AES-256 encryption for secure notes</li>
+<li><strong>CryptoJS</strong> — AES-256 encryption</li>
 <li><strong>Firebase 10.8</strong> — Auth + Firestore (loaded on demand)</li>
-<li><strong>Web Speech API</strong> — Speech-to-text and text-to-speech</li>
-<li><strong>localStorage</strong> — Offline data persistence</li>
+<li><strong>Web Speech API</strong> — STT and TTS</li>
+<li><strong>Service Worker</strong> — Offline caching</li>
+<li><strong>localStorage</strong> — Data persistence</li>
 </ul>
 <hr />
-<p><em>v1.0 — Built with love and Tawakkul. بارك الله فيكم</em> 🌙✨</p>
+<p><em>v1.1 — Built with love and Tawakkul. بارك الله فيكم</em> 🌙✨</p>
 </div></body></html>

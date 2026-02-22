@@ -4,56 +4,76 @@
 
 بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
 
-A single-file web app for managing tasks and encrypted notes with Islamic themes, Arabic keyboard, voice features, and optional Firebase cloud sync.
+A single-file web app for managing tasks and notes with Islamic themes, voice input, and optional cloud sync. Installable as a PWA on Android and iOS.
+
+---
+
+## Install
+
+**Android** — Open in Chrome → tap ⋮ menu → "Add to Home Screen" or "Install App"
+
+**iOS** — Open in Safari → tap Share → "Add to Home Screen"
+
+The app runs fullscreen without a browser bar and works offline.
+
+---
+
+## Two Modes
+
+**Simple Mode** (default) — Open the app, type a task or note, done. Voice input with 🎤, read notes aloud with 🔊, copy with 📋. Nothing else in the way.
+
+**Advanced Mode** — Toggle in ⚙️ Settings. Unlocks: multiple profiles, task priorities/dates/categories/tags, search & filters, AES-256 encrypted notes, Arabic virtual keyboard, and the help system.
 
 ---
 
 ## Features
 
-**Tasks** — Full task management with priorities, due dates, categories, tags, search, filter, and drag-and-drop reorder.
+**Tasks** — Add, complete, delete, reorder. In Advanced mode: priority, due date, category, tags, search, filter, drag-and-drop.
 
-**Secure Notes** — AES-256 encrypted notes with master passphrase. 🔊 Listen to notes read aloud.
+**Notes** — Simple mode: plain text, just type and save. 📋 Copy, 🔊 Read aloud, 🗑️ Delete. Advanced mode: AES-256 encrypted with master passphrase.
+
+**Voice** — 🎤 Speech-to-text on task/note inputs. 🔊 Text-to-speech on saved notes. Detects app language (EN/FR/AR).
 
 **6 Islamic Themes** — Alhambra, Ottoman, Moroccan, Calligraphy, Ramadan, Desert.
 
 **3 Languages** — English, French, Arabic with full RTL support.
 
-**Arabic Keyboard** — Virtual keyboard with full alphabet, harakat, Arabic numerals, and 🤲 Islamic phrases drawer.
+**Cloud Sync** — Optional Firebase with Google Sign-In. ☁️ Sync Now button for manual sync.
 
-**Voice** — 🎤 Speech-to-text on task/note inputs. 🔊 Text-to-speech on saved notes.
+**Offline** — Service worker caches the app. Works without internet.
 
-**Cloud Sync** — Optional Firebase integration with Google Sign-In. Auto-syncs tasks, notes, profiles, theme, and language.
+**Profiles** — Multiple independent task lists (Advanced mode).
 
-**Profiles** — Multiple independent task lists (Default + custom).
+**Security** — PIN lock (SHA-256), encrypted notes (AES-256), change passphrase/PIN (Advanced mode).
 
-**Security** — PIN lock (SHA-256), encrypted notes (AES-256), change passphrase/PIN support.
+**Data** — Export/Import JSON backups. 🗑️ Clear Cache. Works offline with localStorage.
 
-**Data** — Import/Export JSON backups. Clear All Data option. Works offline with localStorage.
+**Mobile-first** — 16px inputs (no iOS zoom), 44px touch targets, responsive layout. PWA installable.
 
 ---
 
 ## Deploy on GitHub Pages
 
 1. Create a GitHub repository (e.g. `tethkir`)
-2. Upload all files: `index.html`, `README.html`, `CHANGES.html`, `CHANGES.md`, `README.md`
-3. Go to Settings → Pages → Source: main branch → Save
-4. Your app is live at `https://yourusername.github.io/tethkir/`
+2. Upload: `index.html`, `manifest.json`, `sw.js`, `icon-192.png`, `icon-512.png`, `README.html`, `CHANGES.html`, `CHANGES.md`, `README.md`
+3. Settings → Pages → Source: main branch → Save
+4. Live at `https://yourusername.github.io/tethkir/`
 
 ---
 
 ## Firebase Setup (Optional)
 
-The app includes a built-in Firebase setup guide. Open the app → tap ❓ Help → scroll to **Firebase Cloud Sync Setup**.
+Open the app → ❓ Help → **Firebase Cloud Sync Setup** (in Advanced mode).
 
-**Quick summary:**
+**Quick steps:**
 1. Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-2. Register a web app and copy the config JSON
+2. Register a web app, copy the config JSON
 3. Enable Google sign-in in Authentication
 4. Create a Firestore database
-5. Add your GitHub Pages domain as an authorized domain
-6. Paste the config JSON in Settings → Firebase Cloud Sync
+5. Add your GitHub Pages domain as authorized
+6. Paste config in ⚙️ Settings → Firebase Cloud Sync
 
-**Firestore Security Rules:**
+**Firestore Rules:**
 ```
 rules_version = '2';
 service cloud.firestore {
@@ -71,22 +91,25 @@ service cloud.firestore {
 
 | Issue | Fix |
 |-------|-----|
-| "Unauthorized domain" on sign-in | Add your domain in Firebase Console → Authentication → Settings → Authorized domains |
-| Popup blocked | Allow popups for your site in browser settings |
-| "Invalid config" | Check JSON format — must have apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId |
-| Notes won't decrypt | Wrong passphrase — there is no recovery |
-| Old data after rename | Clear browser localStorage (Settings → Clear All) |
+| "Unauthorized domain" | Add domain in Firebase → Authentication → Authorized domains |
+| Sign-in fails on iOS | Uses redirect auth — wait for page to reload |
+| Popup blocked | Allow popups for your site |
+| Notes won't decrypt | Wrong passphrase — no recovery |
+| Old data showing | ⚙️ Settings → 🗑️ Clear Cache |
+| App not updating | Clear browser cache or unregister service worker in DevTools |
 
 ---
 
 ## Tech Stack
 
-- **Single HTML file** — No build tools, no dependencies to install
-- **CryptoJS** — AES-256 encryption for secure notes
+Single HTML file. No build tools. PWA installable.
+
+- **CryptoJS** — AES-256 encryption
 - **Firebase 10.8** — Auth + Firestore (loaded on demand)
-- **Web Speech API** — Speech-to-text and text-to-speech
-- **localStorage** — Offline data persistence
+- **Web Speech API** — STT and TTS
+- **Service Worker** — Offline caching
+- **localStorage** — Data persistence
 
 ---
 
-*v1.0 — Built with love and Tawakkul. بارك الله فيكم* 🌙✨
+*v1.1 — Built with love and Tawakkul. بارك الله فيكم* 🌙✨
