@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tethkir — Task Memo v1.1</title>
+<title>Tethkir — Task Memo v3.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
@@ -141,6 +141,121 @@
   --pattern-opacity: 0.04;
 }
 
+/* ===== THEME: ISLAMIC GARDEN (LIGHT) ===== */
+[data-theme="garden"] {
+  --bg-primary: #f0f7f2;
+  --bg-secondary: #e2efe6;
+  --bg-card: #f8fcf9;
+  --bg-input: #e8f3ec;
+  --text-primary: #1a2e22;
+  --text-secondary: #4a6b55;
+  --accent: #2d8659;
+  --accent-hover: #38a06d;
+  --accent-glow: rgba(45,134,89,0.2);
+  --border: rgba(45,134,89,0.18);
+  --bismillah-color: #2d6b45;
+  --bismillah-glow: rgba(45,107,69,0.15);
+  --pattern-opacity: 0.03;
+  --danger: #c0392b;
+  --success: #27ae60;
+  --warning: #e67e22;
+  --priority-high: #e74c3c;
+  --priority-med: #f39c12;
+  --priority-low: #27ae60;
+}
+
+/* ===== THEME: GOLDEN AGE / SCIENCE (LIGHT) ===== */
+[data-theme="goldenage"] {
+  --bg-primary: #faf6ee;
+  --bg-secondary: #f0eadc;
+  --bg-card: #fffcf5;
+  --bg-input: #f2ebdb;
+  --text-primary: #2a2418;
+  --text-secondary: #6b5f4a;
+  --accent: #b8860b;
+  --accent-hover: #d4a017;
+  --accent-glow: rgba(184,134,11,0.2);
+  --border: rgba(184,134,11,0.18);
+  --bismillah-color: #8b6914;
+  --bismillah-glow: rgba(139,105,20,0.15);
+  --pattern-opacity: 0.03;
+  --danger: #c0392b;
+  --success: #27ae60;
+  --warning: #e67e22;
+  --priority-high: #e74c3c;
+  --priority-med: #f39c12;
+  --priority-low: #27ae60;
+}
+
+/* ===== THEME: MADRASA / SCHOLAR (LIGHT BLUE) ===== */
+[data-theme="madrasa"] {
+  --bg-primary: #f0f4f8;
+  --bg-secondary: #e1e8ef;
+  --bg-card: #f8fafb;
+  --bg-input: #e6ecf2;
+  --text-primary: #1a2636;
+  --text-secondary: #4a6280;
+  --accent: #2c6faa;
+  --accent-hover: #3884c4;
+  --accent-glow: rgba(44,111,170,0.2);
+  --border: rgba(44,111,170,0.18);
+  --bismillah-color: #2c5f8a;
+  --bismillah-glow: rgba(44,95,138,0.15);
+  --pattern-opacity: 0.03;
+  --danger: #c0392b;
+  --success: #27ae60;
+  --warning: #e67e22;
+  --priority-high: #e74c3c;
+  --priority-med: #f39c12;
+  --priority-low: #27ae60;
+}
+
+/* ===== THEME: PEARL / MINIMALIST LIGHT ===== */
+[data-theme="pearl"] {
+  --bg-primary: #f9f6f2;
+  --bg-secondary: #f0ebe4;
+  --bg-card: #fffdf9;
+  --bg-input: #f0ebe4;
+  --text-primary: #2c2520;
+  --text-secondary: #7a6e62;
+  --accent: #9c7a4f;
+  --accent-hover: #b08c5c;
+  --accent-glow: rgba(156,122,79,0.2);
+  --border: rgba(156,122,79,0.18);
+  --bismillah-color: #8a6f48;
+  --bismillah-glow: rgba(138,111,72,0.15);
+  --pattern-opacity: 0.025;
+  --danger: #c0392b;
+  --success: #27ae60;
+  --warning: #e67e22;
+  --priority-high: #e74c3c;
+  --priority-med: #f39c12;
+  --priority-low: #27ae60;
+}
+
+/* ===== THEME: NOOR / LIGHT ===== */
+[data-theme="noor"] {
+  --bg-primary: #fefefe;
+  --bg-secondary: #f4f2ef;
+  --bg-card: #ffffff;
+  --bg-input: #f0eee9;
+  --text-primary: #222222;
+  --text-secondary: #6e6e6e;
+  --accent: #6a5acd;
+  --accent-hover: #7b6dd8;
+  --accent-glow: rgba(106,90,205,0.18);
+  --border: rgba(106,90,205,0.15);
+  --bismillah-color: #6a5acd;
+  --bismillah-glow: rgba(106,90,205,0.12);
+  --pattern-opacity: 0.02;
+  --danger: #c0392b;
+  --success: #27ae60;
+  --warning: #e67e22;
+  --priority-high: #e74c3c;
+  --priority-med: #f39c12;
+  --priority-low: #27ae60;
+}
+
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -211,14 +326,20 @@ body::before {
 
 /* ===== BISMILLAH HEADER ===== */
 .bismillah-inline {
-  font-family: 'Aref Ruqaa', 'Amiri', serif;
-  font-size: 0.75em;
+  font-family: 'Amiri', 'Scheherazade New', 'Aref Ruqaa', serif;
+  font-size: 0.85em;
   color: var(--bismillah-color);
-  opacity: 0.35;
+  opacity: 0.5;
   direction: rtl;
   white-space: nowrap;
   user-select: none;
+  text-shadow: 0 0 14px var(--bismillah-glow);
+  transition: opacity var(--transition);
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+.bismillah-inline:hover { opacity: 0.75; }
 
 /* ===== SIMPLE MODE ===== */
 body.simple-mode .profiles-bar { display: none !important; }
@@ -231,7 +352,6 @@ body.simple-mode .secure-notes-section { display: none !important; }
 body.simple-mode .simple-notes-section { display: block !important; }
 body.simple-mode .task-form-grid { grid-template-columns: 1fr !important; }
 body.simple-mode .task-item { padding-left: 16px; }
-body.simple-mode .bismillah-inline { display: none; }
 
 body:not(.simple-mode) .simple-notes-section { display: none !important; }
 
@@ -934,7 +1054,7 @@ textarea { resize: vertical; min-height: 80px; }
 @media (max-width: 640px) {
   .app-container { padding: 10px; }
   .bismillah-text { font-size: 1.6em; }
-  .bismillah-inline { display: none; }
+  .bismillah-inline { font-size: 0.7em; order: -1; flex-basis: 100%; text-align: center; }
   .task-form-grid { grid-template-columns: 1fr; }
   .top-bar { flex-direction: column; align-items: stretch; }
   .top-bar-left, .top-bar-right { justify-content: center; }
@@ -954,6 +1074,32 @@ textarea { resize: vertical; min-height: 80px; }
   body.simple-mode .tabs { justify-content: center; }
   body.simple-mode .tab { flex: 1; text-align: center; padding: 12px 8px; font-size: 1em; }
   body.simple-mode .top-bar-right { gap: 6px; }
+}
+
+/* ===== FOOTER ===== */
+.app-footer {
+  text-align: center;
+  padding: 20px 16px 12px;
+  margin-top: 30px;
+  border-top: 1px solid var(--border);
+  opacity: 0.5;
+  transition: opacity var(--transition);
+}
+.app-footer:hover { opacity: 0.8; }
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.8em;
+  font-family: var(--font-body);
+}
+.footer-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: contain;
 }
 
 /* ===== NOTIFICATION TOAST ===== */
@@ -1927,7 +2073,7 @@ body.kb-open .kb-toggle-btn {
       <div class="help-tip-card" data-help-keywords="theme style design color">
         <div class="help-tip-icon">🕌</div>
         <div class="help-tip-title" data-i18n="helpTip3Title">Change Theme</div>
-        <div class="help-tip-desc" data-i18n="helpTip3Desc">Go to Settings → Themes and pick from 7 beautiful Islamic-inspired designs.</div>
+        <div class="help-tip-desc" data-i18n="helpTip3Desc">Go to Settings → Themes and pick from 11 beautiful Islamic-inspired designs.</div>
       </div>
       <div class="help-tip-card" data-help-keywords="language arabic french english rtl">
         <div class="help-tip-icon">🌍</div>
@@ -2457,6 +2603,15 @@ body.kb-open .kb-toggle-btn {
     </div>
   </div>
 
+
+  <!-- FOOTER -->
+  <footer class="app-footer">
+    <a href="https://workshop-diy.org" target="_blank" rel="noopener noreferrer" class="footer-brand">
+      <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIAogICAgIHZpZXdCb3g9Ii05MS41MTM1MzQgMTgwLjc2OTQyNSAyLjI4OTk2MiAyLjI4OTk2MiIKICAgICByb2xlPSJpbWciIGFyaWEtbGFiZWw9IldvcmtzaG9wIERJWSI+CiAgPHRpdGxlPldvcmtzaG9wIERJWTwvdGl0bGU+CiAgPHJlY3QgeD0iLTkxLjUxMzUzNCIgeT0iMTgwLjc2OTQyNSIgd2lkdGg9IjIuMjg5OTYyIiBoZWlnaHQ9IjIuMjg5OTYyIiBmaWxsPSIjMDA3QkZGIiByeD0iMC4yNzQ3OTUiLz4KICA8ZyBmaWxsPSIjRkZGRkZGIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgPHBhdGggZD0iTS05MC4zNzA4MjcsMTgxLjYyNTA0NkMtOTAuMzgyNTM4LDE4MS42MjAzMTYsLTkwLjM5MDg2MiwxODEuNjA2NTk4LC05MC40MTY2OTUsMTgxLjU0OTQ1NEMtOTAuNDc0Mzg4LDE4MS40MjE4NDQsLTkwLjQ3NDgwOCwxODEuNDIxMDgyLC05MC40ODg0OTUsMTgxLjQxODM1Qy05MC40OTU0MDcsMTgxLjQxNjk2MiwtOTAuNTQ5MzE2LDE4MS40MTU4MzMsLTkwLjYwODMwNywxODEuNDE1ODMzTC05MC43MTU1NTMsMTgxLjQxNTgzM0wtOTAuNzIzODY5LDE4MS40MzA2MzRDLTkwLjczNTc4NiwxODEuNDUxODI4LC05MC43NzE1NjEsMTgxLjQ4NDI4MywtOTAuNzk0OTkxLDE4MS40OTUxMzJDLTkwLjg2MDAzOSwxODEuNTI1MjY5LC05MC45MzExOSwxODEuNTEyNjk1LC05MC45NzcxNjUsMTgxLjQ2Mjk1MkMtOTAuOTg4NTAzLDE4MS40NTA2ODQsLTkxLjAwMzAxNCwxODEuNDMwMjY3LC05MS4wMDkzOTksMTgxLjQxNzU4N0MtOTEuMDE5NzQ1LDE4MS4zOTcwNjQsLTkxLjAyMTAxOSwxODEuMzkwNzAxLC05MS4wMjEwMTksMTgxLjM1OTY4Qy05MS4wMjEwMTksMTgxLjMyODQ3NiwtOTEuMDE5NzE0LDE4MS4zMjIwNjcsLTkxLjAwODU5MSwxODEuMjk4NTY5Qy05MC45OTI5MiwxODEuMjY1NDg4LC05MC45NjUyNzksMTgxLjIzODExMywtOTAuOTMwODYyLDE4MS4yMjE1ODhDLTkwLjkwNzY2OSwxODEuMjEwNDY0LC05MC45MDEwMTYsMTgxLjIwOTA3NiwtOTAuODY5OTY1LDE4MS4yMDg4NjJDLTkwLjgwNzkzLDE4MS4yMDg0MzUsLTkwLjc2NDUzNCwxODEuMjI5OTUsLTkwLjczMjQ3NSwxODEuMjc3MDIzTC05MC43MTUwNDIsMTgxLjMwMjYxMkwtOTAuNTc1NjE1LDE4MS4zMDQwNzdDLTkwLjQzNjE4OCwxODEuMzA1NTI3LC05MC40MzYxOCwxODEuMzA1NTQyLC05MC40MTY4MTcsMTgxLjMxNTE3Qy05MC4zOTgzNjksMTgxLjMyNDM1NiwtOTAuMzk2NCwxODEuMzI2OTIsLTkwLjM3NTMwNSwxODEuMzY5MzU0Qy05MC4zNjMxMjEsMTgxLjM5Mzg2LC05MC4zMzQ1NDEsMTgxLjQ1NTczNCwtOTAuMzExNzksMTgxLjUwNjg1MUMtOTAuMjg5MDQsMTgxLjU1Nzk4MywtOTAuMjY3ODc2LDE4MS42MDM3MTQsLTkwLjI2NDc2MywxODEuNjA4NDlDLTkwLjI1MzE0MywxODEuNjI2MzI4LC05MC4yNTkyODUsMTgxLjYyODg3NiwtOTAuMzEzMDg3LDE4MS42Mjg2MTZDLTkwLjM0MDMxNywxODEuNjI4NDc5LC05MC4zNjYyOTUsMTgxLjYyNjg2MiwtOTAuMzcwODI3LDE4MS42MjUwNDZ6Ii8+CiAgICA8cGF0aCBkPSJNLTkxLjE3OTgxNywxODIuMDM5NDc0Qy05MS4yNDA4MjksMTgyLjAxNTA2LC05MS4yODM1NjIsMTgxLjk1NDc0MiwtOTEuMjg0MTI2LDE4MS44OTIyMjdDLTkxLjI4NDUzOCwxODEuODQ2ODc4LC05MS4yNzI3NjYsMTgxLjgyMDE0NSwtOTEuMjM2MjA2LDE4MS43ODM0MDFDLTkxLjE5ODIxOSwxODEuNzQ1MjA5LC05MS4xODI0NDksMTgxLjczOTIyNywtOTEuMTE5NzgxLDE4MS43MzkyNzNDLTkxLjA3NzkxMSwxODEuNzM5MzA0LC05MS4wNzM3MzgsMTgxLjc0MDAzNiwtOTEuMDUwMDcyLDE4MS43NTEzODlDLTkxLjAyMjQ1MywxODEuNzY0NjMzLC05MC45ODk0NDksMTgxLjc5NDk5OCwtOTAuOTczODE2LDE4MS44MjE1NDhMLTkwLjk2NDEyNywxODEuODM3OTk3TC05MC44MDE4MTksMTgxLjgzNzk5N0wtOTAuNjM5NTE5LDE4MS44Mzc5OTdMLTkwLjYzOTUxOSwxODEuODc2MTlDLTkwLjYzOTUxOSwxODEuODk3MjAyLC05MC42NDA2MjUsMTgxLjkyMjQ3LC05MC42NDE5ODMsMTgxLjkzMjM1OEwtOTAuNjQ0NDQ3LDE4MS45NTAzMTdMLTkwLjgwNDM2NywxODEuOTUwMzE3TC05MC45NjQyODcsMTgxLjk1MDMxN0wtOTAuOTgxMDc5LDE4MS45NzQzOTZDLTkxLjAwMDE5MSwxODIuMDAxODAxLC05MS4wMzc0MywxODIuMDMzNiwtOTEuMDU3Njg2LDE4Mi4wMzk4NDFDLTkxLjA2NTIxNiwxODIuMDQyMTYsLTkxLjA5MTQxNSwxODIuMDQ0NzY5LC05MS4xMTU5MTMsMTgyLjA0NTYzOUMtOTEuMTUzODU0LDE4Mi4wNDY5ODIsLTkxLjE2MzMyMiwxODIuMDQ2MDY2LC05MS4xNzk4MTcsMTgyLjAzOTQ3NHoiLz4KICAgIDxwYXRoIGQ9Ik0tOTAuNDMwMjYsMTgyLjA5NzA2MUMtOTAuNDQzNDc0LDE4Mi4wOTE3OTcsLTkwLjQ0NTc0LDE4Mi4wODY5NzUsLTkwLjQ0NTgwOCwxODIuMDY0MDQxTC05MC40NDU4NjIsMTgyLjA0NDE0NEwtOTAuNDczOTQ2LDE4Mi4wMzA3NjJDLTkwLjUwOTc0MywxODIuMDEzNzE4LC05MC41MjI5MDMsMTgyLjAwMjQ0MSwtOTAuNTM2ODM1LDE4MS45NzY4MzdDLTkwLjU1MjY4OSwxODEuOTQ3NzA4LC05MC41NTUyMDYsMTgxLjkwMjgxNywtOTAuNTQyNjQxLDE4MS44NzM1OTZDLTkwLjUzMTc3NiwxODEuODQ4MzQzLC05MC40OTQ4MzUsMTgxLjgxMjkxMiwtOTAuNDczMzQzLDE4MS44MDcxMTRDLTkwLjQ1NDk3OSwxODEuODAyMTcsLTkwLjQ1MTEyNiwxODEuNzk3NzYsLTkwLjQ0NzkyMiwxODEuNzc3OTY5Qy05MC40NDMxOTksMTgxLjc0ODc2NCwtOTAuNDQyMTU0LDE4MS43NDYzNjgsLTkwLjQzMjIyLDE4MS43NDE4MzdDLTkwLjQyNjM3NiwxODEuNzM5MTgyLC05MC40MDMwNzYsMTgxLjczNzMwNSwtOTAuMzc1ODcsMTgxLjczNzMwNUwtOTAuMzI5NDc1LDE4MS43MzczMDVMLTkwLjMyNTUxNiwxODEuNzQ3NzI2Qy05MC4zMjI5NiwxODEuNzU0NDQsLTkwLjMyMTk2LDE4MS44MTgwMzksLTkwLjMyMjcwOCwxODEuOTI2MDQxQy05MC4zMjM3LDE4Mi4wNzAxOSwtOTAuMzI0Njg0LDE4Mi4wOTQ0MzcsLTkwLjMyOTY3NCwxODIuMDk3NThDLTkwLjMzNzI5NiwxODIuMTAyNDAyLC05MC40MTc5MzgsMTgyLjEwMTk5LC05MC40MzAyNiwxODIuMDk3MDYxeiIvPgogICAgPHBhdGggZD0iTS04OS45MDU1NjMsMTgyLjI2MjIzOEMtODkuOTYxNTEsMTgyLjI0Nzg5NCwtODkuOTkwMjE5LDE4Mi4yMzQyMzgsLTkwLjA1MjM2OCwxODIuMTkyMzgzQy05MC4xMTU0MjUsMTgyLjE0OTkxOCwtOTAuMTQ5NjIsMTgyLjEzMDYxNSwtOTAuMTkyMTc3LDE4Mi4xMTM0NDlMLTkwLjIxOTI4NCwxODIuMTAyNTI0TC05MC4yMTg2NTEsMTgyLjA1MjU2N0MtOTAuMjE4MjkyLDE4Mi4wMjUwODUsLTkwLjIxNzg1NywxODEuOTQxOTEsLTkwLjIxNzY4MiwxODEuODY3NzA2TC05MC4yMTczNTQsMTgxLjczMjgwM0wtOTAuMjAwODksMTgxLjcyNjQyNUMtOTAuMTYxOTQyLDE4MS43MTEzMDQsLTkwLjExNDk2NywxODEuNjg1NzMsLTkwLjA2NDM2MiwxODEuNjUyMUMtOTAuMDA1MDM1LDE4MS42MTI2NzEsLTg5Ljk1MzIzMiwxODEuNTg2MjQzLC04OS45MTcxODMsMTgxLjU3NzAxMUMtODkuODIzNDc5LDE4MS41NTI5OTQsLTg5LjczMjYzNSwxODEuNTYyNDU0LC04OS42NDYwNjUsMTgxLjYwNTIwOUMtODkuNTYwMDQzLDE4MS42NDc2OSwtODkuNDk4MTg0LDE4MS43MjA3MzQsLTg5LjQ2MzUzMSwxODEuODIwNjk0Qy04OS40NTM0NjEsMTgxLjg0OTc0NywtODkuNDUyODIsMTgxLjg1NTUzLC04OS40NTI2OTgsMTgxLjkxOTM0MkwtODkuNDUyNTY4LDE4MS45ODcxMjJMLTg5LjQ2NjgxMiwxODIuMDI1Mjk5Qy04OS40ODcxMjIsMTgyLjA3OTcyNywtODkuNTA5ODUsMTgyLjExNzI3OSwtODkuNTQ1MDgyLDE4Mi4xNTQ2MDJDLTg5LjU5NzYxOCwxODIuMjEwMjgxLC04OS42NjA0NTQsMTgyLjI0NTcyOCwtODkuNzM5MDgyLDE4Mi4yNjQwNjlDLTg5Ljc4NjY2NywxODIuMjc1MTYyLC04OS44NTgyNDYsMTgyLjI3NDM2OCwtODkuOTA1NTYzLDE4Mi4yNjIyMzh6TS04OS43MjE1OTYsMTgxLjczNTM2N0wtODkuNzIxNTk2LDE4MS42OTg1NzhMLTg5Ljc5NTE4MSwxODEuNjk4NTc4TC04OS44Njg3NzQsMTgxLjY5ODU3OEwtODkuODY4Nzc0LDE4MS43MzUzNjdMLTg5Ljg2ODc3NCwxODEuNzcyMTU2TC04OS43OTUxODEsMTgxLjc3MjE1NkwtODkuNzIxNTk2LDE4MS43NzIxNTZMLTg5LjcyMTU5NiwxODEuNzM1MzY3ek0tOTAuMDI3NTY1LDE4MS44ODgzNTFMLTkwLjAyNzU2NSwxODEuNjk4NTc4TC05MC4wNjI0MjQsMTgxLjY5ODU3OEwtOTAuMDk3MjgyLDE4MS42OTg1NzhMLTkwLjA5NzI4MiwxODEuODg4MzUxTC05MC4wOTcyODIsMTgyLjA3ODE0TC05MC4wNjI0MjQsMTgyLjA3ODE0TC05MC4wMjc1NjUsMTgyLjA3ODE0TC05MC4wMjc1NjUsMTgxLjg4ODM1MXpNLTg5LjU2NjY2NiwxODEuODg4MzUxTC04OS41NjY2NjYsMTgxLjY5ODU3OEwtODkuNjAzNDYyLDE4MS42OTg1NzhMLTg5LjY0MDI1OSwxODEuNjk4NTc4TC04OS42NDAyNTksMTgxLjg4ODM1MUwtODkuNjQwMjU5LDE4Mi4wNzgxNEwtODkuNjAzNDYyLDE4Mi4wNzgxNEwtODkuNTY2NjY2LDE4Mi4wNzgxNEwtODkuNTY2NjY2LDE4MS44ODgzNTF6TS04OS44NzM1MjgsMTgyLjE1NDYzM0wtODkuODcyNDgyLDE4Mi4wNzgxNEwtODkuNzk3MDM1LDE4Mi4wNzgxNEwtODkuNzIxNTk2LDE4Mi4wNzgxNEwtODkuNzIxNTk2LDE4MS45NjM4ODJMLTg5LjcyMTU5NiwxODEuODQ5NjI1TC04OS43OTUxODEsMTgxLjg0OTYyNUwtODkuODY4Nzc0LDE4MS44NDk2MjVMLTg5Ljg2ODc3NCwxODEuODg2Mjc2TC04OS44Njg3NzQsMTgxLjkyMjkyOEwtODkuODMxMDA5LDE4MS45MjQwNDJMLTg5Ljc5MzI0MywxODEuOTI1MTU2TC04OS43OTIxNDUsMTgxLjk2NDg0NEwtODkuNzkxMDM5LDE4Mi4wMDQ1NDdMLTg5Ljg2ODYzNywxODIuMDA0NTQ3TC04OS45NDYyMzYsMTgyLjAwNDU0N0wtODkuOTQ2MjM2LDE4Mi4xMTYyMjZDLTg5Ljk0NjIzNiwxODIuMTc3NjQzLC04OS45NDUwMDcsMTgyLjIyOTEyNiwtODkuOTQzNTEyLDE4Mi4yMzA2MjFDLTg5Ljk0MjAxNywxODIuMjMyMTE3LC04OS45MjU4OTYsMTgyLjIzMjgzNCwtODkuOTA3Njg0LDE4Mi4yMzIyMzlMLTg5Ljg3NDU4LDE4Mi4yMzExMjVMLTg5Ljg3MzUyOCwxODIuMTU0NjMzeiIvPgogICAgPHBhdGggZD0iTS05MC45MzY3MDcsMTgyLjYwNjgxMkMtOTAuOTY5MTM5LDE4Mi41OTA1NzYsLTkwLjk5NjAwMiwxODIuNTYzNDMxLC05MS4wMTA1NzQsMTgyLjUzMjEzNUMtOTEuMDE5NDQsMTgyLjUxMzA5MiwtOTEuMDIwODg5LDE4Mi41MDQ4MjIsLTkxLjAyMDk1LDE4Mi40NzMxMjlDLTkxLjAyMTAxOSwxODIuNDM5MTc4LC05MS4wMjAwMTIsMTgyLjQzNDIwNCwtOTEuMDA4MjU1LDE4Mi40MTAzMDlDLTkwLjk5MTg4MiwxODIuMzc3MDI5LC05MC45NjU4MDUsMTgyLjM1MTA0NCwtOTAuOTMzODc2LDE4Mi4zMzYxODJDLTkwLjkxMDU2MSwxODIuMzI1MzE3LC05MC45MDU0MTEsMTgyLjMyNDQ0OCwtOTAuODY0MTU5LDE4Mi4zMjQyNjVDLTkwLjgyMjY0NywxODIuMzI0MDk3LC05MC44MTgxMywxODIuMzI0ODQ0LC05MC43OTc3NjgsMTgyLjMzNTE1OUMtOTAuNzY5MzU2LDE4Mi4zNDk1NDgsLTkwLjc0MDUwMSwxODIuMzc1MDMxLC05MC43MjQ2NywxODIuMzk5Njg5TC05MC43MTIwMzYsMTgyLjQxOTM4OEwtOTAuNTk2NTY1LDE4Mi40MTgyMTNDLTkwLjUxODIwNCwxODIuNDE3NDA0LC05MC40Nzk3MTMsMTgyLjQxNTY0OSwtOTAuNDc2Nzg0LDE4Mi40MTI3MDRDLTkwLjQ3NDQwMywxODIuNDEwMzI0LC05MC40NTExNTcsMTgyLjM2MTUyNiwtOTAuNDI1MTEsMTgyLjMwNDI2TC05MC4zNzc3NjIsMTgyLjIwMDEzNEwtOTAuMzI5MDg2LDE4Mi4xOTkwNjZDLTkwLjMwMjMxNSwxODIuMTk4NDcxLC05MC4yNzU4NjQsMTgyLjE5OTcwNywtOTAuMjcwMzA5LDE4Mi4yMDE4MjhDLTkwLjI2MDQyOSwxODIuMjA1NTgyLC05MC4yNjAzMjMsMTgyLjIwNjAwOSwtOTAuMjY1NTI2LDE4Mi4yMjAzMzdDLTkwLjI2ODQ1NiwxODIuMjI4Mzk0LC05MC4yODUwOTUsMTgyLjI2NjM3MywtOTAuMzAyNDk4LDE4Mi4zMDQ3MThDLTkwLjMxOTkwMSwxODIuMzQzMDYzLC05MC4zNDU3NzIsMTgyLjQwMDU0MywtOTAuMzU5OTg1LDE4Mi40MzI0NDlDLTkwLjM4ODUyNywxODIuNDk2NTIxLC05MC40MDY2NDcsMTgyLjUyMDI3OSwtOTAuNDMwNzEsMTgyLjUyNTE2MkMtOTAuNDM3OTgxLDE4Mi41MjY2NDIsLTkwLjUwNTQ0LDE4Mi41Mjg4MjQsLTkwLjU4MDYxMiwxODIuNTI5OTk5TC05MC43MTczLDE4Mi41MzIxNjZMLTkwLjczMDE2NCwxODIuNTUyMjYxQy05MC43NDU5NDksMTgyLjU3NjkzNSwtOTAuNzcwNzA2LDE4Mi41OTg5MzgsLTkwLjc5NjM3OSwxODIuNjExMTE1Qy05MC44MTM0MjMsMTgyLjYxOTE4NiwtOTAuODIxMzgxLDE4Mi42MjAzLC05MC44NjI2NzEsMTgyLjYyMDMzMUMtOTAuOTA4NTkyLDE4Mi42MjAzNzcsLTkwLjkxMDE3OSwxODIuNjIwMDg3LC05MC45MzY3MDcsMTgyLjYwNjgxMnoiLz4KICA8L2c+Cjwvc3ZnPg==" alt="Workshop DIY" class="footer-logo">
+      <span>workshop-diy.org</span>
+    </a>
+  </footer>
+
 </div>
 
 <!-- ===== SETTINGS SIDEBAR ===== -->
@@ -2509,6 +2664,26 @@ body.kb-open .kb-toggle-btn {
           <div class="theme-card" data-themeid="desert" onclick="setTheme('desert')">
             <div class="theme-icon">🏜️</div>
             <div>Desert</div>
+          </div>
+          <div class="theme-card" data-themeid="garden" onclick="setTheme('garden')">
+            <div class="theme-icon">🌿</div>
+            <div>Garden</div>
+          </div>
+          <div class="theme-card" data-themeid="goldenage" onclick="setTheme('goldenage')">
+            <div class="theme-icon">🔬</div>
+            <div>Golden Age</div>
+          </div>
+          <div class="theme-card" data-themeid="madrasa" onclick="setTheme('madrasa')">
+            <div class="theme-icon">📘</div>
+            <div>Madrasa</div>
+          </div>
+          <div class="theme-card" data-themeid="pearl" onclick="setTheme('pearl')">
+            <div class="theme-icon">🤍</div>
+            <div>Pearl</div>
+          </div>
+          <div class="theme-card" data-themeid="noor" onclick="setTheme('noor')">
+            <div class="theme-icon">💡</div>
+            <div>Noor</div>
           </div>
         </div>
       </div>
@@ -2600,16 +2775,16 @@ body.kb-open .kb-toggle-btn {
       </div>
     </div>
   </div>
-</div>
 
-<!-- ===== MODAL CONTAINER ===== -->
+
+</div>
 <div class="modal-backdrop" id="modalBackdrop" style="display:none;" onclick="closeModal(event)">
   <div class="modal" id="modalContent" onclick="event.stopPropagation()"></div>
 </div>
 
 <script>
 // ===== VERSION =====
-const APP_VERSION = 'v1.1';
+const APP_VERSION = 'v3.0';
 
 // ===== TRANSLATIONS =====
 const i18n = {
@@ -2698,7 +2873,7 @@ const i18n = {
     helpQuickStart: '🚀 QUICK START', helpFeatures: '📚 FEATURE GUIDE', helpFAQ: '❓ FREQUENTLY ASKED QUESTIONS',
     helpTip1Title: 'Add a Task', helpTip1Desc: 'Type a title in the Tasks tab and click "+ Add Task". Set priority, due date, and category.',
     helpTip2Title: 'Complete a Task', helpTip2Desc: 'Click the checkbox on any task to mark it done.',
-    helpTip3Title: 'Change Theme', helpTip3Desc: 'Go to Settings → Themes and pick from 7 beautiful Islamic-inspired designs.',
+    helpTip3Title: 'Change Theme', helpTip3Desc: 'Go to Settings → Themes and pick from 11 beautiful Islamic-inspired designs.',
     helpTip4Title: 'Switch Language', helpTip4Desc: 'Use the language dropdown (EN/FR/AR) in the top bar. Arabic enables RTL layout.',
     tooltipPriority: 'High = urgent (red), Medium = normal (yellow), Low = can wait (green).',
     tooltipTags: 'Add labels separated by commas. Use search to find tasks by tag.',
@@ -2796,7 +2971,7 @@ const i18n = {
     helpQuickStart: '🚀 DÉMARRAGE RAPIDE', helpFeatures: '📚 GUIDE DES FONCTIONNALITÉS', helpFAQ: '❓ QUESTIONS FRÉQUENTES',
     helpTip1Title: 'Ajouter une tâche', helpTip1Desc: 'Tapez un titre dans l\'onglet Tâches et cliquez "+ Ajouter". Définissez priorité, date et catégorie.',
     helpTip2Title: 'Terminer une tâche', helpTip2Desc: 'Cliquez la case à cocher pour marquer une tâche comme terminée. En mode enfants, gagnez une étoile! ⭐',
-    helpTip3Title: 'Changer le thème', helpTip3Desc: 'Allez dans Paramètres → Thèmes et choisissez parmi 7 designs islamiques.',
+    helpTip3Title: 'Changer le thème', helpTip3Desc: 'Allez dans Paramètres → Thèmes et choisissez parmi 11 designs islamiques.',
     helpTip4Title: 'Changer la langue', helpTip4Desc: 'Utilisez le menu déroulant (EN/FR/AR) dans la barre supérieure. L\'arabe active le mode RTL.',
     tooltipPriority: 'Haute = urgent (rouge), Moyenne = normal (jaune), Basse = peut attendre (vert).',
     tooltipTags: 'Ajoutez des étiquettes séparées par des virgules.',
@@ -2894,7 +3069,7 @@ const i18n = {
     helpQuickStart: '🚀 البداية السريعة', helpFeatures: '📚 دليل الميزات', helpFAQ: '❓ الأسئلة الشائعة',
     helpTip1Title: 'إضافة مهمة', helpTip1Desc: 'اكتب عنواناً في تبويب المهام وانقر "+ إضافة مهمة". حدد الأولوية والتاريخ والفئة.',
     helpTip2Title: 'إكمال مهمة', helpTip2Desc: 'انقر على مربع الاختيار لتحديد المهمة كمكتملة. في وضع الأطفال، ستحصل على نجمة! ⭐',
-    helpTip3Title: 'تغيير السمة', helpTip3Desc: 'اذهب إلى الإعدادات → السمات واختر من 7 تصاميم إسلامية جميلة.',
+    helpTip3Title: 'تغيير السمة', helpTip3Desc: 'اذهب إلى الإعدادات → السمات واختر من 11 تصميم إسلامية جميلة.',
     helpTip4Title: 'تبديل اللغة', helpTip4Desc: 'استخدم قائمة اللغات (EN/FR/AR) في الشريط العلوي. العربية تفعّل التخطيط من اليمين لليسار.',
     tooltipPriority: 'عالية = عاجل (أحمر)، متوسطة = عادي (أصفر)، منخفضة = يمكن الانتظار (أخضر).',
     tooltipTags: 'أضف علامات مفصولة بفواصل. استخدم البحث للعثور على المهام.',
@@ -3240,6 +3415,7 @@ function renderTasks() {
           </div>
         </div>
         <div class="task-actions">
+          <button class="btn btn-sm btn-icon" onclick="copyTask('${task.id}')" title="Copy">📋</button>
           <button class="btn btn-sm btn-icon" onclick="editTask('${task.id}')" title="Edit">✏️</button>
           <button class="btn btn-sm btn-icon btn-danger" onclick="deleteTask('${task.id}')" title="Delete">🗑️</button>
         </div>
@@ -3251,6 +3427,34 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+// ===== COPY TASK / NOTE =====
+function copyTask(taskId) {
+  const tasks = getTasks();
+  const task = tasks.find(t => t.id === taskId);
+  if (!task) return;
+  const t = i18n[state.lang];
+  const priorityLabel = t[task.priority] || task.priority;
+  const catLabel = t['cat' + task.category.charAt(0).toUpperCase() + task.category.slice(1)] || task.category;
+  let text = task.title;
+  text += `\nPriority: ${priorityLabel}`;
+  text += `\nCategory: ${catLabel}`;
+  if (task.dueDate) text += `\nDue: ${task.dueDate}`;
+  if (task.tags && task.tags.length) text += `\nTags: ${task.tags.join(', ')}`;
+  if (task.done) text += `\nStatus: ✓ Done`;
+  navigator.clipboard.writeText(text).then(() => showToast(t.copied || 'Copied! 📋')).catch(() => showToast('Copy failed'));
+}
+
+function copyNote(noteId) {
+  const note = state.notes.find(n => n.id === noteId);
+  if (!note || !state.notePassphrase) return;
+  try {
+    const decrypted = CryptoJS.AES.decrypt(note.encrypted, state.notePassphrase);
+    const data = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+    const text = data.title + '\n' + data.content;
+    navigator.clipboard.writeText(text).then(() => showToast(i18n[state.lang]?.copied || 'Copied! 📋')).catch(() => showToast('Copy failed'));
+  } catch(e) { showToast('Cannot copy encrypted note'); }
 }
 
 // ===== DRAG & DROP =====
@@ -3408,6 +3612,7 @@ function renderNotes() {
               <small style="color:var(--text-secondary);opacity:0.6;">${new Date(note.createdAt).toLocaleDateString()}</small>
             </div>
             <div style="display:flex;gap:4px;flex-shrink:0;">
+              <button class="btn btn-sm btn-icon" onclick="copyNote('${note.id}')" title="Copy">📋</button>
               <button class="btn btn-sm btn-icon" onclick="speakNote('${note.id}')" title="Listen">🔊</button>
               <button class="btn btn-sm btn-icon btn-danger" onclick="deleteNote('${note.id}')">🗑️</button>
             </div>
