@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tethkir — Task Memo v3.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;500;600;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 <style>
 /* ===== CSS VARIABLES / THEME SYSTEM ===== */
@@ -325,21 +325,57 @@ body::before {
 }
 
 /* ===== BISMILLAH HEADER ===== */
-.bismillah-inline {
-  font-family: 'Amiri', 'Scheherazade New', 'Aref Ruqaa', serif;
-  font-size: 0.85em;
+.bismillah-top {
+  font-family: 'Scheherazade New', 'Amiri', serif;
+  font-size: 0.7em;
   color: var(--bismillah-color);
-  opacity: 0.5;
+  opacity: 0.4;
   direction: rtl;
   white-space: nowrap;
   user-select: none;
-  text-shadow: 0 0 14px var(--bismillah-glow);
+  text-shadow: 0 0 10px var(--bismillah-glow);
   transition: opacity var(--transition);
-  flex-shrink: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-align: center;
+  width: 100%;
+  padding: 2px 0 0;
 }
-.bismillah-inline:hover { opacity: 0.75; }
+.bismillah-top:hover { opacity: 0.65; }
+
+.arabic-title-inline {
+  font-family: 'Reem Kufi', 'Aref Ruqaa', 'Amiri', serif;
+  font-size: 2em;
+  font-weight: 700;
+  color: var(--accent);
+  direction: rtl;
+  user-select: none;
+  line-height: 1;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, var(--accent) 30%, var(--bismillah-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.15));
+}
+
+.app-version {
+  font-family: var(--font-body);
+  font-size: 0.55em;
+  color: var(--text-secondary);
+  opacity: 0.45;
+  align-self: flex-end;
+  margin-left: 4px;
+  margin-bottom: 4px;
+  user-select: none;
+}
+
+.top-bar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+}
 
 /* ===== SIMPLE MODE ===== */
 body.simple-mode .profiles-bar { display: none !important; }
@@ -384,11 +420,10 @@ body:not(.simple-mode) .simple-notes-section { display: none !important; }
 /* ===== TOP BAR ===== */
 .top-bar {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 12px 16px;
+  gap: 4px;
+  padding: 8px 16px 12px;
   background: var(--bg-secondary);
   border-radius: var(--radius);
   margin-bottom: 20px;
@@ -400,14 +435,13 @@ body:not(.simple-mode) .simple-notes-section { display: none !important; }
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  flex: 1;
 }
 
-.app-title {
-  font-family: var(--font-display);
-  font-size: 1.3em;
-  font-weight: 700;
-  color: var(--accent);
+.top-bar-right {
+  justify-content: flex-end;
 }
+
 
 /* ===== BUTTONS ===== */
 .btn {
@@ -1054,9 +1088,10 @@ textarea { resize: vertical; min-height: 80px; }
 @media (max-width: 640px) {
   .app-container { padding: 10px; }
   .bismillah-text { font-size: 1.6em; }
-  .bismillah-inline { font-size: 0.7em; order: -1; flex-basis: 100%; text-align: center; }
+  .bismillah-top { font-size: 0.6em; }
+  .arabic-title-inline { font-size: 1.5em; }
   .task-form-grid { grid-template-columns: 1fr; }
-  .top-bar { flex-direction: column; align-items: stretch; }
+  .top-bar-row { flex-direction: column; align-items: stretch; }
   .top-bar-left, .top-bar-right { justify-content: center; }
   .search-filter-bar { flex-direction: column; }
   .theme-grid { grid-template-columns: repeat(3, 1fr); }
@@ -2378,14 +2413,15 @@ body.kb-open .kb-toggle-btn {
 
   <!-- TOP BAR -->
   <div class="top-bar">
+    <div class="bismillah-top">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+    <div class="top-bar-row">
     <div class="top-bar-left">
-      <span class="app-title" data-i18n="appTitle">📝 Tethkir</span>
       <div class="sync-status" id="syncStatus">
         <span class="sync-dot offline" id="syncDot"></span>
         <span id="syncLabel">Offline</span>
       </div>
     </div>
-    <span class="bismillah-inline">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</span>
+    <span class="arabic-title-inline">تذكير</span><span class="app-version">v3.0</span>
     <div class="top-bar-right">
       <div class="lang-picker" id="langPicker">
         <button class="lang-picker-btn" onclick="toggleLangPicker()" id="langPickerBtn">
@@ -2410,6 +2446,7 @@ body.kb-open .kb-toggle-btn {
       </div>
       <button class="btn" id="authBtn" onclick="toggleAuth()" data-i18n="signIn">☁️ Sign In</button>
       <button class="btn btn-icon" onclick="toggleSettingsSidebar()" title="Settings" style="font-size:1.1em;">⚙️</button>
+    </div>
     </div>
   </div>
 

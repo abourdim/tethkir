@@ -1,10 +1,16 @@
-# 📝 Tethkir — تذكير
+# تذكير — Tethkir v3.0
 
 **Islamic Task Manager & Secure Notes**
 
 بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
 
 A single-file web app for managing tasks and notes with Islamic themes, voice input, and optional cloud sync. Installable as a PWA on Android and iOS.
+
+---
+
+## What's New in v3.0
+
+**Redesigned Header** — Centered Bismillah (بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ) displayed discreetly at the top, with the app name تذكير in beautiful Arabic calligraphy (Reem Kufi font) centered in the controls bar alongside a gradient effect that adapts to each theme. Version badge (v3.0) shown inline.
 
 ---
 
@@ -27,6 +33,8 @@ The app runs fullscreen without a browser bar and works offline.
 ---
 
 ## Features
+
+**Header** — Bismillah always visible and centered at the top. Arabic calligraphy title تذكير with theme-adaptive gradient. Sync status, language picker, sign-in, and settings on the controls row.
 
 **Tasks** — Add, complete, delete, reorder. In Advanced mode: priority, due date, category, tags, search, filter, drag-and-drop.
 
@@ -106,10 +114,11 @@ Single HTML file. No build tools. PWA installable.
 
 - **CryptoJS** — AES-256 encryption
 - **Firebase 10.8** — Auth + Firestore (loaded on demand)
+- **Reem Kufi** — Arabic calligraphy display font
 - **Web Speech API** — STT and TTS
 - **Service Worker** — Offline caching
 - **localStorage** — Data persistence
 
 ---
 
-*v1.1 — Built with love and Tawakkul. بارك الله فيكم* 🌙✨
+*v3.0 — Built with love and Tawakkul. بارك الله فيكم* 🌙✨
