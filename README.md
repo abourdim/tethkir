@@ -1,4 +1,4 @@
-# تذكير — Tethkir v3.0
+# تذكير — Tethkir v4.0
 
 **Islamic Task Manager & Secure Notes**
 
@@ -8,9 +8,15 @@ A single-file web app for managing tasks and notes with Islamic themes, voice in
 
 ---
 
-## What's New in v3.0
+## What's New in v4.0
 
-**Redesigned Header** — Centered Bismillah (بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ) displayed discreetly at the top, with the app name تذكير in beautiful Arabic calligraphy (Reem Kufi font) centered in the controls bar alongside a gradient effect that adapts to each theme. Version badge (v3.0) shown inline.
+**Multi-Passphrase Notes** — Any passphrase unlocks the notes section. Notes decrypt individually — create new notes with a different passphrase without losing old ones. Recover locked notes anytime with the old passphrase.
+
+**Image Notes** — 📷 Capture from camera or pick from gallery. Images are compressed and stored inline, encrypted in Advanced mode. Tap to view fullscreen.
+
+**Smart Views** — Toggle between 📄 List (collapsible cards) and 📐 Grid (2-column thumbnails). Search notes by title/content. Pagination loads 10 at a time.
+
+**Bug Fixes** — Mode label now correctly shows "Simple Mode" / "Advanced Mode" in all languages.
 
 ---
 
@@ -121,4 +127,4 @@ Single HTML file. No build tools. PWA installable.
 
 ---
 
-*v3.0 — Built with love and Tawakkul. بارك الله فيكم* 🌙✨
+*v4.0 — Built with love and Tawakkul. بارك الله فيكم* 🌙✨

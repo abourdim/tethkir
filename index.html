@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tethkir — Task Memo v3.0</title>
+<title>Tethkir — Task Memo v4.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;500;600;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
@@ -416,6 +416,125 @@ body:not(.simple-mode) .simple-notes-section { display: none !important; }
   margin-top: 8px;
   justify-content: flex-end;
 }
+
+/* ===== NOTES TOOLBAR ===== */
+.notes-toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.notes-toolbar .notes-search {
+  flex: 1;
+  min-width: 120px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 0.9em;
+}
+.notes-toolbar .notes-search::placeholder { color: var(--text-secondary); opacity: 0.6; }
+.notes-toolbar .view-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.notes-toolbar .view-toggle button {
+  padding: 7px 12px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.2s;
+}
+.notes-toolbar .view-toggle button.active {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ===== NOTES GRID VIEW ===== */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.notes-grid .note-grid-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+.notes-grid .note-grid-card:hover { border-color: var(--accent); }
+.notes-grid .note-grid-card .grid-thumb {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+.notes-grid .note-grid-card h4 {
+  color: var(--accent);
+  font-size: 0.85em;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.notes-grid .note-grid-card small {
+  color: var(--text-secondary);
+  font-size: 0.75em;
+  opacity: 0.6;
+}
+.notes-grid .note-grid-card .grid-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  justify-content: flex-end;
+}
+
+/* ===== COLLAPSIBLE NOTE CARD ===== */
+.note-collapsible { cursor: pointer; }
+.note-collapsible .note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.note-collapsible .note-header .note-chevron {
+  transition: transform 0.2s;
+  color: var(--text-secondary);
+  font-size: 0.8em;
+}
+.note-collapsible.expanded .note-chevron { transform: rotate(90deg); }
+.note-collapsible .note-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.note-collapsible.expanded .note-body {
+  max-height: 2000px;
+}
+
+/* Load more button */
+.notes-load-more {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: var(--bg-card);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s;
+}
+.notes-load-more:hover { border-color: var(--accent); }
 
 /* ===== TOP BAR ===== */
 .top-bar {
@@ -2421,7 +2540,7 @@ body.kb-open .kb-toggle-btn {
         <span id="syncLabel">Offline</span>
       </div>
     </div>
-    <span class="arabic-title-inline">تذكير</span><span class="app-version">v3.0</span>
+    <span class="arabic-title-inline">تذكير</span><span class="app-version">v4.0</span>
     <div class="top-bar-right">
       <div class="lang-picker" id="langPicker">
         <button class="lang-picker-btn" onclick="toggleLangPicker()" id="langPickerBtn">
@@ -2548,6 +2667,7 @@ body.kb-open .kb-toggle-btn {
   <div class="page" id="page-notes">
     <!-- SIMPLE MODE NOTES -->
     <div class="simple-notes-section">
+      <div id="simpleNotesToolbar"></div>
       <div id="simpleNotesList" style="margin-bottom:16px;"></div>
       <div class="task-form">
         <div class="form-group">
@@ -2563,6 +2683,15 @@ body.kb-open .kb-toggle-btn {
             <textarea id="simpleNoteContentInput" rows="3" data-i18n-placeholder="noteContentPlaceholder" placeholder="Your note..."></textarea>
             <button type="button" class="btn-mic" style="margin-top:4px;" onclick="toggleSTT('simpleNoteContentInput', this)" title="Voice input">🎤</button>
           </div>
+        </div>
+        <div class="form-group">
+          <label>📷 <span data-i18n="attachImage">Attach Image</span></label>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <button type="button" class="btn" onclick="document.getElementById('simpleNoteImageInput').click()">📷 <span data-i18n="captureOrChoose">Camera / Gallery</span></button>
+            <input type="file" id="simpleNoteImageInput" accept="image/*" capture="environment" style="display:none;" onchange="previewNoteImage(this, 'simpleNoteImagePreview')">
+            <button type="button" class="btn" id="simpleNoteRemoveImg" style="display:none;" onclick="removeNoteImagePreview('simpleNoteImageInput', 'simpleNoteImagePreview')">🗑️</button>
+          </div>
+          <div id="simpleNoteImagePreview" style="margin-top:8px;"></div>
         </div>
         <div class="form-actions">
           <button class="btn btn-accent" onclick="addSimpleNote()" data-i18n="saveNote">💾 Save Note</button>
@@ -2600,6 +2729,8 @@ body.kb-open .kb-toggle-btn {
       </div>
 
       <div id="noteEditorSection" style="display:none;">
+        <!-- Notes Toolbar -->
+        <div id="secureNotesToolbar"></div>
         <!-- Saved Notes List (shown first) -->
         <div id="notesList" style="margin-bottom:16px;"></div>
 
@@ -2623,6 +2754,15 @@ body.kb-open .kb-toggle-btn {
                 <textarea id="noteContentInput" rows="4" data-i18n-placeholder="noteContentPlaceholder" placeholder="Your secret note..."></textarea>
                 <button type="button" class="btn-mic" style="margin-top:4px;" onclick="toggleSTT('noteContentInput', this)" title="Voice input">🎤</button>
               </div>
+            </div>
+            <div class="form-group">
+              <label>📷 <span data-i18n="attachImage">Attach Image</span></label>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <button type="button" class="btn" onclick="document.getElementById('noteImageInput').click()">📷 <span data-i18n="captureOrChoose">Camera / Gallery</span></button>
+                <input type="file" id="noteImageInput" accept="image/*" capture="environment" style="display:none;" onchange="previewNoteImage(this, 'noteImagePreview')">
+                <button type="button" class="btn" id="noteRemoveImg" style="display:none;" onclick="removeNoteImagePreview('noteImageInput', 'noteImagePreview')">🗑️</button>
+              </div>
+              <div id="noteImagePreview" style="margin-top:8px;"></div>
             </div>
             <div class="form-actions">
               <button class="btn" onclick="cancelNewNote()" data-i18n="cancel">Cancel</button>
@@ -2821,14 +2961,16 @@ body.kb-open .kb-toggle-btn {
 
 <script>
 // ===== VERSION =====
-const APP_VERSION = 'v3.0';
+const APP_VERSION = 'v4.0';
 
 // ===== TRANSLATIONS =====
 const i18n = {
   en: {
     appTitle: '📝 Tethkir',
     modeLabel: 'Simple Mode', modeDesc: 'Hide advanced features (profiles, filters, encryption)',
+    modeLabelAdvanced: 'Advanced Mode', modeDescAdvanced: 'Profiles, filters, encrypted notes, Arabic keyboard enabled',
     noNotesYet: 'No notes yet!', noteSaved: 'Note saved! ✅', copied: 'Copied! 📋',
+    attachImage: 'Attach Image', captureOrChoose: 'Camera / Gallery',
     offline: 'Offline', online: 'Synced', syncing: 'Syncing...',
     signIn: '☁️ Sign In', signOut: '☁️ Sign Out',
     tabTasks: 'Tasks', tabNotes: 'Secure Notes', tabNotesSimple: 'Notes', tabSettings: 'Settings',
@@ -2926,7 +3068,9 @@ const i18n = {
   fr: {
     appTitle: '📝 Tethkir',
     modeLabel: 'Mode Simple', modeDesc: 'Masquer les fonctions avancées (profils, filtres, chiffrement)',
+    modeLabelAdvanced: 'Mode Avancé', modeDescAdvanced: 'Profils, filtres, notes chiffrées, clavier arabe activés',
     noNotesYet: 'Aucune note !', noteSaved: 'Note enregistrée ! ✅', copied: 'Copié ! 📋',
+    attachImage: 'Joindre une image', captureOrChoose: 'Caméra / Galerie',
     offline: 'Hors ligne', online: 'Synchronisé', syncing: 'Synchronisation...',
     signIn: '☁️ Connexion', signOut: '☁️ Déconnexion',
     tabTasks: 'Tâches', tabNotes: 'Notes Sécurisées', tabNotesSimple: 'Notes', tabSettings: 'Paramètres',
@@ -3024,7 +3168,9 @@ const i18n = {
   ar: {
     appTitle: '📝 تذكير',
     modeLabel: 'الوضع البسيط', modeDesc: 'إخفاء الميزات المتقدمة (الملفات، الفلاتر، التشفير)',
+    modeLabelAdvanced: 'الوضع المتقدم', modeDescAdvanced: 'الملفات الشخصية، الفلاتر، الملاحظات المشفرة، لوحة المفاتيح العربية مفعّلة',
     noNotesYet: 'لا توجد ملاحظات!', noteSaved: 'تم حفظ الملاحظة! ✅', copied: 'تم النسخ! 📋',
+    attachImage: 'إرفاق صورة', captureOrChoose: 'كاميرا / معرض',
     offline: 'غير متصل', online: 'متصل', syncing: 'جاري المزامنة...',
     signIn: '☁️ تسجيل الدخول', signOut: '☁️ تسجيل الخروج',
     tabTasks: 'المهام', tabNotes: 'ملاحظات آمنة', tabNotesSimple: 'ملاحظات', tabSettings: 'الإعدادات',
@@ -3136,6 +3282,7 @@ let state = {
   firebaseConfig: null,
   notePassphrase: null,
   editingTaskId: null,
+  noteView: 'list', // 'list' or 'grid'
 };
 
 // ===== INIT =====
@@ -3540,28 +3687,7 @@ function unlockNotes() {
     }
   }
 
-  // If has notes, verify passphrase can decrypt at least one
-  if (hasNotes) {
-    try {
-      const test = CryptoJS.AES.decrypt(state.notes[0].encrypted, pass);
-      const result = test.toString(CryptoJS.enc.Utf8);
-      if (!result) throw new Error('Bad passphrase');
-      JSON.parse(result); // must be valid JSON
-    } catch(e) {
-      document.getElementById('passMismatch').style.display = 'block';
-      document.getElementById('passMismatch').textContent = i18n[state.lang]?.wrongPassphrase || '❌ Wrong passphrase. Cannot decrypt notes.';
-      // Show the mismatch element in the unlock section
-      if (!document.getElementById('passErrorHint')) {
-        const err = document.createElement('small');
-        err.id = 'passErrorHint';
-        err.style.cssText = 'color:var(--danger);display:block;margin-top:6px;';
-        err.textContent = i18n[state.lang]?.wrongPassphrase || '❌ Wrong passphrase. Cannot decrypt notes.';
-        document.getElementById('notePassphrase').parentElement.after(err);
-      }
-      return;
-    }
-  }
-
+  // Accept any passphrase — each note will decrypt (or not) individually
   state.notePassphrase = pass;
   document.getElementById('notePasswordSection').style.display = 'none';
   document.getElementById('noteEditorSection').style.display = 'block';
@@ -3598,12 +3724,16 @@ function lockNotes() {
 function addNote() {
   const title = document.getElementById('noteTitleInput').value.trim();
   const content = document.getElementById('noteContentInput').value.trim();
-  if (!title || !content || !state.notePassphrase) return;
+  const imageData = getPreviewImageData('noteImagePreview');
+  if ((!title && !content && !imageData) || !state.notePassphrase) return;
 
-  const encrypted = CryptoJS.AES.encrypt(JSON.stringify({ title, content }), state.notePassphrase).toString();
+  const payload = { title: title || 'Untitled', content };
+  if (imageData) payload.image = imageData;
+  const encrypted = CryptoJS.AES.encrypt(JSON.stringify(payload), state.notePassphrase).toString();
   state.notes.push({ id: Date.now().toString(36), encrypted, createdAt: new Date().toISOString() });
   document.getElementById('noteTitleInput').value = '';
   document.getElementById('noteContentInput').value = '';
+  removeNoteImagePreview('noteImageInput', 'noteImagePreview');
   saveState();
   renderNotes();
   cancelNewNote();
@@ -3621,6 +3751,7 @@ function cancelNewNote() {
   document.getElementById('showNewNoteBtn').style.display = 'block';
   document.getElementById('noteTitleInput').value = '';
   document.getElementById('noteContentInput').value = '';
+  removeNoteImagePreview('noteImageInput', 'noteImagePreview');
 }
 
 function deleteNote(id) {
@@ -3632,33 +3763,125 @@ function deleteNote(id) {
 function renderNotes() {
   const container = document.getElementById('notesList');
   if (!state.notePassphrase || !state.notes.length) {
+    document.getElementById('secureNotesToolbar').innerHTML = '';
     container.innerHTML = '<div class="empty-state"><div class="icon">🔐</div><p>No notes yet</p></div>';
     return;
   }
 
-  container.innerHTML = state.notes.map(note => {
+  const t = i18n[state.lang] || i18n.en;
+
+  // Decrypt all notes first
+  let decryptedNotes = [];
+  let lockedNotes = [];
+
+  state.notes.forEach(note => {
     try {
       const decrypted = CryptoJS.AES.decrypt(note.encrypted, state.notePassphrase);
       const data = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
-      return `
-        <div class="note-item">
-          <div style="display:flex;justify-content:space-between;align-items:start;">
-            <div style="flex:1;min-width:0;">
-              <strong>${escapeHtml(data.title)}</strong>
-              <p style="color:var(--text-secondary);font-size:0.9em;margin-top:6px;white-space:pre-wrap;">${escapeHtml(data.content)}</p>
-              <small style="color:var(--text-secondary);opacity:0.6;">${new Date(note.createdAt).toLocaleDateString()}</small>
-            </div>
-            <div style="display:flex;gap:4px;flex-shrink:0;">
-              <button class="btn btn-sm btn-icon" onclick="copyNote('${note.id}')" title="Copy">📋</button>
-              <button class="btn btn-sm btn-icon" onclick="speakNote('${note.id}')" title="Listen">🔊</button>
-              <button class="btn btn-sm btn-icon btn-danger" onclick="deleteNote('${note.id}')">🗑️</button>
-            </div>
-          </div>
-        </div>`;
+      decryptedNotes.push({ ...note, data });
     } catch(e) {
-      return `<div class="note-item"><div class="note-locked">🔒 Cannot decrypt (wrong passphrase?)</div></div>`;
+      lockedNotes.push(note);
     }
-  }).join('');
+  });
+
+  renderNotesToolbar('secureNotesToolbar', secureNotesSearch, 'searchSecureNotes', decryptedNotes.length + lockedNotes.length);
+
+  // Filter decrypted notes by search
+  let filtered = decryptedNotes;
+  if (secureNotesSearch) {
+    filtered = filtered.filter(n =>
+      (n.data.title || '').toLowerCase().includes(secureNotesSearch) ||
+      (n.data.content || '').toLowerCase().includes(secureNotesSearch)
+    );
+  }
+
+  // Paginate
+  const total = filtered.length;
+  const visible = filtered.slice(0, secureNotesPage * NOTES_PER_PAGE);
+  const hasMore = visible.length < total;
+  const loadMoreLabels = { en: `Load more (${total - visible.length} remaining)`, fr: `Voir plus (${total - visible.length} restantes)`, ar: `تحميل المزيد (${total - visible.length} متبقية)` };
+
+  let html = '';
+
+  if (filtered.length === 0 && secureNotesSearch) {
+    html = '<div style="text-align:center;padding:20px;color:var(--text-secondary);">🔍 No matching notes</div>';
+  } else if (state.noteView === 'grid') {
+    html += '<div class="notes-grid">';
+    visible.forEach(n => {
+      const d = n.data;
+      html += `<div class="note-grid-card" onclick="toggleNoteExpand(this)">
+        ${d.image ? `<img class="grid-thumb" src="${d.image}">` : ''}
+        <h4>${escapeHtml(d.title)}</h4>
+        <small>${formatNoteDate(n.createdAt)}</small>
+        <div class="note-body">
+          ${d.content ? `<p style="color:var(--text-secondary);font-size:0.85em;margin-top:6px;white-space:pre-wrap;">${escapeHtml(d.content)}</p>` : ''}
+          ${d.image ? `<div style="margin-top:6px;"><img src="${d.image}" style="max-width:100%;border-radius:6px;cursor:pointer;" onclick="event.stopPropagation();openImageFullscreen(this.src)"></div>` : ''}
+          <div class="grid-actions">
+            <button class="btn btn-sm" onclick="event.stopPropagation();copyNote('${n.id}')" title="Copy">📋</button>
+            <button class="btn btn-sm" onclick="event.stopPropagation();speakNote('${n.id}')" title="Listen">🔊</button>
+            <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteNote('${n.id}')">🗑️</button>
+          </div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  } else {
+    // List view — collapsible
+    visible.forEach(n => {
+      const d = n.data;
+      html += `<div class="note-item note-collapsible" onclick="toggleNoteExpand(this)">
+        <div class="note-header">
+          <div style="flex:1;min-width:0;">
+            <strong>${escapeHtml(d.title)}</strong>
+            <br><small style="color:var(--text-secondary);opacity:0.6;font-size:0.8em;">${formatNoteDate(n.createdAt)}</small>
+          </div>
+          <span class="note-chevron">▶</span>
+        </div>
+        <div class="note-body">
+          ${d.content ? `<p style="color:var(--text-secondary);font-size:0.9em;margin-top:8px;white-space:pre-wrap;">${escapeHtml(d.content)}</p>` : ''}
+          ${d.image ? `<div style="margin:8px 0;"><img src="${d.image}" style="max-width:100%;max-height:300px;border-radius:8px;border:1px solid var(--border);cursor:pointer;" onclick="event.stopPropagation();openImageFullscreen(this.src)"></div>` : ''}
+          <div style="display:flex;gap:4px;justify-content:flex-end;margin-top:8px;">
+            <button class="btn btn-sm btn-icon" onclick="event.stopPropagation();copyNote('${n.id}')" title="Copy">📋</button>
+            <button class="btn btn-sm btn-icon" onclick="event.stopPropagation();speakNote('${n.id}')" title="Listen">🔊</button>
+            <button class="btn btn-sm btn-icon btn-danger" onclick="event.stopPropagation();deleteNote('${n.id}')">🗑️</button>
+          </div>
+        </div>
+      </div>`;
+    });
+  }
+
+  if (hasMore) {
+    html += `<button class="notes-load-more" onclick="loadMoreSecureNotes()">${loadMoreLabels[state.lang] || loadMoreLabels.en}</button>`;
+  }
+
+  // Show locked notes section
+  if (lockedNotes.length > 0) {
+    const lockedLabels = {
+      en: `Locked with a different passphrase (${lockedNotes.length})`,
+      fr: `Verrouillées avec un autre mot de passe (${lockedNotes.length})`,
+      ar: `مقفلة بكلمة مرور أخرى (${lockedNotes.length})`
+    };
+    const tryLabels = { en: '🔑 Unlock with another passphrase', fr: '🔑 Déverrouiller avec un autre mot de passe', ar: '🔑 فتح بكلمة مرور أخرى' };
+    html += `<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+      <p style="color:var(--text-secondary);font-size:0.85em;margin-bottom:10px;">🔒 ${lockedLabels[state.lang] || lockedLabels.en}</p>`;
+    lockedNotes.forEach(note => {
+      const dateStr = note.createdAt ? formatNoteDate(note.createdAt) : '—';
+      html += `<div class="note-item" style="opacity:0.6;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:var(--text-secondary);font-size:0.9em;">🔒 ${dateStr}</span>
+          <button class="btn btn-sm btn-icon btn-danger" onclick="deleteNote('${note.id}')">🗑️</button>
+        </div>
+      </div>`;
+    });
+    html += `<button class="btn" style="width:100%;margin-top:8px;" onclick="showTryOtherPassphraseModal()">${tryLabels[state.lang] || tryLabels.en}</button>`;
+    html += `</div>`;
+  }
+
+  if (!html) {
+    html = '<div class="empty-state"><div class="icon">🔐</div><p>No notes yet</p></div>';
+  }
+
+  container.innerHTML = html;
 }
 
 // ===== PIN LOCK =====
@@ -4104,29 +4327,101 @@ function applySimpleMode() {
   document.body.classList.toggle('simple-mode', on);
   const toggle = document.getElementById('simpleModeToggle');
   if (toggle) toggle.classList.toggle('active', on);
+  // Update mode label & description
+  const t = i18n[state.lang] || i18n.en;
+  const modeLabel = document.querySelector('[data-i18n="modeLabel"]');
+  if (modeLabel) modeLabel.textContent = on ? (t.modeLabel || 'Simple Mode') : (t.modeLabelAdvanced || 'Advanced Mode');
+  const modeDesc = document.querySelector('[data-i18n="modeDesc"]');
+  if (modeDesc) modeDesc.textContent = on ? (t.modeDesc || 'Hide advanced features (profiles, filters, encryption)') : (t.modeDescAdvanced || 'Profiles, filters, encrypted notes, Arabic keyboard enabled');
   // Update notes tab label
   const notesTab = document.querySelector('[data-tab="notes"] span');
   if (notesTab) {
-    const t = i18n[state.lang] || i18n.en;
     notesTab.textContent = on ? (t.tabNotesSimple || 'Notes') : (t.tabNotes || 'Secure Notes');
   }
   if (on) renderSimpleNotes();
 }
 
+// ===== NOTE IMAGE UTILITIES =====
+function compressImage(file, maxWidth, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function previewNoteImage(input, previewId) {
+  const preview = document.getElementById(previewId);
+  const removeBtn = document.getElementById(input.id === 'simpleNoteImageInput' ? 'simpleNoteRemoveImg' : 'noteRemoveImg');
+  if (!input.files || !input.files[0]) { preview.innerHTML = ''; removeBtn.style.display = 'none'; return; }
+  compressImage(input.files[0], 800, 0.7).then(dataUrl => {
+    preview.innerHTML = `<img src="${dataUrl}" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid var(--border);">`;
+    preview.dataset.imageData = dataUrl;
+    removeBtn.style.display = 'inline-block';
+    // Check size warning
+    const sizeKB = Math.round(dataUrl.length * 3 / 4 / 1024);
+    if (sizeKB > 500) {
+      preview.innerHTML += `<p style="color:var(--danger);font-size:0.8em;margin-top:4px;">⚠️ Image is ${sizeKB}KB — large images may fill up storage</p>`;
+    }
+  }).catch(() => {
+    preview.innerHTML = '<p style="color:var(--danger);font-size:0.85em;">❌ Could not load image</p>';
+  });
+}
+
+function removeNoteImagePreview(inputId, previewId) {
+  document.getElementById(inputId).value = '';
+  const preview = document.getElementById(previewId);
+  preview.innerHTML = '';
+  delete preview.dataset.imageData;
+  const removeBtn = document.getElementById(inputId === 'simpleNoteImageInput' ? 'simpleNoteRemoveImg' : 'noteRemoveImg');
+  removeBtn.style.display = 'none';
+}
+
+function openImageFullscreen(src) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:99999;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:20px;';
+  overlay.innerHTML = `<img src="${src}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;">`;
+  overlay.onclick = () => overlay.remove();
+  document.body.appendChild(overlay);
+}
+
+function getPreviewImageData(previewId) {
+  const preview = document.getElementById(previewId);
+  return preview.dataset.imageData || null;
+}
+
 function addSimpleNote() {
   const title = document.getElementById('simpleNoteTitleInput').value.trim();
   const content = document.getElementById('simpleNoteContentInput').value.trim();
-  if (!title && !content) { showToast('Write something first!'); return; }
+  const imageData = getPreviewImageData('simpleNoteImagePreview');
+  if (!title && !content && !imageData) { showToast('Write something first!'); return; }
   if (!state.simpleNotes) state.simpleNotes = {};
   if (!state.simpleNotes[state.currentProfile]) state.simpleNotes[state.currentProfile] = [];
   state.simpleNotes[state.currentProfile].push({
     id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
     title: title || 'Untitled',
     content: content,
+    image: imageData || null,
     created: Date.now()
   });
   document.getElementById('simpleNoteTitleInput').value = '';
   document.getElementById('simpleNoteContentInput').value = '';
+  removeNoteImagePreview('simpleNoteImageInput', 'simpleNoteImagePreview');
   saveState();
   renderSimpleNotes();
   const t = i18n[state.lang] || i18n.en;
@@ -4137,25 +4432,152 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ===== NOTES VIEW SYSTEM =====
+var simpleNotesPage = 1;
+var secureNotesPage = 1;
+var simpleNotesSearch = '';
+var secureNotesSearch = '';
+const NOTES_PER_PAGE = 10;
+
+function renderNotesToolbar(containerId, searchVar, onSearchFn, noteCount) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  if (noteCount === 0) { container.innerHTML = ''; return; }
+  const t = i18n[state.lang] || i18n.en;
+  const searchPlaceholders = { en: '🔍 Search notes...', fr: '🔍 Rechercher...', ar: '🔍 بحث...' };
+  container.innerHTML = `
+    <div class="notes-toolbar">
+      <input type="text" class="notes-search" placeholder="${searchPlaceholders[state.lang] || searchPlaceholders.en}" value="${searchVar}" oninput="${onSearchFn}(this.value)">
+      <div class="view-toggle">
+        <button onclick="setNoteView('list')" class="${state.noteView === 'list' ? 'active' : ''}" title="List">📄</button>
+        <button onclick="setNoteView('grid')" class="${state.noteView === 'grid' ? 'active' : ''}" title="Grid">📐</button>
+      </div>
+    </div>`;
+}
+
+function setNoteView(view) {
+  state.noteView = view;
+  simpleNotesPage = 1;
+  secureNotesPage = 1;
+  saveState();
+  if (state.simpleMode) renderSimpleNotes();
+  else renderNotes();
+}
+
+function searchSimpleNotes(query) {
+  simpleNotesSearch = query.toLowerCase();
+  simpleNotesPage = 1;
+  renderSimpleNotes();
+}
+
+function searchSecureNotes(query) {
+  secureNotesSearch = query.toLowerCase();
+  secureNotesPage = 1;
+  renderNotes();
+}
+
+function toggleNoteExpand(el) {
+  el.classList.toggle('expanded');
+}
+
+function loadMoreSimpleNotes() {
+  simpleNotesPage++;
+  renderSimpleNotes();
+}
+
+function loadMoreSecureNotes() {
+  secureNotesPage++;
+  renderNotes();
+}
+
+function formatNoteDate(ts) {
+  const d = ts instanceof Date ? ts : new Date(ts);
+  const locale = state.lang === 'ar' ? 'ar' : state.lang === 'fr' ? 'fr' : 'en';
+  return d.toLocaleDateString(locale, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
 function renderSimpleNotes() {
   const container = document.getElementById('simpleNotesList');
   if (!container) return;
-  const notes = (state.simpleNotes && state.simpleNotes[state.currentProfile]) || [];
-  if (notes.length === 0) {
+  const allNotes = (state.simpleNotes && state.simpleNotes[state.currentProfile]) || [];
+
+  renderNotesToolbar('simpleNotesToolbar', simpleNotesSearch, 'searchSimpleNotes', allNotes.length);
+
+  if (allNotes.length === 0) {
     container.innerHTML = '<div style="text-align:center;padding:30px 10px;color:var(--text-secondary);"><div style="font-size:2em;margin-bottom:8px;">📝</div><p data-i18n="noNotesYet"><b>No notes yet!</b></p></div>';
     return;
   }
-  container.innerHTML = notes.map(n => `
-    <div class="simple-note-card">
-      <h4>${escHtml(n.title)}</h4>
-      <p>${escHtml(n.content)}</p>
-      <div class="simple-note-actions">
-        <button class="btn btn-sm" onclick="copySimpleNote('${n.id}')" title="Copy">📋</button>
-        <button class="btn btn-sm" onclick="speakSimpleNote('${n.id}')" title="Read aloud">🔊</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteSimpleNote('${n.id}')" title="Delete">🗑️</button>
-      </div>
-    </div>
-  `).join('');
+
+  // Filter
+  let notes = allNotes;
+  if (simpleNotesSearch) {
+    notes = notes.filter(n =>
+      (n.title || '').toLowerCase().includes(simpleNotesSearch) ||
+      (n.content || '').toLowerCase().includes(simpleNotesSearch)
+    );
+  }
+
+  if (notes.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-secondary);">🔍 No matching notes</div>';
+    return;
+  }
+
+  // Paginate
+  const total = notes.length;
+  const visible = notes.slice(0, simpleNotesPage * NOTES_PER_PAGE);
+  const hasMore = visible.length < total;
+  const loadMoreLabels = { en: `Load more (${total - visible.length} remaining)`, fr: `Voir plus (${total - visible.length} restantes)`, ar: `تحميل المزيد (${total - visible.length} متبقية)` };
+
+  let html = '';
+
+  if (state.noteView === 'grid') {
+    html += '<div class="notes-grid">';
+    visible.forEach(n => {
+      html += `<div class="note-grid-card" onclick="toggleNoteExpand(this)">
+        ${n.image ? `<img class="grid-thumb" src="${n.image}">` : ''}
+        <h4>${escHtml(n.title)}</h4>
+        <small>${formatNoteDate(n.created)}</small>
+        <div class="note-body">
+          ${n.content ? `<p style="color:var(--text-secondary);font-size:0.85em;margin-top:6px;white-space:pre-wrap;">${escHtml(n.content)}</p>` : ''}
+          ${n.image ? `<div style="margin-top:6px;"><img src="${n.image}" style="max-width:100%;border-radius:6px;cursor:pointer;" onclick="event.stopPropagation();openImageFullscreen(this.src)"></div>` : ''}
+          <div class="grid-actions">
+            <button class="btn btn-sm" onclick="event.stopPropagation();copySimpleNote('${n.id}')" title="Copy">📋</button>
+            <button class="btn btn-sm" onclick="event.stopPropagation();speakSimpleNote('${n.id}')" title="Read aloud">🔊</button>
+            <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteSimpleNote('${n.id}')">🗑️</button>
+          </div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  } else {
+    // List view — collapsible
+    visible.forEach(n => {
+      html += `<div class="simple-note-card note-collapsible" onclick="toggleNoteExpand(this)">
+        <div class="note-header">
+          <div style="flex:1;min-width:0;">
+            <h4 style="margin:0;">${escHtml(n.title)}</h4>
+            <small style="color:var(--text-secondary);opacity:0.6;font-size:0.8em;">${formatNoteDate(n.created)}</small>
+          </div>
+          <span class="note-chevron">▶</span>
+        </div>
+        <div class="note-body">
+          ${n.content ? `<p style="margin-top:8px;">${escHtml(n.content)}</p>` : ''}
+          ${n.image ? `<div style="margin:8px 0;"><img src="${n.image}" style="max-width:100%;max-height:300px;border-radius:8px;border:1px solid var(--border);cursor:pointer;" onclick="event.stopPropagation();openImageFullscreen(this.src)"></div>` : ''}
+          <div class="simple-note-actions">
+            <button class="btn btn-sm" onclick="event.stopPropagation();copySimpleNote('${n.id}')" title="Copy">📋</button>
+            <button class="btn btn-sm" onclick="event.stopPropagation();speakSimpleNote('${n.id}')" title="Read aloud">🔊</button>
+            <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteSimpleNote('${n.id}')">🗑️</button>
+          </div>
+        </div>
+      </div>`;
+    });
+  }
+
+  if (hasMore) {
+    html += `<button class="notes-load-more" onclick="loadMoreSimpleNotes()">${loadMoreLabels[state.lang] || loadMoreLabels.en}</button>`;
+  }
+
+  container.innerHTML = html;
 }
 
 function deleteSimpleNote(id) {
@@ -4324,6 +4746,77 @@ function changePassphrase() {
     showToast(t.passChanged || 'Passphrase changed! All notes re-encrypted 🔐');
   } catch(e) {
     errEl.textContent = t.reEncryptError || '❌ Error re-encrypting. Some notes may use a different passphrase.';
+    errEl.style.display = 'block';
+  }
+}
+
+// ===== TRY OTHER PASSPHRASE (recover locked notes) =====
+function showTryOtherPassphraseModal() {
+  const t = i18n[state.lang] || i18n.en;
+  const labels = {
+    en: { title: '🔑 Unlock Locked Notes', desc: 'Enter the passphrase used for the locked notes. If correct, they will be re-encrypted with your current passphrase.', label: 'Other Passphrase', placeholder: 'Enter the other passphrase', btn: '🔓 Try & Recover' },
+    fr: { title: '🔑 Déverrouiller les notes', desc: 'Entrez le mot de passe utilisé pour les notes verrouillées. Si correct, elles seront re-chiffrées avec votre mot de passe actuel.', label: 'Autre mot de passe', placeholder: 'Entrez l\'autre mot de passe', btn: '🔓 Essayer & Récupérer' },
+    ar: { title: '🔑 فتح الملاحظات المقفلة', desc: 'أدخل كلمة المرور المستخدمة للملاحظات المقفلة. إذا كانت صحيحة، سيتم إعادة تشفيرها بكلمة المرور الحالية.', label: 'كلمة مرور أخرى', placeholder: 'أدخل كلمة المرور الأخرى', btn: '🔓 جرب واستعد' }
+  };
+  const l = labels[state.lang] || labels.en;
+
+  document.getElementById('modalContent').innerHTML = `
+    <h2>${l.title}</h2>
+    <p style="color:var(--text-secondary);font-size:0.85em;margin-bottom:16px;">${l.desc}</p>
+    <div class="form-group">
+      <label>${l.label}</label>
+      <div class="password-wrapper">
+        <input type="password" id="tryOtherPass" placeholder="${l.placeholder}">
+        <button type="button" class="btn btn-icon toggle-pass" onclick="togglePasswordVisibility('tryOtherPass', this)">عـ</button>
+      </div>
+      <small id="tryOtherPassError" style="color:var(--danger);display:none;"></small>
+    </div>
+    <div class="form-actions" style="margin-top:14px;">
+      <button class="btn" onclick="closeModal()">${t.cancel || 'Cancel'}</button>
+      <button class="btn btn-accent" onclick="tryRecoverWithOtherPass()">${l.btn}</button>
+    </div>`;
+  document.getElementById('modal').classList.add('show');
+}
+
+function tryRecoverWithOtherPass() {
+  const otherPass = document.getElementById('tryOtherPass').value;
+  const errEl = document.getElementById('tryOtherPassError');
+  const failMsgs = { en: '❌ Wrong passphrase. Could not decrypt any locked notes.', fr: '❌ Mot de passe incorrect. Aucune note déchiffrée.', ar: '❌ كلمة المرور خاطئة. لم يتم فك تشفير أي ملاحظة.' };
+  const successMsgs = { en: ' note(s) recovered and re-encrypted 🔐', fr: ' note(s) récupérée(s) et re-chiffrée(s) 🔐', ar: ' ملاحظة تم استعادتها وإعادة تشفيرها 🔐' };
+
+  if (!otherPass) { errEl.textContent = 'Enter a passphrase'; errEl.style.display = 'block'; return; }
+  if (otherPass === state.notePassphrase) { errEl.textContent = i18n[state.lang]?.passSameAsOld || 'That is your current passphrase'; errEl.style.display = 'block'; return; }
+
+  let recovered = 0;
+  state.notes = state.notes.map(note => {
+    // Skip notes already decryptable with current passphrase
+    try {
+      const d = CryptoJS.AES.decrypt(note.encrypted, state.notePassphrase);
+      JSON.parse(d.toString(CryptoJS.enc.Utf8));
+      return note;
+    } catch(e) {}
+
+    // Try with the other passphrase
+    try {
+      const d = CryptoJS.AES.decrypt(note.encrypted, otherPass);
+      const data = d.toString(CryptoJS.enc.Utf8);
+      JSON.parse(data); // verify valid JSON
+      // Re-encrypt with current passphrase
+      const newEncrypted = CryptoJS.AES.encrypt(data, state.notePassphrase).toString();
+      recovered++;
+      return { ...note, encrypted: newEncrypted };
+    } catch(e) {
+      return note;
+    }
+  });
+
+  if (recovered > 0) {
+    saveState();
+    renderNotes();
+    closeModal();
+    showToast(recovered + (successMsgs[state.lang] || successMsgs.en));
+  } else {
+    errEl.textContent = failMsgs[state.lang] || failMsgs.en;
     errEl.style.display = 'block';
   }
 }
@@ -4682,9 +5175,9 @@ function updateNoteCountHint() {
   if (hasNotes) {
     const count = state.notes.length;
     const msgs = {
-      en: `🔒 You have ${count} encrypted note${count > 1 ? 's' : ''} saved. Enter your passphrase to view.`,
-      fr: `🔒 Vous avez ${count} note${count > 1 ? 's' : ''} chiffrée${count > 1 ? 's' : ''} sauvegardée${count > 1 ? 's' : ''}. Entrez votre mot de passe.`,
-      ar: `🔒 لديك ${count} ملاحظة مشفرة محفوظة. أدخل كلمة المرور لعرضها.`
+      en: `🔒 You have ${count} encrypted note${count > 1 ? 's' : ''} saved. Enter a passphrase to unlock.`,
+      fr: `🔒 Vous avez ${count} note${count > 1 ? 's' : ''} chiffrée${count > 1 ? 's' : ''}. Entrez un mot de passe pour déverrouiller.`,
+      ar: `🔒 لديك ${count} ملاحظة مشفرة. أدخل كلمة مرور للفتح.`
     };
     hint.textContent = msgs[state.lang] || msgs.en;
     hint.style.display = 'block';

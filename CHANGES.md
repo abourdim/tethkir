@@ -2,6 +2,24 @@
 
 ---
 
+## v4.0 — 2026-02-27 — Multi-Pass Notes, Images & Smart Views 🖼️
+
+### ✨ New Features
+- **Multi-Passphrase Notes** — Any passphrase unlocks the notes section. Each note decrypts individually based on its own passphrase. Create new notes with a different passphrase without losing old ones.
+- **Image Notes** — 📷 Camera/Gallery button on both Simple and Encrypted notes. Images are compressed (800px max, JPEG 70%) and stored inline. Tap any image to view fullscreen.
+- **Notes Search** — 🔍 Real-time search bar filters notes by title or content
+- **View Selector** — Toggle between 📄 List (collapsible cards) and 📐 Grid (2-column thumbnails) views. Preference is saved.
+- **Pagination** — Notes load 10 at a time with "Load more" button for better performance
+- **Collapsible Notes** — In list view, notes show title + date only. Tap to expand and see full content, image, and actions.
+
+### 🔧 Fixes & Improvements
+- **Mode Label Bug Fixed** — Settings now correctly shows "Simple Mode" or "Advanced Mode" with matching descriptions in all 3 languages
+- **Locked Notes with Dates** — Notes encrypted with a different passphrase show their creation date/time instead of just a lock icon
+- **🔑 Recover Old Notes** — "Unlock with another passphrase" button re-encrypts locked notes with your current passphrase
+- Notes toolbar (search + view toggle) appears in both Simple and Advanced modes
+
+---
+
 ## v1.1 — 2026-02-22 — Android PWA & Offline 📱
 
 ### ✨ New Features
