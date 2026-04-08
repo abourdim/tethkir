@@ -656,6 +656,13 @@ textarea { resize: vertical; min-height: 80px; }
   word-break: break-word;
 }
 
+.task-date {
+  font-size: 0.75em;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  margin-bottom: 2px;
+}
+
 .task-meta {
   display: flex;
   flex-wrap: wrap;
@@ -3400,6 +3407,7 @@ function renderTasks() {
         </div>
         <div class="task-content">
           <div class="task-title">${escapeHtml(task.title)}</div>
+          ${task.createdAt ? `<div class="task-date">${formatNoteDate(task.createdAt)}</div>` : ''}
           <div class="task-meta">
             <span class="task-meta-item">${priorityLabel}</span>
             <span class="task-meta-item">${catLabel}</span>
