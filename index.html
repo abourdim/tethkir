@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tethkir — Task Memo v4.0</title>
+<title>Tethkir — Task Memo v5.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;500;600;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
@@ -56,39 +56,6 @@
   --pattern-opacity: 0.06;
 }
 
-/* ===== THEME: OTTOMAN ===== */
-[data-theme="ottoman"] {
-  --bg-primary: #0a1628;
-  --bg-secondary: #122040;
-  --bg-card: #1a2d54;
-  --bg-input: #233a66;
-  --text-primary: #e8e4df;
-  --text-secondary: #8bacc4;
-  --accent: #c9a84c;
-  --accent-hover: #dbb960;
-  --accent-glow: rgba(201,168,76,0.3);
-  --border: rgba(201,168,76,0.2);
-  --bismillah-color: #c9a84c;
-  --bismillah-glow: rgba(201,168,76,0.5);
-  --pattern-opacity: 0.08;
-}
-
-/* ===== THEME: MOROCCAN ZELLIGE ===== */
-[data-theme="moroccan"] {
-  --bg-primary: #0a1a12;
-  --bg-secondary: #12291c;
-  --bg-card: #1a3828;
-  --bg-input: #224832;
-  --text-primary: #f0ece4;
-  --text-secondary: #8cc4a0;
-  --accent: #d4a04a;
-  --accent-hover: #e8b85c;
-  --accent-glow: rgba(212,160,74,0.3);
-  --border: rgba(140,196,160,0.2);
-  --bismillah-color: #d4a04a;
-  --bismillah-glow: rgba(212,160,74,0.5);
-  --pattern-opacity: 0.08;
-}
 
 /* ===== THEME: CALLIGRAPHY ===== */
 [data-theme="calligraphy"] {
@@ -124,137 +91,7 @@
   --pattern-opacity: 0.05;
 }
 
-/* ===== THEME: DESERT OASIS ===== */
-[data-theme="desert"] {
-  --bg-primary: #f8f0e0;
-  --bg-secondary: #efe4cc;
-  --bg-card: #fff8ec;
-  --bg-input: #f0e4d0;
-  --text-primary: #2a2218;
-  --text-secondary: #6a5e4a;
-  --accent: #2e8b57;
-  --accent-hover: #3aa06a;
-  --accent-glow: rgba(46,139,87,0.2);
-  --border: rgba(46,139,87,0.2);
-  --bismillah-color: #8b6914;
-  --bismillah-glow: rgba(139,105,20,0.2);
-  --pattern-opacity: 0.04;
-}
 
-/* ===== THEME: ISLAMIC GARDEN (LIGHT) ===== */
-[data-theme="garden"] {
-  --bg-primary: #f0f7f2;
-  --bg-secondary: #e2efe6;
-  --bg-card: #f8fcf9;
-  --bg-input: #e8f3ec;
-  --text-primary: #1a2e22;
-  --text-secondary: #4a6b55;
-  --accent: #2d8659;
-  --accent-hover: #38a06d;
-  --accent-glow: rgba(45,134,89,0.2);
-  --border: rgba(45,134,89,0.18);
-  --bismillah-color: #2d6b45;
-  --bismillah-glow: rgba(45,107,69,0.15);
-  --pattern-opacity: 0.03;
-  --danger: #c0392b;
-  --success: #27ae60;
-  --warning: #e67e22;
-  --priority-high: #e74c3c;
-  --priority-med: #f39c12;
-  --priority-low: #27ae60;
-}
-
-/* ===== THEME: GOLDEN AGE / SCIENCE (LIGHT) ===== */
-[data-theme="goldenage"] {
-  --bg-primary: #faf6ee;
-  --bg-secondary: #f0eadc;
-  --bg-card: #fffcf5;
-  --bg-input: #f2ebdb;
-  --text-primary: #2a2418;
-  --text-secondary: #6b5f4a;
-  --accent: #b8860b;
-  --accent-hover: #d4a017;
-  --accent-glow: rgba(184,134,11,0.2);
-  --border: rgba(184,134,11,0.18);
-  --bismillah-color: #8b6914;
-  --bismillah-glow: rgba(139,105,20,0.15);
-  --pattern-opacity: 0.03;
-  --danger: #c0392b;
-  --success: #27ae60;
-  --warning: #e67e22;
-  --priority-high: #e74c3c;
-  --priority-med: #f39c12;
-  --priority-low: #27ae60;
-}
-
-/* ===== THEME: MADRASA / SCHOLAR (LIGHT BLUE) ===== */
-[data-theme="madrasa"] {
-  --bg-primary: #f0f4f8;
-  --bg-secondary: #e1e8ef;
-  --bg-card: #f8fafb;
-  --bg-input: #e6ecf2;
-  --text-primary: #1a2636;
-  --text-secondary: #4a6280;
-  --accent: #2c6faa;
-  --accent-hover: #3884c4;
-  --accent-glow: rgba(44,111,170,0.2);
-  --border: rgba(44,111,170,0.18);
-  --bismillah-color: #2c5f8a;
-  --bismillah-glow: rgba(44,95,138,0.15);
-  --pattern-opacity: 0.03;
-  --danger: #c0392b;
-  --success: #27ae60;
-  --warning: #e67e22;
-  --priority-high: #e74c3c;
-  --priority-med: #f39c12;
-  --priority-low: #27ae60;
-}
-
-/* ===== THEME: PEARL / MINIMALIST LIGHT ===== */
-[data-theme="pearl"] {
-  --bg-primary: #f9f6f2;
-  --bg-secondary: #f0ebe4;
-  --bg-card: #fffdf9;
-  --bg-input: #f0ebe4;
-  --text-primary: #2c2520;
-  --text-secondary: #7a6e62;
-  --accent: #9c7a4f;
-  --accent-hover: #b08c5c;
-  --accent-glow: rgba(156,122,79,0.2);
-  --border: rgba(156,122,79,0.18);
-  --bismillah-color: #8a6f48;
-  --bismillah-glow: rgba(138,111,72,0.15);
-  --pattern-opacity: 0.025;
-  --danger: #c0392b;
-  --success: #27ae60;
-  --warning: #e67e22;
-  --priority-high: #e74c3c;
-  --priority-med: #f39c12;
-  --priority-low: #27ae60;
-}
-
-/* ===== THEME: NOOR / LIGHT ===== */
-[data-theme="noor"] {
-  --bg-primary: #fefefe;
-  --bg-secondary: #f4f2ef;
-  --bg-card: #ffffff;
-  --bg-input: #f0eee9;
-  --text-primary: #222222;
-  --text-secondary: #6e6e6e;
-  --accent: #6a5acd;
-  --accent-hover: #7b6dd8;
-  --accent-glow: rgba(106,90,205,0.18);
-  --border: rgba(106,90,205,0.15);
-  --bismillah-color: #6a5acd;
-  --bismillah-glow: rgba(106,90,205,0.12);
-  --pattern-opacity: 0.02;
-  --danger: #c0392b;
-  --success: #27ae60;
-  --warning: #e67e22;
-  --priority-high: #e74c3c;
-  --priority-med: #f39c12;
-  --priority-low: #27ae60;
-}
 
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -2540,7 +2377,7 @@ body.kb-open .kb-toggle-btn {
         <span id="syncLabel">Offline</span>
       </div>
     </div>
-    <span class="arabic-title-inline">تذكير</span><span class="app-version">v4.0</span>
+    <span class="arabic-title-inline">تذكير</span><span class="app-version">v5.0</span>
     <div class="top-bar-right">
       <div class="lang-picker" id="langPicker">
         <button class="lang-picker-btn" onclick="toggleLangPicker()" id="langPickerBtn">
@@ -2564,6 +2401,7 @@ body.kb-open .kb-toggle-btn {
         </div>
       </div>
       <button class="btn" id="authBtn" onclick="toggleAuth()" data-i18n="signIn">☁️ Sign In</button>
+      <button class="btn btn-icon" id="syncBtn" onclick="manualSync()" title="Sync" style="font-size:1.1em;display:none;">☁️</button>
       <button class="btn btn-icon" onclick="toggleSettingsSidebar()" title="Settings" style="font-size:1.1em;">⚙️</button>
     </div>
     </div>
@@ -2822,14 +2660,6 @@ body.kb-open .kb-toggle-btn {
             <div class="theme-icon">🏰</div>
             <div>Alhambra</div>
           </div>
-          <div class="theme-card" data-themeid="ottoman" onclick="setTheme('ottoman')">
-            <div class="theme-icon">🔵</div>
-            <div>Ottoman</div>
-          </div>
-          <div class="theme-card" data-themeid="moroccan" onclick="setTheme('moroccan')">
-            <div class="theme-icon">💎</div>
-            <div>Moroccan</div>
-          </div>
           <div class="theme-card" data-themeid="calligraphy" onclick="setTheme('calligraphy')">
             <div class="theme-icon">✒️</div>
             <div>Calligraphy</div>
@@ -2837,30 +2667,6 @@ body.kb-open .kb-toggle-btn {
           <div class="theme-card" data-themeid="ramadan" onclick="setTheme('ramadan')">
             <div class="theme-icon">🌙</div>
             <div>Ramadan</div>
-          </div>
-          <div class="theme-card" data-themeid="desert" onclick="setTheme('desert')">
-            <div class="theme-icon">🏜️</div>
-            <div>Desert</div>
-          </div>
-          <div class="theme-card" data-themeid="garden" onclick="setTheme('garden')">
-            <div class="theme-icon">🌿</div>
-            <div>Garden</div>
-          </div>
-          <div class="theme-card" data-themeid="goldenage" onclick="setTheme('goldenage')">
-            <div class="theme-icon">🔬</div>
-            <div>Golden Age</div>
-          </div>
-          <div class="theme-card" data-themeid="madrasa" onclick="setTheme('madrasa')">
-            <div class="theme-icon">📘</div>
-            <div>Madrasa</div>
-          </div>
-          <div class="theme-card" data-themeid="pearl" onclick="setTheme('pearl')">
-            <div class="theme-icon">🤍</div>
-            <div>Pearl</div>
-          </div>
-          <div class="theme-card" data-themeid="noor" onclick="setTheme('noor')">
-            <div class="theme-icon">💡</div>
-            <div>Noor</div>
           </div>
         </div>
       </div>
@@ -2961,7 +2767,7 @@ body.kb-open .kb-toggle-btn {
 
 <script>
 // ===== VERSION =====
-const APP_VERSION = 'v4.0';
+const APP_VERSION = 'v5.0';
 
 // ===== TRANSLATIONS =====
 const i18n = {
@@ -3394,6 +3200,8 @@ document.addEventListener('click', (e) => {
 
 // ===== THEMES =====
 function setTheme(themeId) {
+  const validThemes = ['alhambra', 'calligraphy', 'ramadan'];
+  if (!validThemes.includes(themeId)) themeId = 'alhambra';
   state.theme = themeId;
   document.body.setAttribute('data-theme', themeId);
   document.querySelectorAll('.theme-card').forEach(c => {
@@ -4098,18 +3906,22 @@ function updateSyncUI(firebaseOnline, name) {
   const lang = state.lang || 'en';
   const hasInternet = navigator.onLine;
 
+  const syncBtn = document.getElementById('syncBtn');
   if (firebaseOnline && hasInternet) {
     dot.className = 'sync-dot online';
     label.textContent = name || (i18n[lang]?.synced || 'Synced');
     btn.textContent = i18n[lang]?.signOut || '☁️ Sign Out';
+    if (syncBtn) syncBtn.style.display = '';
   } else if (hasInternet) {
     dot.className = 'sync-dot warning';
     label.textContent = i18n[lang]?.online || 'Online';
     btn.textContent = i18n[lang]?.signIn || '☁️ Sign In';
+    if (syncBtn) syncBtn.style.display = 'none';
   } else {
     dot.className = 'sync-dot offline';
     label.textContent = i18n[lang]?.offline || 'Offline';
     btn.textContent = i18n[lang]?.signIn || '☁️ Sign In';
+    if (syncBtn) syncBtn.style.display = 'none';
   }
 }
 
