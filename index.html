@@ -1190,7 +1190,8 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 .settings-sidebar.open { transform: translateX(0); }
-
+body.sidebar-resizing { cursor: ew-resize !important; user-select: none !important; -webkit-user-select: none !important; }
+body.sidebar-resizing * { cursor: ew-resize !important; user-select: none !important; -webkit-user-select: none !important; }
 
 .settings-sidebar-header {
   display: flex;
@@ -4126,6 +4127,66 @@ function toggleSettingsSidebar() {
   document.getElementById('settingsBackdrop').classList.toggle('open');
   document.getElementById('settingsSidebar').classList.toggle('open');
 }
+
+// ===== SIDEBAR RESIZE (drag left edge) =====
+(function() {
+  const sidebar = document.getElementById('settingsSidebar');
+  if (!sidebar) return;
+  const EDGE = 10;
+  let dragging = false;
+
+  sidebar.addEventListener('mousedown', function(e) {
+    const rect = sidebar.getBoundingClientRect();
+    const isRtl = document.documentElement.dir === 'rtl';
+    const fromEdge = isRtl ? (rect.right - e.clientX) : (e.clientX - rect.left);
+    if (fromEdge > EDGE) return;
+    e.preventDefault();
+    dragging = true;
+    document.body.classList.add('sidebar-resizing');
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', stopDrag);
+  });
+
+  sidebar.addEventListener('touchstart', function(e) {
+    const rect = sidebar.getBoundingClientRect();
+    const isRtl = document.documentElement.dir === 'rtl';
+    const tx = e.touches[0].clientX;
+    const fromEdge = isRtl ? (rect.right - tx) : (tx - rect.left);
+    if (fromEdge > EDGE) return;
+    e.preventDefault();
+    dragging = true;
+    document.body.classList.add('sidebar-resizing');
+    document.addEventListener('touchmove', onDrag, { passive: false });
+    document.addEventListener('touchend', stopDrag);
+  }, { passive: false });
+
+  sidebar.addEventListener('mousemove', function(e) {
+    if (dragging) return;
+    const rect = sidebar.getBoundingClientRect();
+    const isRtl = document.documentElement.dir === 'rtl';
+    const fromEdge = isRtl ? (rect.right - e.clientX) : (e.clientX - rect.left);
+    sidebar.style.cursor = fromEdge <= EDGE ? 'ew-resize' : '';
+  });
+
+  function onDrag(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const isRtl = document.documentElement.dir === 'rtl';
+    const w = isRtl ? clientX : window.innerWidth - clientX;
+    sidebar.style.width = Math.max(280, Math.min(w, window.innerWidth * 0.9)) + 'px';
+  }
+
+  function stopDrag() {
+    dragging = false;
+    document.body.classList.remove('sidebar-resizing');
+    sidebar.style.cursor = '';
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('touchmove', onDrag);
+    document.removeEventListener('mouseup', stopDrag);
+    document.removeEventListener('touchend', stopDrag);
+  }
+})();
 
 // ===== SIMPLE MODE =====
 function toggleSimpleMode() {
