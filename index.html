@@ -2376,6 +2376,7 @@ body.kb-open .kb-toggle-btn {
         <span class="sync-dot offline" id="syncDot"></span>
         <span id="syncLabel">Offline</span>
       </div>
+      <button class="btn" id="authBtn" onclick="toggleAuth()" data-i18n="signIn">☁️ Sign In</button>
     </div>
     <span class="arabic-title-inline">تذكير</span><span class="app-version">v5.0</span>
     <div class="top-bar-right">
@@ -2400,8 +2401,7 @@ body.kb-open .kb-toggle-btn {
           </button>
         </div>
       </div>
-      <button class="btn" id="authBtn" onclick="toggleAuth()" data-i18n="signIn">☁️ Sign In</button>
-      <button class="btn btn-icon" id="syncBtn" onclick="manualSync()" title="Sync" style="font-size:1.1em;display:none;">☁️</button>
+      <button class="btn btn-sm" id="syncBtn" onclick="manualSync()" title="Sync" style="display:none;">☁️ Resync</button>
       <button class="btn btn-icon" onclick="toggleSettingsSidebar()" title="Settings" style="font-size:1.1em;">⚙️</button>
     </div>
     </div>
