@@ -1167,8 +1167,7 @@ textarea { resize: vertical; min-height: 80px; }
   position: fixed;
   top: 0;
   right: 0;
-  width: 360px;
-  max-width: 90vw;
+  width: min(420px, 90vw);
   height: 100vh;
   background: var(--bg-primary);
   border-left: 2px solid var(--accent);
@@ -1191,6 +1190,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 .settings-sidebar.open { transform: translateX(0); }
+
 
 .settings-sidebar-header {
   display: flex;
