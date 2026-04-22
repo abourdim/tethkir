@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tethkir-v5.0';
+const CACHE_NAME = 'tethkir-v5.1';
 const ASSETS = [
   './',
   './index.html',

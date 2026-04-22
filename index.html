@@ -74,6 +74,40 @@
   --pattern-opacity: 0.04;
 }
 
+/* ===== THEME: PEARL (ivory + rose-gold, light) ===== */
+[data-theme="pearl"] {
+  --bg-primary: #faf5ee;
+  --bg-secondary: #f1e8d6;
+  --bg-card: #ffffff;
+  --bg-input: #f7efe0;
+  --text-primary: #2b1f14;
+  --text-secondary: #6b5a48;
+  --accent: #b76e4b;
+  --accent-hover: #c98662;
+  --accent-glow: rgba(183,110,75,0.25);
+  --border: rgba(183,110,75,0.22);
+  --bismillah-color: #7a4c33;
+  --bismillah-glow: rgba(183,110,75,0.18);
+  --pattern-opacity: 0.035;
+}
+
+/* ===== THEME: MEDINA (soft mint + emerald, light) ===== */
+[data-theme="medina"] {
+  --bg-primary: #eaf5ef;
+  --bg-secondary: #d6ead8;
+  --bg-card: #f5fbf7;
+  --bg-input: #dfece2;
+  --text-primary: #0f2a1d;
+  --text-secondary: #446555;
+  --accent: #1e7a57;
+  --accent-hover: #269066;
+  --accent-glow: rgba(30,122,87,0.25);
+  --border: rgba(30,122,87,0.22);
+  --bismillah-color: #0f5339;
+  --bismillah-glow: rgba(30,122,87,0.2);
+  --pattern-opacity: 0.045;
+}
+
 /* ===== THEME: RAMADAN NIGHT ===== */
 [data-theme="ramadan"] {
   --bg-primary: #0a0a1e;
@@ -2874,6 +2908,14 @@ body.kb-open .kb-toggle-btn {
             <div class="theme-icon">🌙</div>
             <div>Ramadan</div>
           </div>
+          <div class="theme-card" data-themeid="pearl" onclick="setTheme('pearl')">
+            <div class="theme-icon">🌸</div>
+            <div>Pearl</div>
+          </div>
+          <div class="theme-card" data-themeid="medina" onclick="setTheme('medina')">
+            <div class="theme-icon">🕌</div>
+            <div>Medina</div>
+          </div>
         </div>
       </div>
     </div>
@@ -3558,7 +3600,7 @@ document.addEventListener('click', (e) => {
 
 // ===== THEMES =====
 function setTheme(themeId) {
-  const validThemes = ['alhambra', 'calligraphy', 'ramadan'];
+  const validThemes = ['alhambra', 'calligraphy', 'ramadan', 'pearl', 'medina'];
   if (!validThemes.includes(themeId)) themeId = 'alhambra';
   state.theme = themeId;
   document.body.setAttribute('data-theme', themeId);
