@@ -2918,7 +2918,7 @@ const i18n = {
     searchPlaceholder: 'Search tasks...',
     allPriorities: 'All Priorities', allCategories: 'All Categories',
     allStatus: 'All', active: 'Active', done: 'Done',
-    taskTabActive: 'Active', taskTabDone: 'Done',
+    taskTabActive: 'Active', taskTabDone: 'Done', taskTabAll: 'All',
     loadMoreTasks: 'Load more', tasksRemaining: 'remaining',
     arabicDialectTitle: 'Arabic dialect (voice)',
     arabicDialectDesc: 'Used by 🎤 voice input and 🔊 read-aloud when the app language is Arabic.',
@@ -3023,7 +3023,7 @@ const i18n = {
     searchPlaceholder: 'Rechercher...',
     allPriorities: 'Toutes priorités', allCategories: 'Toutes catégories',
     allStatus: 'Tout', active: 'Actif', done: 'Fait',
-    taskTabActive: 'Actives', taskTabDone: 'Terminées',
+    taskTabActive: 'Actives', taskTabDone: 'Terminées', taskTabAll: 'Toutes',
     loadMoreTasks: 'Voir plus', tasksRemaining: 'restantes',
     arabicDialectTitle: 'Dialecte arabe (voix)',
     arabicDialectDesc: 'Utilisé par 🎤 saisie vocale et 🔊 lecture à voix haute lorsque la langue est l\'arabe.',
@@ -3128,7 +3128,7 @@ const i18n = {
     searchPlaceholder: 'بحث في المهام...',
     allPriorities: 'كل الأولويات', allCategories: 'كل الفئات',
     allStatus: 'الكل', active: 'نشط', done: 'مكتمل',
-    taskTabActive: 'نشطة', taskTabDone: 'منجزة',
+    taskTabActive: 'نشطة', taskTabDone: 'منجزة', taskTabAll: 'الكل',
     loadMoreTasks: 'تحميل المزيد', tasksRemaining: 'متبقية',
     arabicDialectTitle: 'اللهجة العربية (الصوت)',
     arabicDialectDesc: 'تُستخدم بواسطة 🎤 الإدخال الصوتي و🔊 القراءة الجهرية عندما تكون لغة التطبيق هي العربية.',
@@ -3547,7 +3547,7 @@ function loadMoreTasks() {
   renderTasks();
 }
 
-function renderTaskSubtabs(activeCount, doneCount) {
+function renderTaskSubtabs(activeCount, doneCount, allCount) {
   const el = document.getElementById('taskSubtabs');
   if (!el) return;
   const t = i18n[state.lang] || i18n.en;
@@ -3560,6 +3560,10 @@ function renderTaskSubtabs(activeCount, doneCount) {
     <button class="task-subtab ${tab==='done'?'active':''}" role="tab" aria-selected="${tab==='done'}" onclick="setTaskStatusTab('done')">
       <span>${t.taskTabDone || 'Done'}</span>
       <span class="count-badge">${doneCount}</span>
+    </button>
+    <button class="task-subtab ${tab==='all'?'active':''}" role="tab" aria-selected="${tab==='all'}" onclick="setTaskStatusTab('all')">
+      <span>${t.taskTabAll || 'All'}</span>
+      <span class="count-badge">${allCount}</span>
     </button>`;
 }
 
@@ -3572,7 +3576,7 @@ function renderTasks() {
   // Counts for sub-tabs (before status filter)
   const activeCount = allTasks.filter(x => !x.done).length;
   const doneCount = allTasks.filter(x => x.done).length;
-  renderTaskSubtabs(activeCount, doneCount);
+  renderTaskSubtabs(activeCount, doneCount, allTasks.length);
 
   let tasks = allTasks;
 
@@ -3584,9 +3588,10 @@ function renderTasks() {
   if (search) tasks = tasks.filter(x => x.title.toLowerCase().includes(search) || (x.tags||[]).some(tag=>tag.toLowerCase().includes(search)));
   if (fPriority !== 'all') tasks = tasks.filter(x => x.priority === fPriority);
   if (fCategory !== 'all') tasks = tasks.filter(x => x.category === fCategory);
-  // Status comes from sub-tab (default active)
+  // Status comes from sub-tab (default active). 'all' skips the status filter.
   const statusTab = state.taskStatusTab || 'active';
-  tasks = tasks.filter(x => statusTab === 'done' ? x.done : !x.done);
+  if (statusTab === 'active') tasks = tasks.filter(x => !x.done);
+  else if (statusTab === 'done') tasks = tasks.filter(x => x.done);
 
   if (tasks.length === 0) {
     container.innerHTML = `
