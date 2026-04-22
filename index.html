@@ -4664,45 +4664,69 @@ function getPreviewImageData(previewId) {
 }
 
 // ===== CLIPBOARD → NOTE (OCR bridge: phone's Live Text / Google Lens + paste) =====
+async function _blobToDataUrl(blob) {
+  return await new Promise(res => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => res(null);
+    r.readAsDataURL(blob);
+  });
+}
+
 async function pasteClipboardAsNote() {
   const t = i18n[state.lang] || i18n.en;
   if (!navigator.clipboard) { showToast(t.clipboardUnsupported || 'Clipboard not supported here'); return; }
 
   let text = '';
   let imageDataUrl = null;
+  let readError = null;
+  let foundTypes = [];
 
-  // Try reading rich items first (image + text). Fall back to plain text.
-  try {
-    if (navigator.clipboard.read) {
+  // Try rich clipboard first (handles image + text items like screenshots).
+  if (navigator.clipboard.read) {
+    try {
       const items = await navigator.clipboard.read();
       for (const it of items) {
-        // Image first (e.g. pasted screenshot)
-        const imgType = (it.types || []).find(tp => tp.startsWith('image/'));
+        const types = it.types || [];
+        foundTypes = foundTypes.concat(types);
+        // Image: match any image/* (png, jpeg, webp, gif)
+        const imgType = types.find(tp => tp && tp.indexOf('image/') === 0);
         if (imgType && !imageDataUrl) {
-          const blob = await it.getType(imgType);
-          imageDataUrl = await new Promise(res => {
-            const r = new FileReader();
-            r.onload = () => res(r.result);
-            r.onerror = () => res(null);
-            r.readAsDataURL(blob);
-          });
+          try {
+            const blob = await it.getType(imgType);
+            imageDataUrl = await _blobToDataUrl(blob);
+          } catch (e) { console.warn('[paste] image getType failed:', imgType, e); }
         }
         // Text
-        const textType = (it.types || []).find(tp => tp === 'text/plain');
-        if (textType && !text) {
-          const blob = await it.getType(textType);
-          text = (await blob.text()).trim();
+        if (!text) {
+          const textType = types.find(tp => tp === 'text/plain');
+          if (textType) {
+            try {
+              const blob = await it.getType(textType);
+              text = ((await blob.text()) || '').trim();
+            } catch (e) { console.warn('[paste] text getType failed', e); }
+          }
         }
       }
+    } catch (e) {
+      readError = e;
+      console.warn('[paste] clipboard.read() failed:', e);
     }
-  } catch (e) { /* fall through to readText */ }
-
-  if (!text && !imageDataUrl) {
-    try { text = (await navigator.clipboard.readText() || '').trim(); }
-    catch (e) { showToast(t.clipboardEmpty || 'Clipboard empty or permission denied'); return; }
   }
 
-  if (!text && !imageDataUrl) { showToast(t.clipboardEmpty || 'Clipboard empty'); return; }
+  // Fallback to text-only read if we got nothing from rich read
+  if (!text && !imageDataUrl) {
+    try { text = (await navigator.clipboard.readText() || '').trim(); }
+    catch (e) { readError = readError || e; console.warn('[paste] readText failed:', e); }
+  }
+
+  if (!text && !imageDataUrl) {
+    const hint = foundTypes.length
+      ? ` (types: ${foundTypes.join(', ')})`
+      : (readError ? ` (${readError.name || readError.message || readError})` : '');
+    showToast((t.clipboardEmpty || 'Clipboard empty or permission denied') + hint);
+    return;
+  }
 
   // Split first non-empty line → title, rest → content
   let title = '', content = '';
