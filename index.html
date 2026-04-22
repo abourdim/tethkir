@@ -1083,6 +1083,11 @@ textarea { resize: vertical; min-height: 80px; }
 .sync-dot.online { background: var(--success); }
 .sync-dot.warning { background: var(--warning); }
 .sync-dot.offline { background: var(--danger); }
+.sync-dot.syncing { animation: syncPulse 1s ease-in-out infinite; }
+@keyframes syncPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212,160,74,0.6); }
+  50%      { box-shadow: 0 0 0 6px rgba(212,160,74,0); }
+}
 
 /* Language Picker */
 .lang-picker { position: relative; }
@@ -2838,6 +2843,10 @@ body.kb-open .kb-toggle-btn {
           <button class="btn btn-sm btn-accent" onclick="manualSync()" data-i18n="syncNow">☁️ Sync Now</button>
         </div>
         <div class="setting-row">
+          <span class="setting-label" data-i18n="autoSyncDesc">🔄 Auto-sync on change (pull on focus)</span>
+          <div class="toggle active" id="autoSyncToggle" onclick="toggleAutoSync()"></div>
+        </div>
+        <div class="setting-row">
           <span class="setting-label" data-i18n="exportDesc">Export all data as JSON</span>
           <button class="btn btn-sm" onclick="exportData()" data-i18n="export">📥 Export</button>
         </div>
@@ -2942,6 +2951,7 @@ const i18n = {
     enablePin: 'Enable PIN Lock', setPin: 'Set 4-digit PIN', savePin: 'Save PIN',
     dataTitle: 'Data Management',
     syncDesc: 'Sync data to/from cloud', syncNow: '☁️ Sync Now',
+    autoSyncDesc: '🔄 Auto-sync on change (pull on focus)',
     syncing: 'Syncing...', syncDone: 'Sync complete! ✅', syncError: 'Sync failed ❌', syncNotSignedIn: 'Sign in to Firebase first ☁️',
     exportDesc: 'Export all data as JSON', export: '📥 Export',
     importDesc: 'Import data from JSON', import: '📤 Import',
@@ -3047,6 +3057,7 @@ const i18n = {
     enablePin: 'Activer le PIN', setPin: 'PIN à 4 chiffres', savePin: 'Sauvegarder',
     dataTitle: 'Gestion des données',
     syncDesc: 'Synchroniser avec le cloud', syncNow: '☁️ Synchroniser',
+    autoSyncDesc: '🔄 Sync auto aux changements (tirer au focus)',
     syncing: 'Synchronisation...', syncDone: 'Synchronisation terminée ! ✅', syncError: 'Échec de la sync ❌', syncNotSignedIn: 'Connectez-vous à Firebase d\'abord ☁️',
     exportDesc: 'Exporter en JSON', export: '📥 Exporter',
     importDesc: 'Importer depuis JSON', import: '📤 Importer',
@@ -3152,6 +3163,7 @@ const i18n = {
     enablePin: 'تفعيل قفل PIN', setPin: 'PIN من 4 أرقام', savePin: 'حفظ',
     dataTitle: 'إدارة البيانات',
     syncDesc: 'مزامنة البيانات مع السحابة', syncNow: '☁️ مزامنة',
+    autoSyncDesc: '🔄 مزامنة تلقائية عند التغيير (جلب عند التركيز)',
     syncing: 'جاري المزامنة...', syncDone: 'تمت المزامنة! ✅', syncError: 'فشلت المزامنة ❌', syncNotSignedIn: 'سجّل الدخول أولاً ☁️',
     exportDesc: 'تصدير كملف JSON', export: '📥 تصدير',
     importDesc: 'استيراد من JSON', import: '📤 استيراد',
@@ -3233,6 +3245,7 @@ let state = {
   noteView: 'list', // 'list' or 'grid'
   taskStatusTab: 'active', // 'active' | 'done' — sub-tab under Tasks
   arabicDialect: 'ar-SA', // used by STT/TTS when lang === 'ar'
+  autoSync: true, // debounced push on change, pull on focus (when signed in)
 };
 
 function getArabicLangCode() { return state.arabicDialect || 'ar-SA'; }
@@ -3290,6 +3303,10 @@ function init() {
   // Sync Arabic dialect selector with state
   const dSel = document.getElementById('arabicDialectSelect');
   if (dSel) dSel.value = state.arabicDialect || 'ar-SA';
+  // Sync auto-sync toggle with state (default ON)
+  if (state.autoSync === undefined) state.autoSync = true;
+  const aToggle = document.getElementById('autoSyncToggle');
+  if (aToggle) aToggle.classList.toggle('active', !!state.autoSync);
   // Some browsers load voices asynchronously — trigger once to prime the list
   if (window.speechSynthesis && typeof window.speechSynthesis.getVoices === 'function') {
     window.speechSynthesis.getVoices();
@@ -3313,10 +3330,83 @@ function saveState() {
     // Exclude notePassphrase from storage for security
     const toSave = { ...state, notePassphrase: null };
     localStorage.setItem('tethkir_state', JSON.stringify(toSave));
-    // Auto-sync to cloud if signed in
-    if (firebaseReady && firebaseAuth?.currentUser) syncToCloud();
+    // Debounced auto-sync (toggleable; queues when offline via dirty flag)
+    requestAutoSync();
   } catch(e) { console.error('Save error', e); }
 }
+
+// ===== AUTO-SYNC (debounced push + pull-on-focus + offline queue) =====
+let _syncTimer = null;
+const SYNC_DEBOUNCE_MS = 3000;
+const DIRTY_KEY = 'tethkir_dirty';
+
+function markDirty() { try { localStorage.setItem(DIRTY_KEY, '1'); } catch(e){} }
+function clearDirty() { try { localStorage.removeItem(DIRTY_KEY); } catch(e){} }
+function isDirty() { try { return localStorage.getItem(DIRTY_KEY) === '1'; } catch(e){ return false; } }
+
+function setSyncPulse(on) {
+  const dot = document.getElementById('syncDot');
+  if (dot) dot.classList.toggle('syncing', !!on);
+}
+
+function requestAutoSync() {
+  if (!state.autoSync) return;
+  markDirty();
+  if (!firebaseReady || !firebaseAuth?.currentUser) return; // will flush on sign-in
+  if (!navigator.onLine) return; // will flush on 'online'
+  if (_syncTimer) clearTimeout(_syncTimer);
+  setSyncPulse(true);
+  _syncTimer = setTimeout(async () => {
+    _syncTimer = null;
+    try {
+      await syncToCloud();
+      clearDirty();
+    } catch(e) { /* keep dirty; retry later */ }
+    finally { setSyncPulse(false); }
+  }, SYNC_DEBOUNCE_MS);
+}
+
+async function flushIfDirty() {
+  if (!state.autoSync) return;
+  if (!isDirty()) return;
+  if (!firebaseReady || !firebaseAuth?.currentUser) return;
+  if (!navigator.onLine) return;
+  try {
+    setSyncPulse(true);
+    await syncToCloud();
+    clearDirty();
+  } catch(e) { /* keep dirty */ }
+  finally { setSyncPulse(false); }
+}
+
+async function autoPullOnFocus() {
+  if (!state.autoSync) return;
+  if (!firebaseReady || !firebaseAuth?.currentUser) return;
+  if (!navigator.onLine) return;
+  try {
+    setSyncPulse(true);
+    if (isDirty()) { await syncToCloud(); clearDirty(); }
+    await syncFromCloud(true /* quiet */);
+  } catch(e) { /* silent */ }
+  finally { setSyncPulse(false); }
+}
+
+function toggleAutoSync() {
+  state.autoSync = !state.autoSync;
+  saveState();
+  const el = document.getElementById('autoSyncToggle');
+  if (el) el.classList.toggle('active', state.autoSync);
+  if (state.autoSync) flushIfDirty();
+  showToast(state.autoSync ? '🔄 Auto-sync ON' : '🔄 Auto-sync OFF');
+}
+
+// Pull on tab focus / visibility return
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') autoPullOnFocus();
+});
+window.addEventListener('focus', () => autoPullOnFocus());
+// Flush queued changes when connection comes back
+window.addEventListener('online', () => flushIfDirty());
 
 // ===== LANGUAGE =====
 function applyLang(lang) {
@@ -4122,9 +4212,13 @@ function setupAuthListener() {
     }
   });
 
-  firebaseAuth.onAuthStateChanged(user => {
+  firebaseAuth.onAuthStateChanged(async user => {
     if (user) {
       updateSyncUI(true, user.displayName);
+      // Flush any offline-queued changes, then pull latest from cloud
+      try {
+        if (isDirty()) { await syncToCloud(); clearDirty(); }
+      } catch(e) { /* keep dirty */ }
       syncFromCloud();
     } else {
       updateSyncUI(false);
@@ -4185,7 +4279,7 @@ async function syncToCloud() {
   }
 }
 
-async function syncFromCloud() {
+async function syncFromCloud(quiet) {
   if (!firebaseReady || !firebaseAuth?.currentUser) return;
   try {
     const user = firebaseAuth.currentUser;
@@ -4203,14 +4297,15 @@ async function syncFromCloud() {
       renderProfiles();
       renderTasks();
           updateNoteCountHint();
-      showToast('☁️ Synced from cloud!');
+      if (!quiet) showToast('☁️ Synced from cloud!');
     } else {
       await syncToCloud();
-      showToast('☁️ Data uploaded to cloud!');
+      if (!quiet) showToast('☁️ Data uploaded to cloud!');
     }
   } catch(e) {
     console.error('Sync from cloud error:', e);
-    showToast('Cloud fetch error — check console');
+    if (!quiet) showToast('Cloud fetch error — check console');
+    throw e;
   }
 }
 
