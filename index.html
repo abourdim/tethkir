@@ -2753,6 +2753,28 @@ body.kb-open .kb-toggle-btn {
       </div>
     </div>
 
+    <!-- Arabic Dialect (voice input / read aloud) -->
+    <div class="settings-section">
+      <div class="settings-header" onclick="toggleSettingsSection(this)">
+        <h3>🗣️ <span data-i18n="arabicDialectTitle">Arabic dialect (voice)</span></h3>
+        <span class="settings-arrow">▼</span>
+      </div>
+      <div class="settings-body">
+        <p style="color:var(--text-secondary);font-size:0.82em;margin-bottom:8px;" data-i18n="arabicDialectDesc">Used by 🎤 voice input and 🔊 read-aloud when the app language is Arabic.</p>
+        <div class="form-group">
+          <select id="arabicDialectSelect" onchange="setArabicDialect(this.value)">
+            <option value="ar-SA">🇸🇦 العربية الفصحى (Modern Standard)</option>
+            <option value="ar-EG">🇪🇬 مصري (Egyptian)</option>
+            <option value="ar-MA">🇲🇦 مغربي (Moroccan Darija)</option>
+            <option value="ar-DZ">🇩🇿 جزائري (Algerian)</option>
+            <option value="ar-TN">🇹🇳 تونسي (Tunisian)</option>
+            <option value="ar-LB">🇱🇧 لبناني (Levantine)</option>
+            <option value="ar-AE">🇦🇪 خليجي (Gulf)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <!-- Themes — open by default -->
     <div class="settings-section">
       <div class="settings-header open" onclick="toggleSettingsSection(this)">
@@ -2898,6 +2920,9 @@ const i18n = {
     allStatus: 'All', active: 'Active', done: 'Done',
     taskTabActive: 'Active', taskTabDone: 'Done',
     loadMoreTasks: 'Load more', tasksRemaining: 'remaining',
+    arabicDialectTitle: 'Arabic dialect (voice)',
+    arabicDialectDesc: 'Used by 🎤 voice input and 🔊 read-aloud when the app language is Arabic.',
+    shareAsImage: 'Share as image', shareImageReady: 'Image ready 📸',
     emptyTitle: 'No tasks yet!', emptyDesc: 'Add your first task above',
     secureNotesTitle: '🔐 Secure Notes (AES Encrypted)',
     secureNotesDesc: 'Notes are encrypted with your passphrase. Without it, nobody can read them.',
@@ -3000,6 +3025,9 @@ const i18n = {
     allStatus: 'Tout', active: 'Actif', done: 'Fait',
     taskTabActive: 'Actives', taskTabDone: 'Terminées',
     loadMoreTasks: 'Voir plus', tasksRemaining: 'restantes',
+    arabicDialectTitle: 'Dialecte arabe (voix)',
+    arabicDialectDesc: 'Utilisé par 🎤 saisie vocale et 🔊 lecture à voix haute lorsque la langue est l\'arabe.',
+    shareAsImage: 'Partager comme image', shareImageReady: 'Image prête 📸',
     emptyTitle: 'Aucune tâche!', emptyDesc: 'Ajoutez votre première tâche',
     secureNotesTitle: '🔐 Notes Sécurisées (Chiffrement AES)',
     secureNotesDesc: 'Les notes sont chiffrées avec votre mot de passe.',
@@ -3102,6 +3130,9 @@ const i18n = {
     allStatus: 'الكل', active: 'نشط', done: 'مكتمل',
     taskTabActive: 'نشطة', taskTabDone: 'منجزة',
     loadMoreTasks: 'تحميل المزيد', tasksRemaining: 'متبقية',
+    arabicDialectTitle: 'اللهجة العربية (الصوت)',
+    arabicDialectDesc: 'تُستخدم بواسطة 🎤 الإدخال الصوتي و🔊 القراءة الجهرية عندما تكون لغة التطبيق هي العربية.',
+    shareAsImage: 'مشاركة كصورة', shareImageReady: 'الصورة جاهزة 📸',
     emptyTitle: 'لا توجد مهام!', emptyDesc: 'أضف مهمتك الأولى',
     secureNotesTitle: '🔐 ملاحظات آمنة (تشفير AES)',
     secureNotesDesc: 'الملاحظات مشفرة بكلمة المرور الخاصة بك.',
@@ -3201,7 +3232,32 @@ let state = {
   editingTaskId: null,
   noteView: 'list', // 'list' or 'grid'
   taskStatusTab: 'active', // 'active' | 'done' — sub-tab under Tasks
+  arabicDialect: 'ar-SA', // used by STT/TTS when lang === 'ar'
 };
+
+function getArabicLangCode() { return state.arabicDialect || 'ar-SA'; }
+function getSpeechLangCode() {
+  const map = { en: 'en-US', fr: 'fr-FR', ar: getArabicLangCode() };
+  return map[state.lang] || 'en-US';
+}
+function pickVoiceForLang(targetLang) {
+  if (!window.speechSynthesis) return null;
+  const voices = window.speechSynthesis.getVoices() || [];
+  // Exact match first
+  let v = voices.find(x => x.lang === targetLang);
+  if (v) return v;
+  // Same base language (e.g. any ar-*)
+  const base = (targetLang.split('-')[0] || '').toLowerCase();
+  v = voices.find(x => (x.lang || '').toLowerCase().startsWith(base + '-'));
+  return v || null;
+}
+function setArabicDialect(code) {
+  state.arabicDialect = code || 'ar-SA';
+  saveState();
+  const sel = document.getElementById('arabicDialectSelect');
+  if (sel) sel.value = state.arabicDialect;
+  showToast && showToast('🗣️ ' + state.arabicDialect);
+}
 
 // ===== INIT =====
 function init() {
@@ -3231,6 +3287,14 @@ function init() {
   }
   updateChangePinBtn();
   document.getElementById('appVersion').textContent = APP_VERSION;
+  // Sync Arabic dialect selector with state
+  const dSel = document.getElementById('arabicDialectSelect');
+  if (dSel) dSel.value = state.arabicDialect || 'ar-SA';
+  // Some browsers load voices asynchronously — trigger once to prime the list
+  if (window.speechSynthesis && typeof window.speechSynthesis.getVoices === 'function') {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
 }
 
 function loadState() {
@@ -4579,6 +4643,7 @@ function renderSimpleNotes() {
           <div class="grid-actions">
             <button class="btn btn-sm" onclick="event.stopPropagation();copySimpleNote('${n.id}')" title="Copy">📋</button>
             <button class="btn btn-sm" onclick="event.stopPropagation();speakSimpleNote('${n.id}')" title="Read aloud">🔊</button>
+            <button class="btn btn-sm" onclick="event.stopPropagation();shareNoteAsImage('${n.id}')" title="Share as image">🖼️</button>
             <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteSimpleNote('${n.id}')">🗑️</button>
           </div>
         </div>
@@ -4602,6 +4667,7 @@ function renderSimpleNotes() {
           <div class="simple-note-actions">
             <button class="btn btn-sm" onclick="event.stopPropagation();copySimpleNote('${n.id}')" title="Copy">📋</button>
             <button class="btn btn-sm" onclick="event.stopPropagation();speakSimpleNote('${n.id}')" title="Read aloud">🔊</button>
+            <button class="btn btn-sm" onclick="event.stopPropagation();shareNoteAsImage('${n.id}')" title="Share as image">🖼️</button>
             <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteSimpleNote('${n.id}')">🗑️</button>
           </div>
         </div>
@@ -4635,6 +4701,146 @@ function copySimpleNote(id) {
   });
 }
 
+// ===== SHARE NOTE AS IMAGE (themed PNG for WhatsApp / IG) =====
+function _wrapCanvasText(ctx, text, maxWidth) {
+  const lines = [];
+  const paragraphs = (text || '').split(/\n/);
+  for (const para of paragraphs) {
+    if (!para) { lines.push(''); continue; }
+    const words = para.split(/\s+/);
+    let line = '';
+    for (const w of words) {
+      const test = line ? line + ' ' + w : w;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = w;
+      } else {
+        line = test;
+      }
+    }
+    if (line) lines.push(line);
+  }
+  return lines;
+}
+
+async function shareNoteAsImage(id) {
+  const notes = (state.simpleNotes && state.simpleNotes[state.currentProfile]) || [];
+  const note = notes.find(n => n.id === id);
+  if (!note) return;
+
+  const cs = getComputedStyle(document.documentElement);
+  const bg1 = (cs.getPropertyValue('--bg-primary').trim() || cs.getPropertyValue('--bg').trim() || '#1a0f0a');
+  const bg2 = (cs.getPropertyValue('--card').trim() || cs.getPropertyValue('--bg-secondary').trim() || '#2d1810');
+  const accent = (cs.getPropertyValue('--accent').trim() || '#d4a04a');
+  const text = (cs.getPropertyValue('--text').trim() || '#f5e6d3');
+  const muted = (cs.getPropertyValue('--text-secondary').trim() || cs.getPropertyValue('--muted').trim() || '#c4a882');
+
+  const SIZE = 1080;
+  const canvas = document.createElement('canvas');
+  canvas.width = SIZE; canvas.height = SIZE;
+  const ctx = canvas.getContext('2d');
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, SIZE, SIZE);
+  grad.addColorStop(0, bg1);
+  grad.addColorStop(1, bg2);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, SIZE, SIZE);
+
+  // Decorative double border
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = 4;
+  ctx.strokeRect(40, 40, SIZE - 80, SIZE - 80);
+  ctx.lineWidth = 1;
+  ctx.strokeRect(60, 60, SIZE - 120, SIZE - 120);
+
+  // Corner ornaments (simple geometric diamonds)
+  const corners = [[80,80],[SIZE-80,80],[80,SIZE-80],[SIZE-80,SIZE-80]];
+  ctx.fillStyle = accent;
+  for (const [x,y] of corners) {
+    ctx.beginPath();
+    ctx.moveTo(x, y-10); ctx.lineTo(x+10, y); ctx.lineTo(x, y+10); ctx.lineTo(x-10, y);
+    ctx.closePath(); ctx.fill();
+  }
+
+  // Bismillah
+  ctx.fillStyle = accent;
+  ctx.font = 'bold 36px "Amiri", "Reem Kufi", serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ', SIZE/2, 150);
+
+  // Separator
+  ctx.beginPath();
+  ctx.moveTo(SIZE/2 - 80, 180);
+  ctx.lineTo(SIZE/2 + 80, 180);
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Title
+  ctx.fillStyle = text;
+  ctx.font = 'bold 54px "Reem Kufi", "Amiri", sans-serif';
+  ctx.textAlign = 'center';
+  const titleLines = _wrapCanvasText(ctx, note.title || '', SIZE - 200);
+  let y = 280;
+  for (const line of titleLines.slice(0, 3)) {
+    ctx.fillText(line, SIZE/2, y);
+    y += 66;
+  }
+  y += 20;
+
+  // Body
+  ctx.fillStyle = text;
+  ctx.font = '34px "Amiri", "Poppins", sans-serif';
+  ctx.textAlign = 'center';
+  const bodyLines = _wrapCanvasText(ctx, note.content || '', SIZE - 200);
+  const maxBodyLines = Math.floor((SIZE - 180 - y) / 46);
+  for (const line of bodyLines.slice(0, maxBodyLines)) {
+    ctx.fillText(line, SIZE/2, y);
+    y += 46;
+  }
+  if (bodyLines.length > maxBodyLines) {
+    ctx.fillStyle = muted;
+    ctx.font = 'italic 26px "Poppins", sans-serif';
+    ctx.fillText('…', SIZE/2, y);
+  }
+
+  // Footer
+  ctx.fillStyle = accent;
+  ctx.font = 'bold 40px "Reem Kufi", "Amiri", serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('تذكير', SIZE/2, SIZE - 120);
+  ctx.fillStyle = muted;
+  ctx.font = '22px "Poppins", sans-serif';
+  ctx.fillText('Tethkir · ' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.0'), SIZE/2, SIZE - 88);
+
+  // Export
+  const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+  if (!blob) { showToast('Could not render image'); return; }
+
+  const safeTitle = (note.title || 'note').replace(/[^\w\u0600-\u06FF]+/g, '_').slice(0, 40) || 'note';
+  const filename = `tethkir_${safeTitle}.png`;
+  const file = new File([blob], filename, { type: 'image/png' });
+
+  // Prefer Web Share on mobile
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: note.title || 'Tethkir note', text: note.title || '' });
+      return;
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      // fall through to download
+    }
+  }
+  // Fallback: download
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast(i18n[state.lang]?.shareImageReady || 'Image ready 📸');
+}
+
 function speakSimpleNote(id) {
   const notes = (state.simpleNotes && state.simpleNotes[state.currentProfile]) || [];
   const note = notes.find(n => n.id === id);
@@ -4642,8 +4848,10 @@ function speakSimpleNote(id) {
   if (window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); return; }
   const text = note.title + '. ' + note.content;
   const utter = new SpeechSynthesisUtterance(text);
-  const langMap = { en: 'en-US', fr: 'fr-FR', ar: 'ar-SA' };
-  utter.lang = langMap[state.lang] || 'en-US';
+  const target = getSpeechLangCode();
+  utter.lang = target;
+  const v = pickVoiceForLang(target);
+  if (v) utter.voice = v;
   window.speechSynthesis.speak(utter);
 }
 
@@ -5249,9 +5457,11 @@ function speakNote(noteId) {
     const data = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
     const text = data.title + '. ' + data.content;
 
-    const langMap = { en: 'en-US', fr: 'fr-FR', ar: 'ar-SA' };
+    const target = getSpeechLangCode();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = langMap[state.lang] || 'en-US';
+    utterance.lang = target;
+    const v = pickVoiceForLang(target);
+    if (v) utterance.voice = v;
     utterance.rate = 0.95;
     utterance._noteId = noteId;
     ttsUtterance = utterance;
@@ -5290,9 +5500,8 @@ function toggleSTT(inputId, btn) {
   const input = document.getElementById(inputId);
   const recognition = new SR();
 
-  // Map app language to speech lang
-  const langMap = { en: 'en-US', fr: 'fr-FR', ar: 'ar-SA' };
-  recognition.lang = langMap[state.lang] || 'en-US';
+  // Map app language to speech lang (respects Arabic dialect)
+  recognition.lang = getSpeechLangCode();
   recognition.continuous = false;
   recognition.interimResults = true;
 
