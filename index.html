@@ -228,6 +228,100 @@ body.simple-mode .task-item { padding-left: 16px; }
 
 body:not(.simple-mode) .simple-notes-section { display: none !important; }
 
+/* In simple mode, still show search input but hide priority/category/status dropdowns */
+body.simple-mode .search-filter-bar { display: flex !important; }
+body.simple-mode .search-filter-bar > select { display: none !important; }
+body.simple-mode .search-filter-bar .search-input-wrapper { flex: 1; }
+/* filterStatus select replaced by sub-tabs — always hide */
+.search-filter-bar #filterStatus { display: none !important; }
+
+/* Task sub-tabs (Active / Done) */
+.task-subtabs {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0 10px;
+  padding: 4px;
+  background: var(--bg-primary, rgba(0,0,0,0.2));
+  border: 1px solid var(--border, rgba(212,160,74,0.15));
+  border-radius: 10px;
+}
+.task-subtab {
+  flex: 1;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary, #c4a882);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.task-subtab:hover { color: var(--text, #f5e6d3); }
+.task-subtab.active {
+  background: var(--accent, #d4a04a);
+  color: var(--bg-primary, #1a0f0a);
+}
+.task-subtab .count-badge {
+  background: rgba(0,0,0,0.25);
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 0.85em;
+  font-weight: 700;
+  min-width: 22px;
+  text-align: center;
+}
+.task-subtab:not(.active) .count-badge { background: rgba(212,160,74,0.15); }
+
+/* Load more button (tasks) */
+.tasks-load-more {
+  display: block;
+  width: 100%;
+  margin: 14px 0 4px;
+  padding: 12px;
+  background: transparent;
+  border: 1px dashed var(--border, rgba(212,160,74,0.35));
+  color: var(--accent, #d4a04a);
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.tasks-load-more:hover { background: rgba(212,160,74,0.08); }
+
+/* Floating back-to-top button */
+#backToTop {
+  position: fixed;
+  right: 18px;
+  bottom: 24px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--border, rgba(212,160,74,0.3));
+  background: var(--accent, #d4a04a);
+  color: var(--bg-primary, #1a0f0a);
+  font-size: 1.3em;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 9998;
+}
+#backToTop.visible { opacity: 0.95; transform: translateY(0); pointer-events: auto; }
+#backToTop:hover { opacity: 1; }
+@media (max-width: 640px) {
+  #backToTop { right: 14px; bottom: 18px; width: 44px; height: 44px; }
+}
+
 .simple-notes-section .simple-note-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -2479,15 +2573,15 @@ body.kb-open .kb-toggle-btn {
     <div class="search-filter-bar">
       <div class="search-input-wrapper">
         <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search tasks..." oninput="renderTasks()">
+        <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search tasks..." oninput="tasksPage=1;renderTasks()">
       </div>
-      <select id="filterPriority" onchange="renderTasks()">
+      <select id="filterPriority" onchange="tasksPage=1;renderTasks()">
         <option value="all" data-i18n="allPriorities">All Priorities</option>
         <option value="high" data-i18n="high">High</option>
         <option value="medium" data-i18n="medium">Medium</option>
         <option value="low" data-i18n="low">Low</option>
       </select>
-      <select id="filterCategory" onchange="renderTasks()">
+      <select id="filterCategory" onchange="tasksPage=1;renderTasks()">
         <option value="all" data-i18n="allCategories">All Categories</option>
         <option value="general" data-i18n="catGeneral">General</option>
         <option value="work" data-i18n="catWork">Work</option>
@@ -2504,6 +2598,9 @@ body.kb-open .kb-toggle-btn {
         <option value="done" data-i18n="done">Done</option>
       </select>
     </div>
+
+    <!-- Task status sub-tabs (Active / Done) -->
+    <div class="task-subtabs" id="taskSubtabs" role="tablist"></div>
 
     <!-- Task List -->
     <div class="task-list" id="taskList"></div>
@@ -2799,6 +2896,8 @@ const i18n = {
     searchPlaceholder: 'Search tasks...',
     allPriorities: 'All Priorities', allCategories: 'All Categories',
     allStatus: 'All', active: 'Active', done: 'Done',
+    taskTabActive: 'Active', taskTabDone: 'Done',
+    loadMoreTasks: 'Load more', tasksRemaining: 'remaining',
     emptyTitle: 'No tasks yet!', emptyDesc: 'Add your first task above',
     secureNotesTitle: '🔐 Secure Notes (AES Encrypted)',
     secureNotesDesc: 'Notes are encrypted with your passphrase. Without it, nobody can read them.',
@@ -2899,6 +2998,8 @@ const i18n = {
     searchPlaceholder: 'Rechercher...',
     allPriorities: 'Toutes priorités', allCategories: 'Toutes catégories',
     allStatus: 'Tout', active: 'Actif', done: 'Fait',
+    taskTabActive: 'Actives', taskTabDone: 'Terminées',
+    loadMoreTasks: 'Voir plus', tasksRemaining: 'restantes',
     emptyTitle: 'Aucune tâche!', emptyDesc: 'Ajoutez votre première tâche',
     secureNotesTitle: '🔐 Notes Sécurisées (Chiffrement AES)',
     secureNotesDesc: 'Les notes sont chiffrées avec votre mot de passe.',
@@ -2999,6 +3100,8 @@ const i18n = {
     searchPlaceholder: 'بحث في المهام...',
     allPriorities: 'كل الأولويات', allCategories: 'كل الفئات',
     allStatus: 'الكل', active: 'نشط', done: 'مكتمل',
+    taskTabActive: 'نشطة', taskTabDone: 'منجزة',
+    loadMoreTasks: 'تحميل المزيد', tasksRemaining: 'متبقية',
     emptyTitle: 'لا توجد مهام!', emptyDesc: 'أضف مهمتك الأولى',
     secureNotesTitle: '🔐 ملاحظات آمنة (تشفير AES)',
     secureNotesDesc: 'الملاحظات مشفرة بكلمة المرور الخاصة بك.',
@@ -3097,6 +3200,7 @@ let state = {
   notePassphrase: null,
   editingTaskId: null,
   noteView: 'list', // 'list' or 'grid'
+  taskStatusTab: 'active', // 'active' | 'done' — sub-tab under Tasks
 };
 
 // ===== INIT =====
@@ -3364,23 +3468,61 @@ function clearForm() {
   document.getElementById('addTaskBtn').textContent = i18n[state.lang]?.addTask || '+ Add Task';
 }
 
+var tasksPage = 1;
+const TASKS_PER_PAGE = 10;
+
+function setTaskStatusTab(status) {
+  state.taskStatusTab = status;
+  tasksPage = 1;
+  saveState();
+  renderTasks();
+}
+
+function loadMoreTasks() {
+  tasksPage++;
+  renderTasks();
+}
+
+function renderTaskSubtabs(activeCount, doneCount) {
+  const el = document.getElementById('taskSubtabs');
+  if (!el) return;
+  const t = i18n[state.lang] || i18n.en;
+  const tab = state.taskStatusTab || 'active';
+  el.innerHTML = `
+    <button class="task-subtab ${tab==='active'?'active':''}" role="tab" aria-selected="${tab==='active'}" onclick="setTaskStatusTab('active')">
+      <span>${t.taskTabActive || 'Active'}</span>
+      <span class="count-badge">${activeCount}</span>
+    </button>
+    <button class="task-subtab ${tab==='done'?'active':''}" role="tab" aria-selected="${tab==='done'}" onclick="setTaskStatusTab('done')">
+      <span>${t.taskTabDone || 'Done'}</span>
+      <span class="count-badge">${doneCount}</span>
+    </button>`;
+}
+
 function renderTasks() {
   const container = document.getElementById('taskList');
-  let tasks = [...getTasks()];
+  const allTasks = [...getTasks()];
   const lang = state.lang;
   const t = i18n[lang];
+
+  // Counts for sub-tabs (before status filter)
+  const activeCount = allTasks.filter(x => !x.done).length;
+  const doneCount = allTasks.filter(x => x.done).length;
+  renderTaskSubtabs(activeCount, doneCount);
+
+  let tasks = allTasks;
 
   // Filter
   const search = document.getElementById('searchInput').value.toLowerCase();
   const fPriority = document.getElementById('filterPriority').value;
   const fCategory = document.getElementById('filterCategory').value;
-  const fStatus = document.getElementById('filterStatus').value;
 
-  if (search) tasks = tasks.filter(t => t.title.toLowerCase().includes(search) || (t.tags||[]).some(tag=>tag.toLowerCase().includes(search)));
-  if (fPriority !== 'all') tasks = tasks.filter(t => t.priority === fPriority);
-  if (fCategory !== 'all') tasks = tasks.filter(t => t.category === fCategory);
-  if (fStatus === 'active') tasks = tasks.filter(t => !t.done);
-  if (fStatus === 'done') tasks = tasks.filter(t => t.done);
+  if (search) tasks = tasks.filter(x => x.title.toLowerCase().includes(search) || (x.tags||[]).some(tag=>tag.toLowerCase().includes(search)));
+  if (fPriority !== 'all') tasks = tasks.filter(x => x.priority === fPriority);
+  if (fCategory !== 'all') tasks = tasks.filter(x => x.category === fCategory);
+  // Status comes from sub-tab (default active)
+  const statusTab = state.taskStatusTab || 'active';
+  tasks = tasks.filter(x => statusTab === 'done' ? x.done : !x.done);
 
   if (tasks.length === 0) {
     container.innerHTML = `
@@ -3392,7 +3534,13 @@ function renderTasks() {
     return;
   }
 
-  container.innerHTML = tasks.map(task => {
+  // Paginate
+  const total = tasks.length;
+  const visible = tasks.slice(0, tasksPage * TASKS_PER_PAGE);
+  const hasMore = visible.length < total;
+  const remaining = total - visible.length;
+
+  container.innerHTML = visible.map(task => {
     const priorityLabel = t[task.priority] || task.priority;
     const catLabel = t['cat' + task.category.charAt(0).toUpperCase() + task.category.slice(1)] || task.category;
     const dueStr = task.dueDate ? `📅 ${task.dueDate}` : '';
@@ -3422,6 +3570,13 @@ function renderTasks() {
         </div>
       </div>`;
   }).join('');
+
+  if (hasMore) {
+    const label = t.loadMoreTasks || 'Load more';
+    const rem = t.tasksRemaining || 'remaining';
+    container.insertAdjacentHTML('beforeend',
+      `<button class="tasks-load-more" onclick="loadMoreTasks()">${label} (${remaining} ${rem})</button>`);
+  }
 }
 
 function escapeHtml(str) {
@@ -5192,6 +5347,24 @@ function toggleSTT(inputId, btn) {
   input.dataset.sttBase = input.value;
   recognition.start();
 }
+
+// ===== BACK TO TOP =====
+(function setupBackToTop() {
+  const btn = document.createElement('button');
+  btn.id = 'backToTop';
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'Back to top');
+  btn.title = 'Top';
+  btn.innerHTML = '↑';
+  btn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.body.appendChild(btn);
+  const toggle = () => {
+    if (window.scrollY > 500) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+  };
+  window.addEventListener('scroll', toggle, { passive: true });
+  toggle();
+})();
 
 // ===== START =====
 init();
