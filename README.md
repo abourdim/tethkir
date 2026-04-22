@@ -1,4 +1,4 @@
-# تذكير — Tethkir v5.0
+# تذكير — Tethkir v5.1
 
 **Islamic Task Manager & Secure Notes**
 
@@ -127,4 +127,4 @@ Single HTML file. No build tools. PWA installable.
 
 ---
 
-*v5.0 — Built with love and Tawakkul. بارك الله فيكم* 🌙✨
+*v5.1 — Built with love and Tawakkul. بارك الله فيكم* 🌙✨
