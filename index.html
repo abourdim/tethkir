@@ -318,6 +318,37 @@ body.simple-mode .search-filter-bar .search-input-wrapper { flex: 1; }
 }
 #backToTop.visible { opacity: 0.95; transform: translateY(0); pointer-events: auto; }
 
+/* Paste-fallback overlay */
+#pasteOverlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10000;
+  padding: 16px;
+}
+#pasteOverlay .paste-box {
+  width: 100%; max-width: 420px;
+  background: var(--card, #2d1810);
+  border: 1px solid var(--border, rgba(212,160,74,0.25));
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+#pasteOverlay .paste-hint {
+  color: var(--accent, #d4a04a);
+  font-weight: 600; margin-bottom: 10px; text-align: center;
+}
+#pasteOverlay .paste-target {
+  min-height: 80px; max-height: 40vh; overflow: auto;
+  padding: 10px; border-radius: 8px;
+  background: var(--bg-primary, rgba(0,0,0,0.25));
+  color: var(--text, #f5e6d3);
+  border: 1px dashed var(--border, rgba(212,160,74,0.3));
+  outline: none;
+  font-size: 0.95em;
+}
+#pasteOverlay .paste-actions { margin-top: 10px; text-align: right; }
+
 /* Harakat (tashkeel) quick-keys bar */
 #harakatBar {
   position: fixed;
@@ -2980,6 +3011,7 @@ const i18n = {
     pastedAsNote: '📋 Pasted as note ✅',
     clipboardEmpty: 'Clipboard is empty or permission denied',
     clipboardUnsupported: 'Clipboard not supported in this browser',
+    pressPasteHint: 'Press ⌘V / Ctrl+V to paste here', cancel: 'Cancel',
     emptyTitle: 'No tasks yet!', emptyDesc: 'Add your first task above',
     secureNotesTitle: '🔐 Secure Notes (AES Encrypted)',
     secureNotesDesc: 'Notes are encrypted with your passphrase. Without it, nobody can read them.',
@@ -3091,6 +3123,7 @@ const i18n = {
     pastedAsNote: '📋 Collé comme note ✅',
     clipboardEmpty: 'Presse-papiers vide ou permission refusée',
     clipboardUnsupported: 'Presse-papiers non pris en charge',
+    pressPasteHint: 'Appuyez sur ⌘V / Ctrl+V pour coller ici', cancel: 'Annuler',
     emptyTitle: 'Aucune tâche!', emptyDesc: 'Ajoutez votre première tâche',
     secureNotesTitle: '🔐 Notes Sécurisées (Chiffrement AES)',
     secureNotesDesc: 'Les notes sont chiffrées avec votre mot de passe.',
@@ -3202,6 +3235,7 @@ const i18n = {
     pastedAsNote: '📋 تم اللصق كملاحظة ✅',
     clipboardEmpty: 'الحافظة فارغة أو تم رفض الإذن',
     clipboardUnsupported: 'الحافظة غير مدعومة في هذا المتصفح',
+    pressPasteHint: 'اضغط ⌘V / Ctrl+V للصق هنا', cancel: 'إلغاء',
     emptyTitle: 'لا توجد مهام!', emptyDesc: 'أضف مهمتك الأولى',
     secureNotesTitle: '🔐 ملاحظات آمنة (تشفير AES)',
     secureNotesDesc: 'الملاحظات مشفرة بكلمة المرور الخاصة بك.',
@@ -4664,6 +4698,62 @@ function getPreviewImageData(previewId) {
 }
 
 // ===== CLIPBOARD → NOTE (OCR bridge: phone's Live Text / Google Lens + paste) =====
+// Paste-event fallback: open a modal with a contenteditable target so the user
+// can Ctrl/Cmd+V. This path does NOT require clipboard-read permission and is
+// the most reliable way to get a screenshot image off the clipboard.
+function promptPasteFallback() {
+  return new Promise((resolve) => {
+    const t = i18n[state.lang] || i18n.en;
+    const hint = t.pressPasteHint || 'Press ⌘V / Ctrl+V to paste';
+    const cancelLabel = t.cancel || 'Cancel';
+    const overlay = document.createElement('div');
+    overlay.id = 'pasteOverlay';
+    overlay.innerHTML = `
+      <div class="paste-box">
+        <div class="paste-hint">${hint}</div>
+        <div class="paste-target" contenteditable="true" spellcheck="false" data-no-harakat="1"></div>
+        <div class="paste-actions">
+          <button type="button" class="btn" id="pasteCancelBtn">${cancelLabel}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    const target = overlay.querySelector('.paste-target');
+    const cancelBtn = overlay.querySelector('#pasteCancelBtn');
+    target.focus();
+    // Move caret into the target so Cmd+V goes there
+    try {
+      const sel = window.getSelection(); const r = document.createRange();
+      r.selectNodeContents(target); r.collapse(true); sel.removeAllRanges(); sel.addRange(r);
+    } catch(e){}
+
+    const cleanup = () => { try { overlay.remove(); } catch(e){} };
+
+    target.addEventListener('paste', async (e) => {
+      e.preventDefault();
+      const cd = e.clipboardData || window.clipboardData;
+      if (!cd) { cleanup(); resolve({ text:'', imageDataUrl:null }); return; }
+      let text = '';
+      let imageDataUrl = null;
+      try { text = (cd.getData && cd.getData('text/plain')) || ''; } catch(e){}
+      const items = cd.items ? Array.from(cd.items) : [];
+      for (const it of items) {
+        if (it.kind === 'file' && (it.type || '').indexOf('image/') === 0) {
+          const f = it.getAsFile();
+          if (f) {
+            try { imageDataUrl = await _blobToDataUrl(f); } catch(e){}
+            break;
+          }
+        }
+      }
+      cleanup();
+      resolve({ text: (text || '').trim(), imageDataUrl });
+    });
+
+    cancelBtn.addEventListener('click', () => { cleanup(); resolve({ cancelled: true }); });
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) { cleanup(); resolve({ cancelled: true }); } });
+  });
+}
+
 async function _blobToDataUrl(blob) {
   return await new Promise(res => {
     const r = new FileReader();
@@ -4721,11 +4811,18 @@ async function pasteClipboardAsNote() {
   }
 
   if (!text && !imageDataUrl) {
-    const hint = foundTypes.length
-      ? ` (types: ${foundTypes.join(', ')})`
-      : (readError ? ` (${readError.name || readError.message || readError})` : '');
-    showToast((t.clipboardEmpty || 'Clipboard empty or permission denied') + hint);
-    return;
+    // Fall back to paste-event capture — works without clipboard-read permission
+    const fb = await promptPasteFallback();
+    if (fb.cancelled) return;
+    text = fb.text || '';
+    imageDataUrl = fb.imageDataUrl || null;
+    if (!text && !imageDataUrl) {
+      const hint = foundTypes.length
+        ? ` (types: ${foundTypes.join(', ')})`
+        : (readError ? ` (${readError.name || readError.message || readError})` : '');
+      showToast((t.clipboardEmpty || 'Clipboard empty or permission denied') + hint);
+      return;
+    }
   }
 
   // Split first non-empty line → title, rest → content
