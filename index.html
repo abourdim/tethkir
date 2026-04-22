@@ -317,6 +317,44 @@ body.simple-mode .search-filter-bar .search-input-wrapper { flex: 1; }
   z-index: 9998;
 }
 #backToTop.visible { opacity: 0.95; transform: translateY(0); pointer-events: auto; }
+
+/* Harakat (tashkeel) quick-keys bar */
+#harakatBar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  display: none;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+  background: var(--card, #2d1810);
+  border-bottom: 1px solid var(--border, rgba(212,160,74,0.25));
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  z-index: 9999;
+  flex-wrap: wrap;
+}
+#harakatBar.visible { display: flex; }
+.harakat-key {
+  min-width: 42px;
+  min-height: 40px;
+  padding: 6px 10px;
+  background: var(--bg-primary, rgba(0,0,0,0.25));
+  color: var(--accent, #d4a04a);
+  border: 1px solid var(--border, rgba(212,160,74,0.25));
+  border-radius: 8px;
+  font-family: 'Amiri', 'Scheherazade New', serif;
+  font-size: 1.45em;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition: background 0.1s, transform 0.1s;
+}
+.harakat-key:hover { background: rgba(212,160,74,0.15); }
+.harakat-key:active { transform: scale(0.94); }
+@media (max-width: 640px) {
+  #harakatBar { padding: 4px 6px; gap: 3px; }
+  .harakat-key { min-width: 38px; min-height: 38px; padding: 4px 8px; font-size: 1.3em; }
+}
 #backToTop:hover { opacity: 1; }
 @media (max-width: 640px) {
   #backToTop { right: 14px; bottom: 18px; width: 44px; height: 44px; }
@@ -5656,6 +5694,99 @@ function toggleSTT(inputId, btn) {
   input.dataset.sttBase = input.value;
   recognition.start();
 }
+
+// ===== HARAKAT (TASHKEEL) QUICK-KEYS BAR =====
+(function setupHarakatBar() {
+  const KEYS = [
+    { ch: '\u064E', label: 'َ', name: 'Fatha' },
+    { ch: '\u0650', label: 'ِ', name: 'Kasra' },
+    { ch: '\u064F', label: 'ُ', name: 'Damma' },
+    { ch: '\u0652', label: 'ْ', name: 'Sukun' },
+    { ch: '\u0651', label: 'ّ', name: 'Shadda' },
+    { ch: '\u064B', label: 'ً', name: 'Tanwin Fath' },
+    { ch: '\u064D', label: 'ٍ', name: 'Tanwin Kasr' },
+    { ch: '\u064C', label: 'ٌ', name: 'Tanwin Damm' },
+    { ch: '\u0653', label: 'ٓ', name: 'Maddah' },
+    { ch: '__BS__', label: '⌫', name: 'Backspace' },
+  ];
+  const bar = document.createElement('div');
+  bar.id = 'harakatBar';
+  bar.setAttribute('role', 'toolbar');
+  bar.setAttribute('aria-label', 'Arabic tashkeel');
+  bar.innerHTML = KEYS.map(k =>
+    `<button type="button" class="harakat-key" data-ch="${k.ch}" title="${k.name}">${k.ch === '__BS__' ? k.label : 'ـ' + k.label}</button>`
+  ).join('');
+  document.body.appendChild(bar);
+
+  let harakatTarget = null;
+
+  function isHarakatTarget(el) {
+    if (!el) return false;
+    if (el.dataset && el.dataset.noHarakat === '1') return false;
+    const tag = el.tagName;
+    if (tag === 'TEXTAREA') return true;
+    if (tag !== 'INPUT') return false;
+    const t = (el.type || 'text').toLowerCase();
+    return t === 'text' || t === 'search' || t === '';
+  }
+
+  function showBar(on) { bar.classList.toggle('visible', !!on); }
+
+  document.addEventListener('focusin', e => {
+    if (state.lang !== 'ar') { showBar(false); return; }
+    if (!isHarakatTarget(e.target)) return;
+    harakatTarget = e.target;
+    showBar(true);
+  });
+  document.addEventListener('focusout', () => {
+    setTimeout(() => {
+      const a = document.activeElement;
+      if (!a || !isHarakatTarget(a) || state.lang !== 'ar') {
+        harakatTarget = null;
+        showBar(false);
+      } else {
+        harakatTarget = a;
+      }
+    }, 120);
+  });
+
+  function insertAtCursor(el, ch) {
+    const start = el.selectionStart ?? el.value.length;
+    const end = el.selectionEnd ?? el.value.length;
+    const v = el.value || '';
+    if (ch === '__BS__') {
+      if (start === end) {
+        if (start > 0) {
+          el.value = v.slice(0, start - 1) + v.slice(end);
+          el.selectionStart = el.selectionEnd = start - 1;
+        }
+      } else {
+        el.value = v.slice(0, start) + v.slice(end);
+        el.selectionStart = el.selectionEnd = start;
+      }
+    } else {
+      el.value = v.slice(0, start) + ch + v.slice(end);
+      el.selectionStart = el.selectionEnd = start + ch.length;
+    }
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  // mousedown + preventDefault: do not steal focus from the input
+  bar.addEventListener('mousedown', e => {
+    const btn = e.target.closest('.harakat-key');
+    if (!btn) return;
+    e.preventDefault();
+    if (!harakatTarget) return;
+    insertAtCursor(harakatTarget, btn.dataset.ch);
+  });
+  bar.addEventListener('touchstart', e => {
+    const btn = e.target.closest('.harakat-key');
+    if (!btn) return;
+    e.preventDefault();
+    if (!harakatTarget) return;
+    insertAtCursor(harakatTarget, btn.dataset.ch);
+  }, { passive: false });
+})();
 
 // ===== BACK TO TOP =====
 (function setupBackToTop() {
