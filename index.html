@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tethkir — Task Memo v5.0</title>
+<title>Tethkir — Task Memo v5.2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;500;600;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
@@ -2588,7 +2588,7 @@ body.kb-open .kb-toggle-btn {
       </div>
       <button class="btn" id="authBtn" onclick="toggleAuth()" data-i18n="signIn">☁️ Sign In</button>
     </div>
-    <span class="arabic-title-inline">تذكير</span><span class="app-version">v5.0</span>
+    <span class="arabic-title-inline">تذكير</span><span class="app-version" id="appVersionHeader">v5.2</span>
     <div class="top-bar-right">
       <div class="lang-picker" id="langPicker">
         <button class="lang-picker-btn" onclick="toggleLangPicker()" id="langPickerBtn">
@@ -3459,6 +3459,8 @@ function init() {
   }
   updateChangePinBtn();
   document.getElementById('appVersion').textContent = APP_VERSION;
+  const vh = document.getElementById('appVersionHeader');
+  if (vh) vh.textContent = APP_VERSION;
   // Sync Arabic dialect selector with state
   const dSel = document.getElementById('arabicDialectSelect');
   if (dSel) dSel.value = state.arabicDialect || 'ar-SA';
@@ -5430,7 +5432,7 @@ async function shareNoteAsImage(id) {
   ctx.fillText('تذكير', SIZE/2, SIZE - 120);
   ctx.fillStyle = muted;
   ctx.font = '22px "Poppins", sans-serif';
-  ctx.fillText('Tethkir · ' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.0'), SIZE/2, SIZE - 88);
+  ctx.fillText('Tethkir · ' + (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.2'), SIZE/2, SIZE - 88);
 
   // Export
   const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
