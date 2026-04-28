@@ -1,4 +1,4 @@
-# تذكير — Tethkir v5.1
+# تذكير — Tethkir v5.2
 
 **Islamic Task Manager & Secure Notes**
 
@@ -8,15 +8,13 @@ A single-file web app for managing tasks and notes with Islamic themes, voice in
 
 ---
 
-## What's New in v4.0
+## What's New in v5.2
 
-**Multi-Passphrase Notes** — Any passphrase unlocks the notes section. Notes decrypt individually — create new notes with a different passphrase without losing old ones. Recover locked notes anytime with the old passphrase.
+**Safer Sync** — Sync is now timestamp-guarded: cloud can no longer overwrite newer local data, and an empty cloud doc can no longer wipe your tasks. `simpleNotes` is now included in the cloud payload (was silently missing).
 
-**Image Notes** — 📷 Capture from camera or pick from gallery. Images are compressed and stored inline, encrypted in Advanced mode. Tap to view fullscreen.
+**Multi-Layer Backups** — Rolling local snapshots (last 20, throttled to one per 5 min), daily cloud snapshots (last 14 days, auto-pruned), and a weekly reminder to download a JSON export. All restorable from Settings → Data Management.
 
-**Smart Views** — Toggle between 📄 List (collapsible cards) and 📐 Grid (2-column thumbnails). Search notes by title/content. Pagination loads 10 at a time.
-
-**Bug Fixes** — Mode label now correctly shows "Simple Mode" / "Advanced Mode" in all languages.
+**Critical Fix** — Resolved the data-loss bug where signing in could overwrite local tasks with stale or empty cloud state.
 
 ---
 

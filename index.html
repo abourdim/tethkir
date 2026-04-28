@@ -2975,6 +2975,22 @@ body.kb-open .kb-toggle-btn {
           <span class="setting-label" data-i18n="clearCacheDesc">Clear all local data &amp; cache</span>
           <button class="btn btn-sm btn-danger" onclick="clearAllData()" data-i18n="clearCache">🗑️ Clear Cache</button>
         </div>
+
+        <div style="margin-top:12px;border-top:1px solid rgba(0,0,0,.1);padding-top:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong style="font-size:14px;">🕒 Local snapshots</strong>
+            <button class="btn btn-sm" onclick="renderHistoryList()">Refresh</button>
+          </div>
+          <div id="historyList" style="display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto;"></div>
+        </div>
+
+        <div style="margin-top:12px;border-top:1px solid rgba(0,0,0,.1);padding-top:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong style="font-size:14px;">☁️ Cloud snapshots (daily, last 14)</strong>
+            <button class="btn btn-sm" onclick="refreshCloudSnapshotList()">Load</button>
+          </div>
+          <div id="cloudSnapshotList" style="display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto;"></div>
+        </div>
       </div>
     </div>
 
@@ -3019,7 +3035,15 @@ body.kb-open .kb-toggle-btn {
 
 <script>
 // ===== VERSION =====
-const APP_VERSION = 'v5.1';
+const APP_VERSION = 'v5.2';
+
+// ===== BACKUP CONFIG =====
+const HISTORY_KEY = 'tethkir_history';
+const HISTORY_MAX = 20;
+const HISTORY_MIN_INTERVAL_MS = 5 * 60 * 1000;
+const CLOUD_SNAPSHOT_KEEP = 14;
+const WEEKLY_EXPORT_REMIND_MS = 7 * 24 * 60 * 60 * 1000;
+let restoreInProgress = false;
 
 // ===== TRANSLATIONS =====
 const i18n = {
@@ -3380,6 +3404,7 @@ let state = {
   taskStatusTab: 'active', // 'active' | 'done' — sub-tab under Tasks
   arabicDialect: 'ar-SA', // used by STT/TTS when lang === 'ar'
   autoSync: true, // debounced push on change, pull on focus (when signed in)
+  updatedAtMs: 0,
 };
 
 function getArabicLangCode() { return state.arabicDialect || 'ar-SA'; }
@@ -3441,6 +3466,9 @@ function init() {
   if (state.autoSync === undefined) state.autoSync = true;
   const aToggle = document.getElementById('autoSyncToggle');
   if (aToggle) aToggle.classList.toggle('active', !!state.autoSync);
+  // Render local snapshots panel and weekly export reminder
+  renderHistoryList();
+  maybeNudgeWeeklyExport();
   // Some browsers load voices asynchronously — trigger once to prime the list
   if (window.speechSynthesis && typeof window.speechSynthesis.getVoices === 'function') {
     window.speechSynthesis.getVoices();
@@ -3461,12 +3489,90 @@ function loadState() {
 
 function saveState() {
   try {
+    state.updatedAtMs = Date.now();
     // Exclude notePassphrase from storage for security
     const toSave = { ...state, notePassphrase: null };
     localStorage.setItem('tethkir_state', JSON.stringify(toSave));
+    if (!restoreInProgress) pushLocalHistory(toSave);
     // Debounced auto-sync (toggleable; queues when offline via dirty flag)
-    requestAutoSync();
+    if (!restoreInProgress) requestAutoSync();
   } catch(e) { console.error('Save error', e); }
+}
+
+// ===== LOCAL HISTORY (ring buffer) =====
+function pushLocalHistory(snapshot) {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    const last = arr[arr.length - 1];
+    if (last && (Date.now() - last.ts) < HISTORY_MIN_INTERVAL_MS) return;
+    arr.push({ ts: Date.now(), state: snapshot });
+    while (arr.length > HISTORY_MAX) arr.shift();
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
+  } catch(e) { /* quota — ignore */ }
+}
+
+function getLocalHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function isStateNonEmpty(s) {
+  if (!s) return false;
+  const taskCount = s.tasks ? Object.values(s.tasks).reduce((n,a) => n + (Array.isArray(a) ? a.length : 0), 0) : 0;
+  const noteCount = (Array.isArray(s.notes) ? s.notes.length : 0) +
+    (s.simpleNotes ? Object.values(s.simpleNotes).reduce((n,a) => n + (Array.isArray(a) ? a.length : 0), 0) : 0);
+  return taskCount > 0 || noteCount > 0;
+}
+
+function restoreLocalSnapshot(ts) {
+  const arr = getLocalHistory();
+  const entry = arr.find(e => e.ts === ts);
+  if (!entry) { showToast('Snapshot not found ❌'); return; }
+  if (!confirm('Replace current data with snapshot from ' + new Date(ts).toLocaleString() + '?')) return;
+  restoreInProgress = true;
+  try {
+    state = { ...state, ...entry.state, notePassphrase: null };
+    saveState();
+    applyLang(state.lang);
+    setTheme(state.theme);
+    renderProfiles();
+    renderTasks();
+    renderHistoryList();
+    showToast('Restored from local snapshot ✅');
+  } finally {
+    restoreInProgress = false;
+    if (state.autoSync && firebaseReady && firebaseAuth?.currentUser) syncToCloud();
+  }
+}
+
+function renderHistoryList() {
+  const el = document.getElementById('historyList');
+  if (!el) return;
+  const arr = getLocalHistory().slice().reverse();
+  if (!arr.length) { el.innerHTML = '<div style="opacity:.7;font-size:13px;">No local snapshots yet.</div>'; return; }
+  el.innerHTML = arr.map(e => {
+    const tc = e.state?.tasks ? Object.values(e.state.tasks).reduce((n,a) => n + (a?.length||0), 0) : 0;
+    const nc = (e.state?.notes?.length || 0) + Object.values(e.state?.simpleNotes || {}).reduce((n,a) => n + (a?.length||0), 0);
+    return `<div class="setting-row" style="justify-content:space-between;">
+      <span style="font-size:13px;">${new Date(e.ts).toLocaleString()} <span style="opacity:.6;">— ${tc} tasks, ${nc} notes</span></span>
+      <button class="btn btn-sm" onclick="restoreLocalSnapshot(${e.ts})">Restore</button>
+    </div>`;
+  }).join('');
+}
+
+// ===== WEEKLY EXPORT NUDGE =====
+function maybeNudgeWeeklyExport() {
+  try {
+    const last = Number(localStorage.getItem('tethkir_lastExportMs') || 0);
+    if (Date.now() - last < WEEKLY_EXPORT_REMIND_MS) return;
+    if (!isStateNonEmpty(state)) return;
+    setTimeout(() => {
+      showToast('💾 Weekly backup reminder — open Settings → Data to download');
+    }, 4000);
+  } catch {}
 }
 
 // ===== AUTO-SYNC (debounced push + pull-on-focus + offline queue) =====
@@ -4227,6 +4333,7 @@ function exportData() {
   a.download = `tethkir-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
+  try { localStorage.setItem('tethkir_lastExportMs', String(Date.now())); } catch {}
   showToast(i18n[state.lang]?.dataExported || 'Data exported! 📦');
 }
 
@@ -4396,15 +4503,20 @@ async function syncToCloud() {
   syncInProgress = true;
   try {
     const user = firebaseAuth.currentUser;
-    await firebaseDb.collection('users').doc(user.uid).set({
+    const updatedAtMs = state.updatedAtMs || Date.now();
+    const payload = {
       tasks: state.tasks,
       profiles: state.profiles,
       notes: state.notes,
+      simpleNotes: state.simpleNotes,
       theme: state.theme,
       lang: state.lang,
+      updatedAtMs,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    };
+    await firebaseDb.collection('users').doc(user.uid).set(payload);
     console.log('✅ Synced to cloud');
+    writeDailyCloudSnapshot(user.uid, payload).catch(e => console.warn('Snapshot skipped:', e?.message || e));
   } catch(e) {
     console.error('Sync to cloud error:', e);
     showToast('Sync error — check console');
@@ -4413,33 +4525,146 @@ async function syncToCloud() {
   }
 }
 
+async function writeDailyCloudSnapshot(uid, payload) {
+  const day = new Date().toISOString().slice(0,10);
+  const ref = firebaseDb.collection('users').doc(uid).collection('snapshots').doc(day);
+  const existing = await ref.get();
+  if (existing.exists) return;
+  await ref.set({ ...payload, snapshotDay: day });
+  try {
+    const all = await firebaseDb.collection('users').doc(uid).collection('snapshots').get();
+    const ids = all.docs.map(d => d.id).sort();
+    const toDelete = ids.slice(0, Math.max(0, ids.length - CLOUD_SNAPSHOT_KEEP));
+    await Promise.all(toDelete.map(id =>
+      firebaseDb.collection('users').doc(uid).collection('snapshots').doc(id).delete()
+    ));
+  } catch(e) { /* ignore prune errors */ }
+}
+
 async function syncFromCloud(quiet) {
   if (!firebaseReady || !firebaseAuth?.currentUser) return;
+  if (syncInProgress) return;
+  syncInProgress = true;
+  restoreInProgress = true;
   try {
     const user = firebaseAuth.currentUser;
     const doc = await firebaseDb.collection('users').doc(user.uid).get();
-    if (doc.exists) {
-      const data = doc.data();
-      state.tasks = data.tasks || state.tasks;
-      state.profiles = data.profiles || state.profiles;
-      state.notes = data.notes || state.notes;
+    if (!doc.exists) {
+      restoreInProgress = false;
+      syncInProgress = false;
+      await syncToCloud();
+      if (!quiet) showToast('☁️ Data uploaded to cloud!');
+      return;
+    }
+    const data = doc.data();
+    const cloudMs = Number(data.updatedAtMs || 0);
+    const localMs = Number(state.updatedAtMs || 0);
+    const localHasData = isStateNonEmpty(state);
+    const cloudHasData = isStateNonEmpty(data);
+
+    // Safety: never wipe local data with an empty cloud doc.
+    if (!cloudHasData && localHasData) {
+      restoreInProgress = false;
+      syncInProgress = false;
+      await syncToCloud();
+      if (!quiet) showToast('☁️ Local data uploaded (cloud was empty)');
+      return;
+    }
+
+    if (cloudMs > localMs) {
+      if (data.tasks && Object.keys(data.tasks).length) state.tasks = data.tasks;
+      if (Array.isArray(data.profiles) && data.profiles.length) state.profiles = data.profiles;
+      if (Array.isArray(data.notes)) state.notes = data.notes;
+      if (data.simpleNotes && typeof data.simpleNotes === 'object') state.simpleNotes = data.simpleNotes;
+      state.updatedAtMs = cloudMs;
       if (data.theme) { state.theme = data.theme; setTheme(data.theme); }
       if (data.lang) { state.lang = data.lang; applyLang(data.lang); }
       if (!state.tasks[state.currentProfile]) state.tasks[state.currentProfile] = [];
       const toSave = { ...state, notePassphrase: null };
       localStorage.setItem('tethkir_state', JSON.stringify(toSave));
+      pushLocalHistory(toSave);
       renderProfiles();
       renderTasks();
-          updateNoteCountHint();
+      updateNoteCountHint();
       if (!quiet) showToast('☁️ Synced from cloud!');
-    } else {
+    } else if (localMs > cloudMs) {
+      restoreInProgress = false;
+      syncInProgress = false;
       await syncToCloud();
-      if (!quiet) showToast('☁️ Data uploaded to cloud!');
+      if (!quiet) showToast('☁️ Local changes uploaded');
+      return;
     }
   } catch(e) {
     console.error('Sync from cloud error:', e);
     if (!quiet) showToast('Cloud fetch error — check console');
     throw e;
+  } finally {
+    restoreInProgress = false;
+    syncInProgress = false;
+  }
+}
+
+// ===== CLOUD SNAPSHOTS UI =====
+async function listCloudSnapshots() {
+  if (!firebaseReady || !firebaseAuth?.currentUser) {
+    showToast('Sign in to Firebase first ☁️');
+    return [];
+  }
+  const uid = firebaseAuth.currentUser.uid;
+  const snap = await firebaseDb.collection('users').doc(uid).collection('snapshots').get();
+  return snap.docs.map(d => ({ id: d.id, data: d.data() })).sort((a,b) => b.id.localeCompare(a.id));
+}
+
+async function refreshCloudSnapshotList() {
+  const el = document.getElementById('cloudSnapshotList');
+  if (!el) return;
+  el.innerHTML = '<div style="opacity:.7;font-size:13px;">Loading...</div>';
+  try {
+    const list = await listCloudSnapshots();
+    if (!list.length) { el.innerHTML = '<div style="opacity:.7;font-size:13px;">No cloud snapshots yet.</div>'; return; }
+    el.innerHTML = list.map(s => {
+      const tc = s.data?.tasks ? Object.values(s.data.tasks).reduce((n,a) => n + (a?.length||0), 0) : 0;
+      const nc = (s.data?.notes?.length || 0) + Object.values(s.data?.simpleNotes || {}).reduce((n,a) => n + (a?.length||0), 0);
+      return `<div class="setting-row" style="justify-content:space-between;">
+        <span style="font-size:13px;">${s.id} <span style="opacity:.6;">— ${tc} tasks, ${nc} notes</span></span>
+        <button class="btn btn-sm" onclick="restoreCloudSnapshot('${s.id}')">Restore</button>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    console.error(e);
+    el.innerHTML = '<div style="color:#c33;font-size:13px;">Failed to load: ' + (e?.message || e) + '</div>';
+  }
+}
+
+async function restoreCloudSnapshot(day) {
+  if (!firebaseReady || !firebaseAuth?.currentUser) return;
+  if (!confirm('Replace current data with cloud snapshot from ' + day + '?')) return;
+  const uid = firebaseAuth.currentUser.uid;
+  try {
+    const doc = await firebaseDb.collection('users').doc(uid).collection('snapshots').doc(day).get();
+    if (!doc.exists) { showToast('Snapshot not found ❌'); return; }
+    const data = doc.data();
+    restoreInProgress = true;
+    if (data.tasks) state.tasks = data.tasks;
+    if (Array.isArray(data.profiles)) state.profiles = data.profiles;
+    if (Array.isArray(data.notes)) state.notes = data.notes;
+    if (data.simpleNotes) state.simpleNotes = data.simpleNotes;
+    if (data.theme) { state.theme = data.theme; setTheme(data.theme); }
+    if (data.lang) { state.lang = data.lang; applyLang(data.lang); }
+    state.updatedAtMs = Date.now();
+    if (!state.tasks[state.currentProfile]) state.tasks[state.currentProfile] = [];
+    const toSave = { ...state, notePassphrase: null };
+    localStorage.setItem('tethkir_state', JSON.stringify(toSave));
+    pushLocalHistory(toSave);
+    renderProfiles();
+    renderTasks();
+    showToast('Restored from cloud snapshot ✅');
+    restoreInProgress = false;
+    if (state.autoSync && firebaseReady && firebaseAuth?.currentUser) await syncToCloud();
+  } catch(e) {
+    restoreInProgress = false;
+    console.error(e);
+    showToast('Restore failed — check console');
   }
 }
 

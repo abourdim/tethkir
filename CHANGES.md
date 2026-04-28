@@ -2,6 +2,21 @@
 
 ---
 
+## v5.2 — 2026-04-28 — Safer Sync & Multi-Layer Backups 🛟
+
+### 🐛 Critical Fix — Data Loss on Sync
+- **Cause:** `syncFromCloud` blindly overwrote local state with whatever was in Firestore on every pull, even when the cloud copy was older or empty. With auto-sync ON, a stale or partial cloud doc could wipe local tasks; concurrent saves during a fetch could push half-merged state up. `simpleNotes` was also silently missing from the cloud payload — entire simple-notes profile could vanish on a cross-device pull.
+- **Fix:** sync is now **timestamp-guarded** (`updatedAtMs`). Cloud only overwrites local when **strictly newer**. If cloud is empty but local has data, local is uploaded instead of being wiped. Re-entrancy guard (`syncInProgress` + `restoreInProgress`) blocks saves during fetch. `simpleNotes` is now part of the synced payload.
+
+### 💾 Multi-Layer Backups
+- **🕒 Local snapshots** — rolling ring buffer in `localStorage` (last 20, throttled to one per 5 min). Listed in Settings → Data Management with one-click **Restore**.
+- **☁️ Cloud snapshots** — daily snapshot written to `users/{uid}/snapshots/{YYYY-MM-DD}` whenever sync runs. Last 14 days kept; older auto-pruned. Restorable from Settings.
+- **💾 Weekly export reminder** — non-blocking toast every 7 days nudging you to download a JSON backup.
+
+> ⚠️ **Firestore rules note:** for cloud snapshots to work, your rule path must be `match /users/{userId}/{document=**}` (with the `=**` wildcard) so the `snapshots` subcollection is writable. Without it, daily snapshots fail silently — the local layer still works.
+
+---
+
 ## v4.0 — 2026-02-27 — Multi-Pass Notes, Images & Smart Views 🖼️
 
 ### ✨ New Features
